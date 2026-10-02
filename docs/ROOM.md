@@ -116,7 +116,7 @@ Before cutting:
 - No words, numbers, logos or brand names anywhere in the picture. Video tools draw text badly. All text is added by the game.
 - The monitor's screen shows only a plain green hill and blue sky, which the game covers with the real desktop.
 - The monitor is straight on and in the middle of the picture at the end of both clips, so the screen box is a clean rectangle.
-- The sit-down clip ends with the camera still for at least half a second, and the screen at least 60% of the picture's height. Closer is better: the desktop has to be readable inside it.
+- The sit-down clip ends with the camera still for at least half a second, and the screen covering at least a quarter of the picture (its width times its height). Closer is better: the desktop has to be readable inside it.
 - Never name a real game, product or artist in the prompt. The rooms must be our own.
 
 ## Screen boxes
@@ -126,7 +126,7 @@ Measure these from each seat still once it is made. Until then the game uses a p
 | Stage | Left | Top | Width | Height |
 |---|---|---|---|---|
 | 1 | 30.3% | 16.9% | 44.7% | 62.5% |
-| 2 | To measure | To measure | To measure | To measure |
+| 2 | 20.2% | 13.2% | 58.6% | 59.7% |
 | 3 | To measure | To measure | To measure | To measure |
 | 4 | To measure | To measure | To measure | To measure |
 | 5 | To measure | To measure | To measure | To measure |
