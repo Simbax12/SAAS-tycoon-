@@ -23,7 +23,7 @@ A visual learner who is new to backend architecture. The game must be dyslexia-f
 | File | What it holds | Read it when |
 |---|---|---|
 | GAME_DESIGN.md | The rules: story, cast, play order, alerts and emails, all three incident flows, extra steps, users, stars, money, hints, saving | Building any game logic |
-| CHALLENGES.md | The 15 new incidents with options, answers, hints and users gained | Building new incidents or their data file |
+| CHALLENGES.md | The 20 new incidents with options, answers, hints and users gained | Building new incidents or their data file |
 | REPEATS.md | The 10 repeat incidents with pattern cards, answers and hints | Building repeat incidents, pips or refreshers |
 | BLUEPRINTS.md | The 5 Build incidents with trays, solutions and wrong moves, and the toolbox of parts and real tool names | Building the Blueprint app, Build incidents or anything that shows a tool name |
 | EXTRA_STEPS.md | The 5 Triage steps and 3 Tune steps | Building Terminal, SysDash or either extra step |
@@ -67,7 +67,7 @@ PROGRESS.md
 | Milestone | What gets built | Done when |
 |---|---|---|
 | 1. Desktop | Wallpaper, icons, taskbar, windows that open and close | Every icon opens its window on a phone and on a computer |
-| 2. Engine and Stage 1 | Data files, reducer, server alerts, Inbox and emails, new incident flow, stars, users, saving | The three new incidents of Stage 1 can be played and survive a page refresh |
+| 2. Engine and Stage 1 | Data files, reducer, server alerts, Inbox and emails, new incident flow, stars, users, saving | The four new incidents of Stage 1 can be played and survive a page refresh |
 | 3. Help | Tutorial, first-time tips, How to Play, hints, Pattern Book, Recycle Bin | A player who picks wrong twice is guided to the answer |
 | 4. Shop and money | Cash, Shop cards with price dots, request emails, all Stage 1 items and their effects, feature unlocks, investor top-up | Buying Payments unlocks incident 1.3, and the game cannot get stuck |
 | 5. Repeats and Stage 2 | Repeat incident flow, pattern cards, "Remind me", pips, refreshers, thank-you emails, the new and repeat incidents of Stage 2 | R1 and R2 can be played, and the Pattern Book shows their pips |

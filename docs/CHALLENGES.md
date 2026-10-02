@@ -1,4 +1,4 @@
-# Challenges: the 15 new incidents
+# Challenges: the 20 new incidents
 
 Copy these into a typed data file exactly as written. Do not add, remove or reword incidents, options, answers or hints. If something looks wrong, ask.
 
@@ -50,7 +50,7 @@ One server does everything. The app and the database live on the same machine.
 
 - **Starts:** automatic
 - **Arrives by:** Server alert. "Unusual download. The whole user table was copied at 03:12."
-- **Users gained:** 300
+- **Users gained:** 250
 - **Sees:** The Database box shows passwords as readable text. A copy of the database slips out of the building.
 - **Maya:** "A copy of our database leaked, and every password in it can be read."
 - **Options:**
@@ -71,7 +71,7 @@ One server does everything. The app and the database live on the same machine.
 
 - **Starts:** feat-payments
 - **Arrives by:** Email from a customer. "You charged me twice for Blip Plus. I only tapped Pay once!"
-- **Users gained:** 250
+- **Users gained:** 200
 - **Sees:** One tap on Pay sends two arrows to the Payments box. Two charges appear.
 - **Maya:** "People tap Pay twice, or their phone retries, and we charge them twice."
 - **Options:**
@@ -87,6 +87,27 @@ One server does everything. The app and the database live on the same machine.
 - **Nudge:** "How could the server tell a repeat from a new payment?"
 - **Pattern Book:** Idempotency keys. "Use this when doing something twice by accident would cause harm, like a payment."
 - **Map change:** A key appears on the arrow from Server to Payments.
+
+## 1.4 The Key in the Code
+
+- **Starts:** automatic
+- **Arrives by:** Email from Lena. "A stranger used our payment account overnight. How did they get our key?"
+- **Users gained:** 100
+- **Sees:** Blip's code is shared online. A secret key sits inside it in plain sight. A stranger copies it.
+- **Maya:** "Our payment key was written into the code. When the code was shared, the key went with it."
+- **Options:**
+  - **best.** "Keep keys in a locked vault. The server asks for them when it starts, and we can swap them anytime."
+    Label: Secrets manager (Vault or AWS Secrets Manager)
+    Result: "The code holds no keys now. We swapped the stolen key, and only our server can read the new one."
+  - **partial.** "Move the keys out of the code into a settings file on the server."
+    Label: Environment variables
+    Result: "The code is clean, but the stolen key still works. And nobody can tell who reads the file."
+  - **bad.** "Scramble the key and keep the scrambled key in the same code."
+    Label: Home-made encryption
+    Result: "The key to unscramble it had to live in the code too. The stranger used both."
+- **Nudge:** "If our code leaks again, what should still be safe?"
+- **Pattern Book:** Secrets manager. "Use this for passwords and keys your servers need. Never write them into the code."
+- **Map change:** A Secrets box with a safe on it appears beside the Server box.
 
 ---
 
@@ -120,7 +141,7 @@ The app and the database are now on separate machines. The database is the weak 
 
 - **Starts:** automatic
 - **Arrives by:** Email from a customer. "Searching for my friend's name takes forever. Is Blip broken?"
-- **Users gained:** 20,000
+- **Users gained:** 15,000
 - **Sees:** The Database flips through every row one by one to find a single user. A clock spins.
 - **Maya:** "Finding one user by name takes 4 seconds. The database reads every row to find them."
 - **Options:**
@@ -141,7 +162,7 @@ The app and the database are now on separate machines. The database is the weak 
 
 - **Starts:** feat-photos
 - **Arrives by:** Email from Sam. "Photos are a hit, but people say they load slowly. Can you look?"
-- **Users gained:** 20,000
+- **Users gained:** 15,000
 - **Sees:** Large photo files crawl from the Server to faraway users. The Server's network bar is red.
 - **Maya:** "Photos load slowly, and our server spends all its effort sending image files."
 - **Options:**
@@ -157,6 +178,27 @@ The app and the database are now on separate machines. The database is the weak 
 - **Nudge:** "What if the photos did not have to travel so far?"
 - **Pattern Book:** CDN. "Use this for files that are the same for everyone, like images and video."
 - **Map change:** A Storage box appears, and a ring of small CDN boxes appears near Users.
+
+## 2.4 The Chatty Feed
+
+- **Starts:** automatic
+- **Arrives by:** Email from Omar. "Customers say the feed takes 3 seconds to load. Yet every server looks calm."
+- **Users gained:** 10,000
+- **Sees:** One feed request. The Server asks the Database for 50 posts, then makes 50 more trips, one for each author.
+- **Maya:** "To show 50 posts, we ask the database 51 times. Once for the posts, then once for each author."
+- **Options:**
+  - **best.** "Ask for the posts and their authors together, in one trip."
+    Label: Eager loading with a JOIN (fixes N+1 queries)
+    Result: "51 trips became 1. The feed loads in a blink."
+  - **partial.** "Keep each author in the cache, so most trips are quick."
+    Label: Cache each author
+    Result: "Each trip is shorter, but there are still 51 of them. And the saved copies can go out of date."
+  - **bad.** "Copy each author's name into every post they write."
+    Label: Copy data into every row
+    Result: "People who changed their name now show the old one on years of posts."
+- **Nudge:** "Would you go to the shop 51 times for 51 things on one list?"
+- **Pattern Book:** Eager loading. "Use this when a page shows a list and details for every item. Fetch them together."
+- **Map change:** The many thin arrows from Server to Database merge into one thick arrow.
 
 ---
 
@@ -190,7 +232,7 @@ One app server can no longer cope.
 
 - **Starts:** automatic
 - **Arrives by:** Email from a customer. "Blip keeps logging me out every few taps. So annoying!"
-- **Users gained:** 1,500,000
+- **Users gained:** 1,000,000
 - **Sees:** A user logs in on Server 1. Their next tap goes to Server 2, which shows a question mark.
 - **Maya:** "Since we added servers, people keep getting logged out. Each server only remembers its own visitors."
 - **Options:**
@@ -211,7 +253,7 @@ One app server can no longer cope.
 
 - **Starts:** feat-email
 - **Arrives by:** Email from Zoe. "Sign-ups halved today. People say the sign-up page just hangs."
-- **Users gained:** 2,000,000
+- **Users gained:** 1,500,000
 - **Sees:** A sign-up arrow gets stuck at the Email box with a spinner. A line of waiting users builds up.
 - **Maya:** "Sign-up waits for the welcome email to send. When email is slow, sign-up freezes."
 - **Options:**
@@ -227,6 +269,27 @@ One app server can no longer cope.
 - **Nudge:** "Does the user need the email to be sent before they can carry on?"
 - **Pattern Book:** Message queue. "Use this for slow work that the user does not need to wait for."
 - **Map change:** A Queue box and a Worker box appear.
+
+## 3.4 The Domino Effect
+
+- **Starts:** automatic
+- **Arrives by:** Server alert. "All servers stuck. Every request is waiting on the fraud checker."
+- **Users gained:** 1,000,000
+- **Sees:** The Fraud Check box turns grey. Arrows to it pile up. One by one the Servers turn red, then all of Blip.
+- **Maya:** "The outside service that checks payments for fraud is broken. Our servers keep waiting on it, so everything is stuck."
+- **Options:**
+  - **best.** "Count the failures. After a few, stop calling the checker and use a safe backup plan. Try it again later."
+    Label: Circuit breaker
+    Result: "Calls to the broken checker stop at once. The rest of Blip works. When it recovers, calls start again."
+  - **partial.** "Give up on the checker after 2 seconds instead of 30."
+    Label: Shorter timeout
+    Result: "The waits are shorter, but every request still tries the broken checker first and fails."
+  - **bad.** "When the checker does not answer, ask it again three times."
+    Label: Retries
+    Result: "We sent three times the traffic to a service that was already struggling. It stayed down for hours."
+- **Nudge:** "If a shop is closed, do you keep knocking on the door?"
+- **Pattern Book:** Circuit breaker. "Use this when a service you depend on can fail. Stop calling it until it recovers."
+- **Map change:** A Fraud Check box appears, with a switch on the arrow that leads to it.
 
 ---
 
@@ -259,7 +322,7 @@ The data itself is now the problem.
 
 - **Starts:** automatic
 - **Arrives by:** Server alert. "Disk 96% full. The messages table has 4 billion rows."
-- **Users gained:** 15,000,000
+- **Users gained:** 10,000,000
 - **Sees:** The Messages table overflows its box. Write arrows slow to a crawl.
 - **Maya:** "The messages table has billions of rows. It no longer fits on one machine."
 - **Options:**
@@ -281,7 +344,7 @@ The data itself is now the problem.
 
 - **Starts:** feat-verified
 - **Arrives by:** Email from Sam. "Our biggest star just posted and Blip slowed to a crawl. Her manager is on the phone."
-- **Users gained:** 15,000,000
+- **Users gained:** 10,000,000
 - **Sees:** A celebrity posts. Millions of arrows fan out at once. The Queue box overflows.
 - **Maya:** "A star with 50 million followers posted. We tried to copy it into 50 million feeds at once."
 - **Options:**
@@ -298,6 +361,27 @@ The data itself is now the problem.
 - **Nudge:** "Should a post from a star be handled the same way as a post from you or me?"
 - **Pattern Book:** Fan-out. "Use this when one action must reach many people. Push to small audiences, pull for huge ones."
 - **Map change:** A Feed Service box appears with two paths: Push and Pull.
+
+## 4.4 The Search That Gave Up
+
+- **Starts:** automatic
+- **Arrives by:** Email from a customer. "I searched my old posts for a recipe. It spun for ages and found nothing."
+- **Users gained:** 10,000,000
+- **Sees:** Someone types two words. Every shard reads every word of every post. A clock spins, then gives up.
+- **Maya:** "Search means finding words anywhere inside billions of posts. A normal lookup list cannot help with that."
+- **Options:**
+  - **best.** "Use a search engine. It keeps a list of every word, and which posts contain it."
+    Label: Search engine with an inverted index (Elasticsearch)
+    Result: "Each word leads straight to its posts. Results arrive in a blink."
+  - **partial.** "Add a special word index inside our own databases."
+    Label: Full-text index in PostgreSQL
+    Result: "Much faster, but still too slow at our size. And the databases now have extra work."
+  - **bad.** "Let every search run as long as it needs, with no time limit."
+    Label: No time limit
+    Result: "Long searches piled up and slowed the databases for everyone."
+- **Nudge:** "What if each word already knew which posts it appears in?"
+- **Pattern Book:** Search engine. "Use this when people search for words inside lots of text."
+- **Map change:** A Search box appears beside the shards.
 
 ---
 
@@ -330,7 +414,7 @@ Blip is everywhere. Distance, disasters and attackers are the new problems.
 
 - **Starts:** automatic
 - **Arrives by:** Server alert. "Region down. No response from one of our three regions."
-- **Users gained:** 150,000,000
+- **Users gained:** 100,000,000
 - **Sees:** One region on the world map goes dark. Its users turn grey.
 - **Maya:** "A whole region just lost power. A third of our users cannot reach Blip."
 - **Options:**
@@ -347,6 +431,27 @@ Blip is everywhere. Distance, disasters and attackers are the new problems.
 - **Nudge:** "Who reacts faster at 3am: a person or an automatic health check?"
 - **Pattern Book:** Failover. "Use this when downtime is costly. Practise it before you need it."
 - **Map change:** Heartbeat lines appear between the three regions.
+
+## 5.4 The Bad Update
+
+- **Starts:** automatic
+- **Arrives by:** Server alert. "New checkout code went live for everyone. Payments are failing worldwide."
+- **Users gained:** 50,000,000
+- **Sees:** New code rolls out to every region at once. Every region turns red together.
+- **Maya:** "We turned on new checkout code for everyone at once. It has a bug, so everyone has the bug."
+- **Options:**
+  - **best.** "Ship new code switched off. Turn it on for staff, then a few users, then more. One switch turns it off."
+    Label: Feature flags
+    Result: "The new checkout is off in a second. Next time it reaches staff first, then a few users at a time."
+  - **partial.** "Send 1% of requests to the new code first, then more if errors stay low."
+    Label: Canary release
+    Result: "Fewer people are hit. But a busy customer can land on the new code many times before anyone notices."
+  - **bad.** "Swap the servers to the new code one at a time."
+    Label: Rolling update
+    Result: "For ten minutes old and new code shared the same payments. Some people were charged, but no order was saved."
+- **Nudge:** "What if new code could be switched off without shipping anything?"
+- **Pattern Book:** Feature flags. "Use this when a change is risky. Turn it on for a few people first, and keep an off switch."
+- **Map change:** A row of on and off switches appears above the three regions.
 
 ## 5.3 The Flood Attack
 

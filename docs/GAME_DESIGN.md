@@ -45,7 +45,7 @@ A new stage starts when the last incident of the stage before it is solved.
 
 | Kind | How many | What it is | Where it is written |
 |---|---|---|---|
-| New | 15 | Teaches a pattern for the first time. The player picks from three options | CHALLENGES.md |
+| New | 20 | Teaches a pattern for the first time. The player picks from three options | CHALLENGES.md |
 | Repeat | 10 | An everyday problem comes back in a new disguise. The player must recall the pattern | REPEATS.md |
 | Build | 5 | The player draws the design in the Blueprint app by joining parts with arrows. Each stage has one | BLUEPRINTS.md |
 
@@ -58,40 +58,45 @@ Some incidents also have an extra step that uses one of the other work apps.
 
 ## Play order
 
-There are 30 incidents. They are always played in this order. Only one incident is open at a time.
+There are 35 incidents. They are always played in this order. Only one incident is open at a time. An id is a name, not a place in the order: 5.4 is played before 5.3, because 5.3 is always the final incident.
 
 | Order | Stage | Id | Title | Kind | Needs |
 |---|---|---|---|---|---|
-| 1 | 1 | 1.1 | The Open Door | New | |
-| 2 | 1 | 1.2 | The Leaked Passwords | New | |
+| 1 | 1 | 1.1 | The Open Door | New |  |
+| 2 | 1 | 1.2 | The Leaked Passwords | New |  |
 | 3 | 1 | 1.3 | The Double Charge | New | feat-payments |
-| 4 | 1 | B1 | The First Blueprint | Build | |
-| 5 | 2 | 2.1 | The Melting Database | New | |
-| 6 | 2 | R1 | The Refund Button | Repeat | |
-| 7 | 2 | 2.2 | The Slow Lookup | New | |
-| 8 | 2 | R2 | The Triple Message | Repeat | |
-| 9 | 2 | 2.3 | The Heavy Photos | New | feat-photos |
-| 10 | 2 | B2 | The Fast Front Page | Build | |
-| 11 | 3 | 3.1 | The Lonely Server | New | |
-| 12 | 3 | R3 | The Profile Stampede | Repeat | |
-| 13 | 3 | 3.2 | The Vanishing Login | New | |
-| 14 | 3 | R4 | The Slow Inbox | Repeat | |
-| 15 | 3 | 3.3 | The Frozen Sign-up | New | feat-email |
-| 16 | 3 | B3 | The Secure Door | Build | |
-| 17 | 4 | R5 | The Contractor Keys | Repeat | |
-| 18 | 4 | 4.1 | The Read Flood | New | |
-| 19 | 4 | R6 | The Stuck Upload | Repeat | |
-| 20 | 4 | 4.2 | The Table That Got Too Big | New | |
-| 21 | 4 | R7 | The Trending Crush | Repeat | |
-| 22 | 4 | 4.3 | The Celebrity Post | New | feat-verified |
-| 23 | 4 | B4 | The Viral Like Button | Build | |
-| 24 | 5 | R8 | The Twice-Run Job | Repeat | |
-| 25 | 5 | 5.1 | The Slow Side of the World | New | feat-global |
-| 26 | 5 | R9 | The Support Search | Repeat | |
-| 27 | 5 | 5.2 | The Blackout | New | |
-| 28 | 5 | R10 | The Export That Never Finishes | Repeat | |
-| 29 | 5 | B5 | The Edge Delivery | Build | |
-| 30 | 5 | 5.3 | The Flood Attack | New | |
+| 4 | 1 | 1.4 | The Key in the Code | New |  |
+| 5 | 1 | B1 | The First Blueprint | Build |  |
+| 6 | 2 | 2.1 | The Melting Database | New |  |
+| 7 | 2 | R1 | The Refund Button | Repeat |  |
+| 8 | 2 | 2.2 | The Slow Lookup | New |  |
+| 9 | 2 | R2 | The Triple Message | Repeat |  |
+| 10 | 2 | 2.3 | The Heavy Photos | New | feat-photos |
+| 11 | 2 | 2.4 | The Chatty Feed | New |  |
+| 12 | 2 | B2 | The Fast Front Page | Build |  |
+| 13 | 3 | 3.1 | The Lonely Server | New |  |
+| 14 | 3 | R3 | The Profile Stampede | Repeat |  |
+| 15 | 3 | 3.2 | The Vanishing Login | New |  |
+| 16 | 3 | R4 | The Slow Inbox | Repeat |  |
+| 17 | 3 | 3.3 | The Frozen Sign-up | New | feat-email |
+| 18 | 3 | 3.4 | The Domino Effect | New |  |
+| 19 | 3 | B3 | The Secure Door | Build |  |
+| 20 | 4 | R5 | The Contractor Keys | Repeat |  |
+| 21 | 4 | 4.1 | The Read Flood | New |  |
+| 22 | 4 | R6 | The Stuck Upload | Repeat |  |
+| 23 | 4 | 4.2 | The Table That Got Too Big | New |  |
+| 24 | 4 | R7 | The Trending Crush | Repeat |  |
+| 25 | 4 | 4.3 | The Celebrity Post | New | feat-verified |
+| 26 | 4 | 4.4 | The Search That Gave Up | New |  |
+| 27 | 4 | B4 | The Viral Like Button | Build |  |
+| 28 | 5 | R8 | The Twice-Run Job | Repeat |  |
+| 29 | 5 | 5.1 | The Slow Side of the World | New | feat-global |
+| 30 | 5 | R9 | The Support Search | Repeat |  |
+| 31 | 5 | 5.2 | The Blackout | New |  |
+| 32 | 5 | 5.4 | The Bad Update | New |  |
+| 33 | 5 | R10 | The Export That Never Finishes | Repeat |  |
+| 34 | 5 | B5 | The Edge Delivery | Build |  |
+| 35 | 5 | 5.3 | The Flood Attack | New |  |
 
 ## The game loop
 
@@ -184,7 +189,7 @@ Each of the five everyday patterns has three pips in the Pattern Book.
 - A repeat solved first try gives a gold pip. Otherwise the pip is silver.
 - Three gold pips earn a "Mastered" badge.
 
-The other ten patterns have no pips.
+The other fifteen patterns have no pips.
 
 ### Refreshers
 
@@ -383,8 +388,8 @@ Shown when incident 5.3 is solved.
 - Maya's win message
 - The full System Map
 - Final user count
-- Total stars out of 90
-- Number of incidents solved first try, out of 30
+- Total stars out of 105
+- Number of incidents solved first try, out of 35
 - Patterns mastered, out of 5
 - Cash in the bank
 - Number of investor top-ups, and any loan still owed
@@ -392,8 +397,8 @@ Shown when incident 5.3 is solved.
 
 ## Ideas for later (do not build yet)
 
-- More new incidents per stage: slow repeated queries, search, video streaming, webhooks
-- Repeats for the other ten patterns
+- More new incidents per stage: video streaming, webhooks
+- Repeats for the other fifteen patterns
 - A login Build with a rate limiter that stops password guessing. It has to wait until rate limiting is taught earlier than the final incident
 - A timed mode for SysDash, as an option for players who want pressure
 - Random events between incidents

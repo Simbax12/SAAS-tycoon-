@@ -50,6 +50,11 @@ The Pattern Book shows familiar tools for every pattern. Patterns with a part ab
 | Multi-region | AWS, Google Cloud |
 | Failover | Amazon Route 53, Kubernetes |
 | Rate limiting | Nginx, Cloudflare |
+| Secrets manager | HashiCorp Vault, AWS Secrets Manager |
+| Eager loading | Prisma, Django ORM |
+| Circuit breaker | Resilience4j, Envoy |
+| Search engine | Elasticsearch, OpenSearch |
+| Feature flags | LaunchDarkly, Unleash |
 
 ## How to read a Build
 

@@ -118,6 +118,11 @@ Each pattern has an icon. The same icon is used in the Pattern Book, on repeat i
 | Multi-region | World map with pins |
 | Failover | Heartbeat line |
 | Rate limiting | Turnstile gate |
+| Secrets manager | Safe |
+| Eager loading | Shopping basket |
+| Circuit breaker | Light switch |
+| Search engine | Magnifying glass |
+| Feature flags | Flag |
 
 A Pattern Book entry shows: icon, name, the "Use this when" line, its familiar tools from the toolbox in BLUEPRINTS.md under the heading "Tools you will meet", and any "Also seen as" and "Built in" lines.
 
