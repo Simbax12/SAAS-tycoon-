@@ -433,6 +433,21 @@ if (contrast(colour("Main text"), cream) < 4.5) problem("UI_THEME.md: main text 
 if (contrast(colour("Terminal text"), colour("Terminal background")) < 4.5) problem("UI_THEME.md: Terminal text on its background is below 4.5 to 1");
 for (const label of ["OK", "Warning", "Critical"]) if (contrast(colour(label), cream) < 3) problem(`UI_THEME.md: the ${label} colour on the window body is below 3 to 1`);
 
+// ---------------------------------------------------------------- pointers between docs
+// A pointer is written "(see FILE.md > Heading)". The heading must exist in that file.
+for (const [name, text] of Object.entries(T)) {
+  for (const [, file, heading] of all(text, /\(see ([A-Z_]+\.md) > ((?:[^()]|\([^)]*\))+)\)/g)) {
+    if (!T[file]) { problem(`${name}: points to ${file}, which is not in docs/`); continue; }
+    const esc = heading.trim().replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+    if (!new RegExp(`^#+ ${esc}$`, "m").test(T[file])) problem(`${name}: points to "${heading.trim()}" in ${file}, but there is no such heading`);
+  }
+}
+const QS = T["GAME_LOGIC.md"];
+if (QS) {
+  const asked = new Set(all(QS, /^\| (Q\d+) \|/gm).map((m) => m[1]));
+  for (const [, q] of all(QS, /\((Q\d+)\)/g)) if (!asked.has(q)) problem(`GAME_LOGIC.md: mentions ${q}, which is not in the open questions table`);
+}
+
 // ---------------------------------------------------------------- the hub
 if (!HUB) problem("CLAUDE.md is missing from the repo root");
 else {

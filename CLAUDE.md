@@ -13,6 +13,7 @@ This file is the hub. It holds no game content of its own. It says where every f
 | [docs/CHALLENGES.md](docs/CHALLENGES.md) | Every new incident: text, options, answers, hints, users gained, Pattern Book entries | Building new incidents or their data file |
 | [docs/REPEATS.md](docs/REPEATS.md) | Every repeat incident, and the list of everyday patterns | Building repeats, pips or refreshers |
 | [docs/BLUEPRINTS.md](docs/BLUEPRINTS.md) | Every Build incident: goal, tray, decoys, solution, wrong moves. The toolbox: every part and the real tool names | Building Blueprint, Build incidents or anything that shows a tool name |
+| [docs/GAME_LOGIC.md](docs/GAME_LOGIC.md) | The engine: what the game remembers, every player action, the order things happen in, and open questions about the rules | Writing the reducer or any game logic |
 | [docs/EXTRA_STEPS.md](docs/EXTRA_STEPS.md) | Every Triage step (log lines) and Tune step (dial, waves) | Building Terminal, SysDash or either extra step |
 | [docs/UPGRADES.md](docs/UPGRADES.md) | Every Shop item: the price rule, prices, users gained, effects, request emails | Building the Shop, request emails or any upgrade effect |
 | [docs/UI_THEME.md](docs/UI_THEME.md) | The look: desktop, windows, alerts, sender badges, the three work apps, pattern icons, colours, readability rules | Building anything on screen |
@@ -36,6 +37,7 @@ flowchart TD
   ES["EXTRA_STEPS.md"]
   UP["UPGRADES.md"]
   UI["UI_THEME.md"]
+  GL["GAME_LOGIC.md"]
   HUB --> SH
   HUB --> GD
   HUB --> CH
@@ -44,6 +46,7 @@ flowchart TD
   HUB --> ES
   HUB --> UP
   HUB --> UI
+  HUB --> GL
   GD -->|play order ids| CH
   GD -->|play order ids| RP
   GD -->|play order ids| BP
@@ -56,6 +59,10 @@ flowchart TD
   RP -->|pattern names| CH
   UI -->|pattern icons| CH
   UI -->|sender badges| GD
+  GL -->|section pointers| GD
+  GL -->|section pointers| UP
+  GL -->|section pointers| CH
+  GL -->|section pointers| BP
 ```
 
 The links, in words:
@@ -72,6 +79,8 @@ The links, in words:
 - **Prices.** Every price in UPGRADES.md comes from the price rule there and the base cash per stage in GAME_DESIGN.md.
 - **Users.** "Users gained" across all incidents and must-have features must add up to exactly 1 billion. The optional totals written in GAME_DESIGN.md must match UPGRADES.md.
 - **Request emails.** Each "Arrives" in UPGRADES.md names a point in the play order.
+- **Pointers.** A doc can point to a section of another doc by writing (see FILE.md > Heading). The heading must exist. GAME_LOGIC.md uses these instead of copying rules.
+- **Open questions.** Every question number mentioned in GAME_LOGIC.md must be in its open questions table.
 
 ## One fact, one home
 
@@ -87,6 +96,7 @@ Every fact is written in one file only. Other files point to it and never copy i
 | Parts and the real tool names shown for them | The toolbox in BLUEPRINTS.md |
 | Triage log lines, Tune dials and waves | EXTRA_STEPS.md |
 | What extra steps pay, and how every flow runs | GAME_DESIGN.md |
+| What the engine remembers, the player actions, and the order things happen in | GAME_LOGIC.md |
 | Prices, users gained from items, effects, request emails | UPGRADES.md |
 | Base cash per stage, star multipliers, penalties, the loan rule | GAME_DESIGN.md |
 | Who can send things, and their roles | Cast table in GAME_DESIGN.md |
@@ -110,6 +120,8 @@ If you need a fact and cannot find its home, ask. Do not write it in a second pl
 | Add or reprice a Shop item | Price from the price rule. A request email row, unless it is "Your setup". The item count in UPGRADES.md and START_HERE.md. The optional user totals in GAME_DESIGN.md if it brings users |
 | Change base cash, star multipliers or price points | Every price in UPGRADES.md. The money examples in GAME_DESIGN.md |
 | Add a person who sends things | The cast table in GAME_DESIGN.md. A sender badge in UI_THEME.md |
+| Change a rule in GAME_DESIGN.md, or rename a heading | GAME_LOGIC.md, if it points to that rule or heading |
+| Answer an open question in GAME_LOGIC.md | Write the answer in its home, usually GAME_DESIGN.md. Remove the question and its mentions from GAME_LOGIC.md |
 | Change a colour | Check it still passes the contrast rule in UI_THEME.md |
 | Add a new doc | A row in the map above. A row in the files table in START_HERE.md. Its links in "How the files connect" |
 | Create, move or rename a code file | The code map below |
@@ -155,6 +167,7 @@ This links each doc to the code that copies from it. None of the code exists yet
 | docs/EXTRA_STEPS.md | `data/extraSteps.ts` | Planned |
 | docs/UPGRADES.md | `data/upgrades.ts`, `data/emails.ts` | Planned |
 | docs/GAME_DESIGN.md | `data/stages.ts`, `data/playOrder.ts`, `game/reducer.ts` | Planned |
+| docs/GAME_LOGIC.md | `game/reducer.ts`, `game/types.ts` | Planned |
 | docs/UI_THEME.md | `components/desktop`, `components/windows` | Planned |
 
 ## Commands

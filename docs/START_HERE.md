@@ -26,6 +26,7 @@ A visual learner who is new to backend architecture. The game must be dyslexia-f
 | CHALLENGES.md | The 20 new incidents with options, answers, hints and users gained | Building new incidents or their data file |
 | REPEATS.md | The 10 repeat incidents with pattern cards, answers and hints | Building repeat incidents, pips or refreshers |
 | BLUEPRINTS.md | The 5 Build incidents with trays, solutions and wrong moves, and the toolbox of parts and real tool names | Building the Blueprint app, Build incidents or anything that shows a tool name |
+| GAME_LOGIC.md | The engine: game state, player actions, the order things happen in, open questions | Writing the reducer or any game logic |
 | EXTRA_STEPS.md | The 10 Triage steps and 5 Tune steps | Building Terminal, SysDash or either extra step |
 | UPGRADES.md | The 19 Shop items with prices, users gained, effects and request emails | Building the Shop, request emails or any upgrade effect |
 | UI_THEME.md | Desktop look, icons, windows, alerts, sender badges, the three work apps, readability rules | Building anything on screen |
@@ -48,7 +49,7 @@ After any change to these files, run `node scripts/check-docs.mjs`. It must prin
 
 ```
 CLAUDE.md        the hub: map, links, rules
-/docs            these eight files
+/docs            these nine files
 /scripts         check-docs.mjs (checks the docs agree with each other)
 /data            challenges.ts, repeats.ts, blueprints.ts, extraSteps.ts, upgrades.ts,
                  emails.ts, stages.ts, playOrder.ts
@@ -80,7 +81,7 @@ Until Milestone 6, Builds and extra steps are skipped. The play order moves stra
 ## First message to send the AI
 
 ```
-Read CLAUDE.md and docs/START_HERE.md, then the seven files START_HERE.md lists.
+Read CLAUDE.md and docs/START_HERE.md, then the eight files START_HERE.md lists.
 
 Tell me in a few lines:
 1. How the game plays, in your own words
