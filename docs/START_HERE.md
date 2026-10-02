@@ -26,7 +26,7 @@ A visual learner who is new to backend architecture. The game must be dyslexia-f
 | CHALLENGES.md | The 20 new incidents with options, answers, hints and users gained | Building new incidents or their data file |
 | REPEATS.md | The 10 repeat incidents with pattern cards, answers and hints | Building repeat incidents, pips or refreshers |
 | BLUEPRINTS.md | The 5 Build incidents with trays, solutions and wrong moves, and the toolbox of parts and real tool names | Building the Blueprint app, Build incidents or anything that shows a tool name |
-| EXTRA_STEPS.md | The 5 Triage steps and 3 Tune steps | Building Terminal, SysDash or either extra step |
+| EXTRA_STEPS.md | The 10 Triage steps and 5 Tune steps | Building Terminal, SysDash or either extra step |
 | UPGRADES.md | The 19 Shop items with prices, users gained, effects and request emails | Building the Shop, request emails or any upgrade effect |
 | UI_THEME.md | Desktop look, icons, windows, alerts, sender badges, the three work apps, readability rules | Building anything on screen |
 

@@ -1,4 +1,4 @@
-# Extra steps: the 5 Triage steps and 3 Tune steps
+# Extra steps: the 10 Triage steps and 5 Tune steps
 
 Some incidents have an extra step that uses one of the work apps on the desktop.
 
@@ -101,6 +101,61 @@ Each log line starts with the short name of the thing that wrote it, the way rea
   - **routine.** INFO node: "Health check passed"
 - **Why:** "Timeouts are the symptom. No real person sends 9,000 requests a minute."
 
+## T6 on 1.4 The Key in the Code
+
+- **Lines:**
+  - **routine.** INFO node: "User 212 logged in"
+  - **symptom.** WARN stripe: "40 payments made from an unknown computer"
+  - **routine.** INFO postgres: "Nightly backup finished"
+  - **cause.** WARN node: "Payment key loaded from the code, not a safe store"
+  - **routine.** INFO nginx: "Health check passed"
+  - **routine.** INFO stripe: "Payment 118 accepted"
+- **Why:** "The strange payments are the symptom. The cause is a key that anyone with the code could read."
+
+## T7 on 2.4 The Chatty Feed
+
+- **Lines:**
+  - **routine.** INFO redis: "Cache hit for popular posts"
+  - **symptom.** WARN node: "Feed took 3 seconds to answer"
+  - **cause.** WARN postgres: "51 queries for one feed page"
+  - **routine.** INFO node: "User 402 signed up"
+  - **routine.** INFO postgres: "Database load at 30%"
+  - **routine.** INFO nginx: "Health check passed"
+- **Why:** "The slow feed is the symptom. The cause is one page asking the database 51 times."
+
+## T8 on 3.4 The Domino Effect
+
+- **Lines:**
+  - **symptom.** ERROR nginx: "504 Gateway Timeout on every page"
+  - **routine.** INFO redis: "Session found for user 7,310"
+  - **cause.** ERROR node: "Fraud check gave no answer after 30 seconds"
+  - **routine.** INFO postgres: "Database load at 25%"
+  - **routine.** INFO worker: "Welcome email sent"
+  - **routine.** INFO cloudflare: "Photos served from the CDN"
+- **Why:** "Timeouts everywhere are the symptom. Every server is stuck waiting on one broken outside service."
+
+## T9 on 4.4 The Search That Gave Up
+
+- **Lines:**
+  - **routine.** INFO postgres: "Replica 1 is up to date"
+  - **symptom.** WARN node: "Search took 40 seconds, then gave up"
+  - **routine.** INFO redis: "Cache hit for the Trending list"
+  - **cause.** WARN postgres: "Search read every post on all shards"
+  - **routine.** INFO worker: "Photo resized to five sizes"
+  - **routine.** INFO nginx: "Traffic shared across 3 servers"
+- **Why:** "The slow search is the symptom. The cause is reading every post to find two words."
+
+## T10 on 5.4 The Bad Update
+
+- **Lines:**
+  - **symptom.** ERROR stripe: "Payment failures up 300% in every region"
+  - **routine.** INFO postgres: "All three regions are in step"
+  - **cause.** INFO node: "New checkout code released to 100% of users"
+  - **routine.** INFO cloudflare: "Photos served from the CDN"
+  - **routine.** INFO node: "Health check passed"
+  - **routine.** INFO worker: "Export ready for user 55"
+- **Why:** "The failures are the symptom. The cause is new code going to everyone at once. Look for what changed."
+
 ---
 
 # Tune steps
@@ -146,3 +201,31 @@ Each log line starts with the short name of the thing that wrote it, the way rea
 - **Too high:** "Too loose. Bots are getting through."
 - **Just right:** "Real people get through. Bots hit the limit."
 - **Lesson:** "Set the limit just above what real people need, and raise it for busy days."
+
+## U4 on 3.4 The Domino Effect
+
+- **Dial:** Seconds to wait for an answer
+- **Stops:** 0.1 seconds / 1 second / 10 seconds / 60 seconds
+- **Fact:** "A broken service never answers. While we wait, one of our servers sits stuck."
+- **Waves:**
+  - "The fraud checker. It usually answers in 0.2 seconds." Right: 1 second
+  - "A partner's report service. It usually takes 6 seconds." Right: 10 seconds
+  - "The cache. It usually answers in 0.001 seconds." Right: 0.1 seconds
+- **Too low:** "Too impatient. Healthy answers are being cut off."
+- **Too high:** "Too patient. A broken service ties up our servers."
+- **Just right:** "Healthy answers get through. Broken calls give up quickly."
+- **Lesson:** "Wait a little longer than a service normally takes, and no more. The circuit breaker handles the rest."
+
+## U5 on 5.4 The Bad Update
+
+- **Dial:** Who gets the new code
+- **Stops:** Staff only / 1% of users / 25% of users / Everyone
+- **Fact:** "Start small. Give it to more people only when nothing has gone wrong."
+- **Waves:**
+  - "Day one. The new checkout has never met a real customer." Right: Staff only
+  - "Staff have used it for a week. No problems." Right: 1% of users
+  - "A quarter of users for two weeks. Errors match the old code." Right: Everyone
+- **Too low:** "Too careful. The new code is fine, but almost nobody gets it."
+- **Too high:** "Too fast. If there is a bug, too many people meet it."
+- **Just right:** "A safe step. Big enough to learn from, small enough to undo."
+- **Lesson:** "Turn new code on in steps. Grow the share only when the last step looked healthy."

@@ -53,8 +53,8 @@ Some incidents also have an extra step that uses one of the other work apps.
 
 | Step | How many | What it is | Where it is written |
 |---|---|---|---|
-| Triage | 5 | Before the fix. The player finds the log line that shows the real cause, in Terminal | EXTRA_STEPS.md |
-| Tune | 3 | After the fix. The player sets a dial for three waves of traffic, in SysDash | EXTRA_STEPS.md |
+| Triage | 10 | Before the fix. The player finds the log line that shows the real cause, in Terminal | EXTRA_STEPS.md |
+| Tune | 5 | After the fix. The player sets a dial for three waves of traffic, in SysDash | EXTRA_STEPS.md |
 
 ## Play order
 
