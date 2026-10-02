@@ -1,6 +1,6 @@
 # Zero to a Billion: start here
 
-This folder is the source of truth for the game. Read this file first. Open the other files when you reach the part they cover.
+This folder is the source of truth for the game. CLAUDE.md in the repo root is the hub: it maps these files, shows how they connect and holds the rules for working here. Read CLAUDE.md first, then this file. Open the other files when you reach the part they cover.
 
 ## What we are building
 
@@ -28,13 +28,9 @@ A visual learner who is new to backend architecture. The game must be dyslexia-f
 
 ## Rules for the AI building this
 
-1. These files are the source of truth. Read the relevant file before you work on a part.
-2. Never invent or change incidents, answers, hints, emails, prices or rewards. Copy them from CHALLENGES.md, REPEATS.md and UPGRADES.md into typed data files.
-3. If something is missing, unclear, or two files disagree, stop and ask. Do not guess.
-4. Game content lives in data files. Game logic must never hard-code a single incident, email or upgrade.
-5. Build one milestone at a time. Stop after each one so I can play it.
-6. Keep a short PROGRESS.md: what is done, what is next, and any decisions made.
-7. All words shown on screen come from these files. If you need new on-screen text, keep it under 12 words and list it in PROGRESS.md for me to check.
+The rules are in CLAUDE.md in the repo root. They live there so they are written in one place only.
+
+After any change to these files, run `node scripts/check-docs.mjs`. It must print "0 problems".
 
 ## Tech
 
@@ -47,7 +43,9 @@ A visual learner who is new to backend architecture. The game must be dyslexia-f
 ## Folder layout
 
 ```
+CLAUDE.md        the hub: map, links, rules
 /docs            these six files
+/scripts         check-docs.mjs (checks the docs agree with each other)
 /data            challenges.ts, repeats.ts, upgrades.ts, emails.ts, stages.ts, playOrder.ts
                  (typed copies of the docs)
 /game            reducer, types, rules (users, stars, money, hints, pips)
@@ -73,7 +71,7 @@ PROGRESS.md
 ## First message to send the AI
 
 ```
-Read docs/START_HERE.md, then the five files it lists.
+Read CLAUDE.md and docs/START_HERE.md, then the five files START_HERE.md lists.
 
 Tell me in a few lines:
 1. How the game plays, in your own words
@@ -86,7 +84,7 @@ Do not write any code until I say go.
 ## Message for each later milestone
 
 ```
-Read docs/START_HERE.md and PROGRESS.md.
+Read CLAUDE.md, docs/START_HERE.md and PROGRESS.md.
 Build Milestone [number] only.
 Re-read the files that milestone depends on before you start.
 When finished, update PROGRESS.md and tell me how to test it.
