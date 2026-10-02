@@ -133,6 +133,7 @@ It must print "0 problems" before you commit. If it reports a problem, fix the d
 7. Keep PROGRESS.md short and current: what is done, what is next, decisions made.
 8. All words shown on screen come from the docs. If you need new on-screen text, keep it under 12 words and list it in PROGRESS.md for me to check.
 9. Write docs and on-screen text in plain words and short sentences, with plain punctuation. The readability rules in UI_THEME.md apply to everything the player reads.
+10. Changes to the docs are committed straight to main once the check prints "0 problems". I have agreed to this, so there is no need to ask each time.
 
 ## Growing the game
 
