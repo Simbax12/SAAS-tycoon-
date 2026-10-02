@@ -292,8 +292,26 @@ for (const [id, { from, when }] of Object.entries(requests)) {
   if (affected.length && Math.min(...affected) <= at) problem(`${id}: its request email arrives too late to affect the incident it changes`);
 }
 
-// ---------------------------------------------------------------- toolbox
 const cut = (text, from, to) => text.slice(text.indexOf(from), text.indexOf(to));
+
+// ---------------------------------------------------------------- customer names
+// Every email from a customer has exactly one name in GAME_DESIGN.md, and each name is used once.
+const nameRows = all(cut(G, "### Customer names", "## Stages"), /^\| ([^|]+) \| ([^|]+) \|$/gm)
+  .map((m) => [m[1].trim(), m[2].trim()])
+  .filter(([who]) => who !== "Sent by" && !who.startsWith("---"));
+const customerSent = [
+  ...Object.values(incidents).filter((d) => d.arrives.startsWith("Email from a customer.")).map((d) => d.id),
+  ...Object.entries(requests).filter(([, r]) => r.from === "Customer").map(([id]) => id),
+];
+const named = nameRows.map(([who]) => who);
+for (const who of customerSent) if (!named.includes(who)) problem(`GAME_DESIGN.md: ${who} is sent by a customer but has no row in Customer names`);
+for (const who of named) if (!customerSent.includes(who)) problem(`GAME_DESIGN.md: Customer names lists ${who}, which is not sent by a customer`);
+if (new Set(named).size !== named.length) problem("GAME_DESIGN.md: Customer names lists a sender more than once");
+const names = nameRows.map(([, n]) => n);
+if (new Set(names).size !== names.length) problem("GAME_DESIGN.md: a customer name is used more than once");
+for (const n of names) if (cast.includes(n)) problem(`GAME_DESIGN.md: customer name ${n} is also in the cast`);
+
+// ---------------------------------------------------------------- toolbox
 const parts = {};
 for (const m of all(cut(B, "### The parts", "### Tools for patterns that have no part"), /^\| ([^|]+) \| ([^|]+) \|([^|]*)\|([^|]*)\|$/gm)) {
   const name = m[1].trim();

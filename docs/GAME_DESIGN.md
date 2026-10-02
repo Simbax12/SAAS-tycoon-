@@ -15,8 +15,29 @@ Work arrives the way it does in a real job. The servers raise alerts. The boss, 
 | Lena | Head of Finance | Problems with money and staff. Asks for safer servers |
 | Omar | Head of Support | Problems his team sees. Asks for better tools |
 | Zoe | Head of Growth | Sign-up problems. Asks for features that help Blip grow |
-| Customers | People who use Blip | Complaints and wishes. Use a different first name each time |
+| Customers | People who use Blip | Complaints and wishes. Each one has their own first name, from the list below |
 | The servers | BlipOS itself | Alerts, when a machine notices trouble before a person does |
+
+### Customer names
+
+Every email from a customer shows a first name. Each name is used once. The thank-you email after an incident comes from the same customer.
+
+| Sent by | Name |
+|---|---|
+| 1.3 | Priya |
+| feat-darkmode | Tom |
+| 2.2 | Ana |
+| feat-photos | Kofi |
+| R2 | Mei |
+| 3.2 | Jack |
+| feat-groups | Sara |
+| R4 | Leo |
+| R6 | Aisha |
+| feat-voice | Ben |
+| 4.4 | Rosa |
+| 5.1 | Chloe |
+| feat-translate | Yuki |
+| R10 | Femi |
 
 ## Stages
 
@@ -272,6 +293,12 @@ Each incident starts at 3 stars.
 - Using Hint 2: lose 1 star (unless it is free, see Hints)
 - Minimum: 1 star
 
+### Solved first try
+
+An incident is solved first try when the player made no wrong choice, had no failed deploy and did not use Hint 2. A free Hint 2 from the Engineering handbook still counts as using it. Hint 1, "Remind me" and "Test first" do not spoil it.
+
+This decides gold pips, refreshers and the first-try count on the win screen.
+
 ## Money
 
 | Kind of incident | Cash paid when solved |
@@ -314,7 +341,9 @@ Prices are not flat. An item costs more when it is a bigger change and when it b
 
 ## The game must never get stuck
 
-If the next incident needs a feature and the player cannot afford it, Maya says: "An investor believes in us." Cash is topped up to exactly the price of that feature.
+The must-have feature that the next incident needs can always be bought. Its Buy button works even when the player is short of cash.
+
+If the player taps Buy and is short, Maya says: "An investor believes in us." The investor lends exactly the shortfall and the feature is bought at once. The loan money can never be spent on anything else.
 
 The top-up is a loan, so spending everything on optional items is not a free ride. Cash from later incidents pays the loan back first, before the player receives any.
 
@@ -379,7 +408,9 @@ Each tip is shown once, with the same spotlight.
 
 - Save to localStorage after every change.
 - Use a versioned key so old saves do not break new builds.
+- Old saves are carried forward to new builds, never wiped.
 - Settings has "Reset game" with a confirm step.
+- "Reset game" and "Play again" clear all progress but keep the player's settings.
 
 ## Win screen
 

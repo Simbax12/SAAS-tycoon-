@@ -63,7 +63,7 @@ Optional. They bring in no users. Each one prepares Blip in advance and changes 
 | srv-test | Test environment | 1 | Medium | None | 0 | £200 | Adds a "Test first" button to every incident. Once per incident, try one option and see its result with no penalty and no star lost |
 | srv-bigger | Bigger server | 2 | Medium | None | 0 | £800 | In incidents 2.1 and 3.1, the "bigger server" option is removed from the start. Maya says: "We already bought the biggest one we can afford. Hardware alone will not save us." |
 | srv-monitoring | Monitoring | 2 | Big | None | 0 | £1,200 | The System Map shows live numbers on every box. Bad-choice penalties are halved: users dip 5% and cash loss is 5% of base |
-| srv-standby | Standby server | 3 | Medium | None | 0 | £4,000 | From now on, the first bad choice in each incident causes no user dip. Maya says: "The standby caught it. Nobody noticed." |
+| srv-standby | Standby server | 3 | Medium | None | 0 | £4,000 | From now on, the first bad choice in each stage causes no user dip. Maya says: "The standby caught it. Nobody noticed." |
 | srv-analytics | Analytics | 4 | Medium | None | 0 | £20,000 | In incidents 4.2 and 4.3, the bad option is removed from the start. Maya says: "The data already shows that one would not work." |
 | srv-drills | Disaster drills | 5 | Medium | None | 0 | £100,000 | In incidents 5.2 and 5.3, the bad option is removed from the start. Maya says: "We practised this. We know what not to do." |
 
@@ -133,6 +133,6 @@ Each item is a card with:
 - Who asked for it, shown as a small sender badge
 - A Buy button
 
-Items the player cannot afford show the price in grey with the words "Not enough cash". Items already bought show a tick and the word "Owned".
+Items the player cannot afford show the price in grey with the words "Not enough cash". The one exception is a must-have feature marked "Needed next": its Buy button always works (see the investor rule in GAME_DESIGN.md). Items already bought show a tick and the word "Owned".
 
 A must-have feature that is needed for the next incident shows a "Needed next" badge.

@@ -76,6 +76,7 @@ The links, in words:
 - **Tools.** Every pattern must have familiar tools in the toolbox, through a part or through the table for patterns with no part.
 - **Extra steps.** Each Triage and Tune step in EXTRA_STEPS.md names an incident id and title that exist. Each log source must stand for something in the toolbox.
 - **People.** Anyone who sends an alert, incident email or request email must be in the cast table in GAME_DESIGN.md, and must have a sender badge in UI_THEME.md.
+- **Customer names.** Every incident or request email sent by a customer has one row in the customer names table in GAME_DESIGN.md. Each name is used once.
 - **Prices.** Every price in UPGRADES.md comes from the price rule there and the base cash per stage in GAME_DESIGN.md.
 - **Users.** "Users gained" across all incidents and must-have features must add up to exactly 1 billion. The optional totals written in GAME_DESIGN.md must match UPGRADES.md.
 - **Request emails.** Each "Arrives" in UPGRADES.md names a point in the play order.
@@ -100,6 +101,7 @@ Every fact is written in one file only. Other files point to it and never copy i
 | Prices, users gained from items, effects, request emails | UPGRADES.md |
 | Base cash per stage, star multipliers, penalties, the loan rule | GAME_DESIGN.md |
 | Who can send things, and their roles | Cast table in GAME_DESIGN.md |
+| Each customer's first name | Customer names table in GAME_DESIGN.md |
 | Tutorial steps, tips and the How to Play text | GAME_DESIGN.md |
 | Colours, fonts, sizes, word limits, icons | UI_THEME.md |
 | Tech choices, folder layout, milestones | START_HERE.md |
@@ -119,8 +121,10 @@ If you need a fact and cannot find its home, ask. Do not write it in a second pl
 | Add a Triage or Tune step | The incident it names must exist. New log sources go in the log sources table. The counts written in GAME_DESIGN.md and START_HERE.md |
 | Add or reprice a Shop item | Price from the price rule. A request email row, unless it is "Your setup". The item count in UPGRADES.md and START_HERE.md. The optional user totals in GAME_DESIGN.md if it brings users |
 | Change base cash, star multipliers or price points | Every price in UPGRADES.md. The money examples in GAME_DESIGN.md |
+| Add an incident or request email sent by a customer | A row in the customer names table in GAME_DESIGN.md, with a name not used before |
 | Add a person who sends things | The cast table in GAME_DESIGN.md. A sender badge in UI_THEME.md |
-| Change a rule in GAME_DESIGN.md, or rename a heading | GAME_LOGIC.md, if it points to that rule or heading |
+| Change a rule in GAME_DESIGN.md, or rename a heading | GAME_LOGIC.md, if it points to that rule or heading. Its worked examples, if the numbers change |
+| Change what the game saves | A migration for old saves, as GAME_LOGIC.md describes. Never wipe a player's progress |
 | Answer an open question in GAME_LOGIC.md | Write the answer in its home, usually GAME_DESIGN.md. Remove the question and its mentions from GAME_LOGIC.md |
 | Change a colour | Check it still passes the contrast rule in UI_THEME.md |
 | Add a new doc | A row in the map above. A row in the files table in START_HERE.md. Its links in "How the files connect" |
