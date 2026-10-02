@@ -111,8 +111,11 @@ Emails about optional items are suggestions. Nothing bad happens if the player i
 - An incident always keeps its best option. Upgrades and hints only ever remove wrong options.
 - If upgrades and hints leave only the best option, Maya shows its Result sentence and the player taps to apply it. Stars are not reduced by upgrades.
 - "Test first" does not count as a choice. It cannot be used on an option that has been removed. It works on repeat incidents too.
+- In a Build, "Test first" gives one "Deploy and test" that costs no star if it fails.
+- In a Build, the Engineering handbook makes Hint 2 free once, the same as anywhere else.
+- Monitoring and Standby server only change new incidents. Builds and repeats have no outage.
 - Options are only removed by upgrades in new incidents. Repeat incidents always show three cards.
-- The Faster PC bonus is applied after the star multiplier. It applies to new and repeat incidents.
+- The Faster PC bonus is applied after the star multiplier. It applies to every incident, and to Triage and Tune bonuses.
 
 ## Shop layout
 

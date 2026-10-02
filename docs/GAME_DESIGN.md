@@ -41,50 +41,63 @@ A new stage starts when the last incident of the stage before it is solved.
 | 5 | "Next stop: the whole planet. Things break differently at this size." |
 | Win | "One billion users. You built this. Open your System Map and take a look." |
 
-## Two kinds of incident
+## Three kinds of incident
 
 | Kind | How many | What it is | Where it is written |
 |---|---|---|---|
-| New | 15 | Teaches a pattern for the first time | CHALLENGES.md |
+| New | 15 | Teaches a pattern for the first time. The player picks from three options | CHALLENGES.md |
 | Repeat | 10 | An everyday problem comes back in a new disguise. The player must recall the pattern | REPEATS.md |
+| Build | 5 | The player draws the design in the Blueprint app by joining parts with arrows. Each stage has one | BLUEPRINTS.md |
+
+Some incidents also have an extra step that uses one of the other work apps.
+
+| Step | How many | What it is | Where it is written |
+|---|---|---|---|
+| Triage | 5 | Before the fix. The player finds the log line that shows the real cause, in Terminal | EXTRA_STEPS.md |
+| Tune | 3 | After the fix. The player sets a dial for three waves of traffic, in SysDash | EXTRA_STEPS.md |
 
 ## Play order
 
-There are 25 incidents. They are always played in this order. Only one incident is open at a time.
+There are 30 incidents. They are always played in this order. Only one incident is open at a time.
 
 | Order | Stage | Id | Title | Kind | Needs |
 |---|---|---|---|---|---|
 | 1 | 1 | 1.1 | The Open Door | New | |
 | 2 | 1 | 1.2 | The Leaked Passwords | New | |
 | 3 | 1 | 1.3 | The Double Charge | New | feat-payments |
-| 4 | 2 | 2.1 | The Melting Database | New | |
-| 5 | 2 | R1 | The Refund Button | Repeat | |
-| 6 | 2 | 2.2 | The Slow Lookup | New | |
-| 7 | 2 | R2 | The Triple Message | Repeat | |
-| 8 | 2 | 2.3 | The Heavy Photos | New | feat-photos |
-| 9 | 3 | 3.1 | The Lonely Server | New | |
-| 10 | 3 | R3 | The Profile Stampede | Repeat | |
-| 11 | 3 | 3.2 | The Vanishing Login | New | |
-| 12 | 3 | R4 | The Slow Inbox | Repeat | |
-| 13 | 3 | 3.3 | The Frozen Sign-up | New | feat-email |
-| 14 | 4 | R5 | The Contractor Keys | Repeat | |
-| 15 | 4 | 4.1 | The Read Flood | New | |
-| 16 | 4 | R6 | The Stuck Upload | Repeat | |
-| 17 | 4 | 4.2 | The Table That Got Too Big | New | |
-| 18 | 4 | R7 | The Trending Crush | Repeat | |
-| 19 | 4 | 4.3 | The Celebrity Post | New | feat-verified |
-| 20 | 5 | R8 | The Twice-Run Job | Repeat | |
-| 21 | 5 | 5.1 | The Slow Side of the World | New | feat-global |
-| 22 | 5 | R9 | The Support Search | Repeat | |
-| 23 | 5 | 5.2 | The Blackout | New | |
-| 24 | 5 | R10 | The Export That Never Finishes | Repeat | |
-| 25 | 5 | 5.3 | The Flood Attack | New | |
+| 4 | 1 | B1 | The First Blueprint | Build | |
+| 5 | 2 | 2.1 | The Melting Database | New | |
+| 6 | 2 | R1 | The Refund Button | Repeat | |
+| 7 | 2 | 2.2 | The Slow Lookup | New | |
+| 8 | 2 | R2 | The Triple Message | Repeat | |
+| 9 | 2 | 2.3 | The Heavy Photos | New | feat-photos |
+| 10 | 2 | B2 | The Fast Front Page | Build | |
+| 11 | 3 | 3.1 | The Lonely Server | New | |
+| 12 | 3 | R3 | The Profile Stampede | Repeat | |
+| 13 | 3 | 3.2 | The Vanishing Login | New | |
+| 14 | 3 | R4 | The Slow Inbox | Repeat | |
+| 15 | 3 | 3.3 | The Frozen Sign-up | New | feat-email |
+| 16 | 3 | B3 | The Secure Door | Build | |
+| 17 | 4 | R5 | The Contractor Keys | Repeat | |
+| 18 | 4 | 4.1 | The Read Flood | New | |
+| 19 | 4 | R6 | The Stuck Upload | Repeat | |
+| 20 | 4 | 4.2 | The Table That Got Too Big | New | |
+| 21 | 4 | R7 | The Trending Crush | Repeat | |
+| 22 | 4 | 4.3 | The Celebrity Post | New | feat-verified |
+| 23 | 4 | B4 | The Viral Like Button | Build | |
+| 24 | 5 | R8 | The Twice-Run Job | Repeat | |
+| 25 | 5 | 5.1 | The Slow Side of the World | New | feat-global |
+| 26 | 5 | R9 | The Support Search | Repeat | |
+| 27 | 5 | 5.2 | The Blackout | New | |
+| 28 | 5 | R10 | The Export That Never Finishes | Repeat | |
+| 29 | 5 | B5 | The Edge Delivery | Build | |
+| 30 | 5 | 5.3 | The Flood Attack | New | |
 
 ## The game loop
 
 1. Something arrives: a server alert or an email.
 2. The player opens the incident and watches what is breaking.
-3. The player picks a fix.
+3. The player picks a fix, or draws one in Blueprint.
 4. Right fix: users grow, cash is paid, a pattern is learned or strengthened.
 5. People email asking for features and upgrades. The player spends cash in the Shop.
 6. Repeat until 1 billion users.
@@ -133,6 +146,8 @@ Never assume the player knows a technical term. Every new incident follows these
 6. **Learn.** The Pattern Book gains a new entry. The System Map gains its new part. Users count up. Cash is paid. Stars are shown.
 7. **Next.** A "Next" button returns to the desktop. Any thank-you or request emails arrive, then the next incident.
 
+If the incident has a Triage step, it runs between steps 1 and 2. If it has a Tune step, it runs between steps 5 and 6. See "Extra steps" below.
+
 ### Option types in new incidents
 
 Every new incident has exactly three options.
@@ -158,6 +173,8 @@ Repetition is what makes the patterns stick. A repeat does not explain the probl
    - Wrong card: its "Why not" sentence appears. The card greys out and a copy goes to the Recycle Bin. The player loses 1 star. No cash is lost and there is no outage. Maya gives the nudge, which names the earlier incident. The player chooses again.
 6. **Strengthen.** The pattern's next pip fills in the Pattern Book. Its "Also seen as" line is added to the entry. Users count up. Cash is paid. Stars are shown.
 
+If the repeat has a Tune step, it runs between steps 5 and 6.
+
 ### Pips and mastery
 
 Each of the five everyday patterns has three pips in the Pattern Book.
@@ -175,13 +192,63 @@ If a repeat took more than one try, Maya sends a refresher email after the next 
 
 A refresher shows the pattern's icon, its name, its "Use this when" line and its "Also seen as" lines. There is no test and no reward.
 
+## Build incident flow: draw the design
+
+A Build asks the player to put patterns together, the way a real design is drawn on a whiteboard. Every part in a Build is something the player has already met.
+
+1. **Arrive.** The alert or email from the Build's "Arrives by" line appears. The player taps "Investigate".
+2. **Brief.** Maya says: "We need a new design for this. Open Blueprint." The Blueprint app opens. The Build's Goal is on a sticky note.
+3. **Build.** The tray on the left holds the Build's parts and decoys, shuffled. The player puts parts on the canvas and joins them with arrows to show which way traffic flows.
+4. **Deploy.** The player taps "Deploy and test". Dots of traffic travel along the arrows.
+5. **Result.**
+   - The design is right: traffic flows smoothly and the Result sentence appears. Go to step 6.
+   - A wrong move from the Build's list applies: its "Sees" animation plays and its "Says" sentence appears. The player loses 1 star. Maya gives the nudge.
+   - Anything else is wrong: traffic stops at the first missing or wrong arrow and flashes red, with the words "Something is missing or in the wrong place." The player loses 1 star. Maya gives the nudge.
+   - After a failed deploy the canvas stays as it was, so the player can fix it and deploy again. No cash is lost and there is no outage.
+6. **Strengthen.** Each pattern in the Build's "Practises" line gains a "Built in" line in the Pattern Book. The finished design is saved in Blueprint so the player can look at it again. Users count up. Cash is paid. Stars are shown.
+
+### When a design is right
+
+A design is right when its arrows are exactly the Build's Solution. Where parts sit on the canvas does not matter. Parts left in the tray do not matter.
+
+### Hints in a Build
+
+- Hint 1 puts the Build's "Hint 1 places" part on the canvas and locks it there. It is free.
+- Hint 2 removes every decoy from the tray and the canvas. It costs 1 star.
+- After two failed deploys, Blueprint draws the Solution. Maya shows the Result sentence and the player taps "Deploy and test".
+
+## Extra steps: Triage and Tune
+
+Extra steps add variety and teach two real skills: reading logs and tuning a live system. They never cost stars, cash or users. They can only add a bonus.
+
+There is no timer in either step. Nothing scrolls or moves until the player acts.
+
+### Triage, in Terminal
+
+1. After the player taps "Investigate", Terminal opens with the step's six log lines in a shuffled order.
+2. The player taps the line that shows the real cause.
+   - The cause: the "Why" sentence appears. The incident carries on.
+   - The symptom: "That is a symptom. Look for what causes it." The line greys out. Try again.
+   - A routine line: "That line is routine. Look for what changed." The line greys out. Try again.
+3. Finding the cause on the first tap pays the Triage bonus.
+
+### Tune, in SysDash
+
+1. After the fix is chosen, SysDash opens with the step's dial and Fact.
+2. For each of the three waves: the wave's text appears, the player sets the dial to a stop and taps "Run wave".
+   - On the Right stop: the "Just right" sentence.
+   - Below it: the "Too low" sentence. Above it: the "Too high" sentence. The Right stop is then shown.
+   - Each wave is played once. There are no retries.
+3. After the third wave the Lesson appears. The incident then carries on, and counts as solved when the step ends.
+4. Each wave set right pays the Tune bonus.
+
 ## Users
 
 Users are added up.
 
 - Solving an incident adds its "Users gained" number.
 - Buying a Shop item adds its "Users gained" number, if it has one.
-- All 25 incidents plus the 5 must-have features add up to exactly 1,000,000,000.
+- All incidents plus the must-have features add up to exactly 1,000,000,000.
 - The 4 nice-to-have features add 95,505,000 more, so the best possible finish is 1,095,505,000.
 - The game is won when incident 5.3 is solved. The count cannot reach 1 billion before then.
 
@@ -196,6 +263,7 @@ The bar to 1 billion has five equal segments with markers at 1,000, 100,000, 10 
 Each incident starts at 3 stars.
 
 - Each wrong choice: lose 1 star
+- Each failed deploy in a Build: lose 1 star
 - Using Hint 2: lose 1 star (unless it is free, see Hints)
 - Minimum: 1 star
 
@@ -205,6 +273,7 @@ Each incident starts at 3 stars.
 |---|---|
 | New | Base cash for the stage x star multiplier |
 | Repeat | Half the base cash for the stage x star multiplier |
+| Build | Base cash for the stage x star multiplier |
 
 | Stars | Multiplier |
 |---|---|
@@ -213,6 +282,13 @@ Each incident starts at 3 stars.
 | 1 | 0.5 |
 
 Examples: a Stage 2 new incident solved with 3 stars pays £2,000 x 1.5 = £3,000. A Stage 2 repeat solved with 3 stars pays £1,000 x 1.5 = £1,500.
+
+Extra steps pay a bonus on top.
+
+| Bonus | Cash paid |
+|---|---|
+| Triage bonus | 10% of the stage's base cash, for finding the cause on the first tap |
+| Tune bonus | 5% of the stage's base cash, for each wave set right |
 
 Round to whole pounds. Upgrade bonuses are applied last.
 
@@ -246,6 +322,7 @@ Count how many times this happens. Show the count and the amount still owed on t
 | Hint 1: the nudge | Tap the Hint button. Also shown automatically after the first wrong choice, and offered after 45 seconds without a choice | Free |
 | Hint 2: remove one wrong option | Tap the Hint button a second time. In a new incident it removes the bad option first | 1 star |
 | Guided answer | After two wrong choices only the right one remains. Maya shows its Result sentence and the player taps to apply it | Already at 1 star |
+| Build hints | In a Build, Hint 1 places one key part and Hint 2 removes the decoys. See "Hints in a Build" | Hint 1 free. Hint 2 costs 1 star |
 | Remind me | Repeat incidents only. Shows a card's "Use this when" line | Free |
 | Test first | Needs the Test environment upgrade. Once per incident, try one option and see its result with no penalty | Free |
 | How to Play | Desktop icon, always available | Free |
@@ -276,6 +353,9 @@ Each tip is shown once, with the same spotlight.
 | First server alert (1.2) | "Alerts pop up by themselves. Tap Investigate." |
 | First request email | "This email asks for something. Open the Shop." |
 | First repeat incident (R1) | "You have seen this before. Pick the pattern." |
+| First Triage step (1.2) | "Tap the line that shows the cause." |
+| First Build incident (B1) | "Drag parts in. Join them with arrows." |
+| First Tune step (3.1) | "Set the dial. Then run the wave." |
 
 ## How to Play window (exact text)
 
@@ -285,8 +365,10 @@ Each tip is shown once, with the same spotlight.
 4. Right fix: users grow and you earn cash.
 5. Wrong fix: try again. Tap Hint if you are stuck.
 6. Old problems come back. Pick the pattern you learned.
-7. People email asking for features. Buy them in the Shop.
-8. Reach 1 billion users.
+7. Some problems need a design. Draw it in Blueprint.
+8. Terminal shows the logs. SysDash shows live numbers.
+9. People email asking for features. Buy them in the Shop.
+10. Reach 1 billion users.
 
 ## Saving
 
@@ -301,8 +383,8 @@ Shown when incident 5.3 is solved.
 - Maya's win message
 - The full System Map
 - Final user count
-- Total stars out of 75
-- Number of incidents solved first try, out of 25
+- Total stars out of 90
+- Number of incidents solved first try, out of 30
 - Patterns mastered, out of 5
 - Cash in the bank
 - Number of investor top-ups, and any loan still owed
@@ -312,6 +394,8 @@ Shown when incident 5.3 is solved.
 
 - More new incidents per stage: slow repeated queries, search, video streaming, webhooks
 - Repeats for the other ten patterns
+- A login Build with a rate limiter that stops password guessing. It has to wait until rate limiting is taught earlier than the final incident
+- A timed mode for SysDash, as an option for players who want pressure
 - Random events between incidents
 - Difficulty settings
 - Endless mode past 1 billion

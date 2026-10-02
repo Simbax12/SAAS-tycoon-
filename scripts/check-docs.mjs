@@ -48,7 +48,9 @@ const R = T["REPEATS.md"];
 const U = T["UPGRADES.md"];
 const UI = T["UI_THEME.md"];
 const S = T["START_HERE.md"];
-for (const [name, text] of Object.entries({ "GAME_DESIGN.md": G, "CHALLENGES.md": C, "REPEATS.md": R, "UPGRADES.md": U, "UI_THEME.md": UI, "START_HERE.md": S })) {
+const B = T["BLUEPRINTS.md"];
+const E = T["EXTRA_STEPS.md"];
+for (const [name, text] of Object.entries({ "GAME_DESIGN.md": G, "CHALLENGES.md": C, "REPEATS.md": R, "UPGRADES.md": U, "UI_THEME.md": UI, "START_HERE.md": S, "BLUEPRINTS.md": B, "EXTRA_STEPS.md": E })) {
   if (!text) throw new Error(`docs/${name} is missing`);
 }
 
@@ -114,11 +116,39 @@ for (const { m, body } of sections(R, /^(?:# Stage (\d)|## (R\d+) (.*))$/gm)) {
     wrong,
   };
 }
-const incidents = { ...fresh, ...repeats };
+// ---------------------------------------------------------------- build incidents
+const builds = {};
+stage = 0;
+for (const { m, body } of sections(B, /^(?:# Stage (\d)|## (B\d+) (.*))$/gm)) {
+  if (m[1]) { stage = Number(m[1]); continue; }
+  const id = m[2];
+  const list = (label) => one(body, new RegExp(`\\*\\*${label}:\\*\\* (.*)`), `${id} ${label}`).split(", ").map((s) => s.trim());
+  for (const field of ["Goal", "Nudge", "Result"]) {
+    if (!body.includes(`**${field}:**`)) problem(`${id}: missing ${field}`);
+  }
+  builds[id] = {
+    id,
+    title: m[3].trim(),
+    kind: "Build",
+    stage,
+    starts: "automatic",
+    arrives: one(body, /\*\*Arrives by:\*\* (.*)/, `${id} Arrives by`),
+    gain: num(one(body, /\*\*Users gained:\*\* ([\d,]+)/, `${id} Users gained`)),
+    tray: list("Tray"),
+    decoys: list("Decoys"),
+    solution: all(body, /^  - (.+?) -> (.+)$/gm).map((x) => [x[1].trim(), x[2].trim()]),
+    wrong: all(body, /^  - (uses|missing|connects) "([^"]+)"(?: to "([^"]+)")?$/gm).map((x) => ({ type: x[1], a: x[2], b: x[3] })),
+    sees: all(body, /^    Sees: /gm).length,
+    says: all(body, /^    Says: "/gm).length,
+    hint: one(body, /\*\*Hint 1 places:\*\* (.*)/, `${id} Hint 1 places`).trim(),
+    practises: list("Practises"),
+  };
+}
+const incidents = { ...fresh, ...repeats, ...builds };
 const total = Object.keys(incidents).length;
 
 // ---------------------------------------------------------------- play order
-const rows = all(G, /^\| (\d+) \| (\d) \| (\S+) \| (.*?) \| (New|Repeat) \| ?(.*?) ?\|$/gm);
+const rows = all(G, /^\| (\d+) \| (\d) \| (\S+) \| (.*?) \| (New|Repeat|Build) \| ?(.*?) ?\|$/gm);
 const order = rows.map((r) => r[3]);
 const pos = Object.fromEntries(order.map((id, i) => [id, i]));
 if (rows.length !== total) problem(`Play order has ${rows.length} rows but there are ${total} incidents`);
@@ -126,7 +156,7 @@ for (const id of Object.keys(incidents)) if (!(id in pos)) problem(`${id}: not i
 rows.forEach(([, n, st, id, title, kind, needs], i) => {
   const d = incidents[id];
   if (Number(n) !== i + 1) problem(`Play order: row ${i + 1} is numbered ${n}`);
-  if (!d) return problem(`Play order: ${id} is not written in CHALLENGES.md or REPEATS.md`);
+  if (!d) return problem(`Play order: ${id} is not written in CHALLENGES.md, REPEATS.md or BLUEPRINTS.md`);
   if (d.title !== title) problem(`${id}: title differs between the play order and its own file`);
   if (d.kind !== kind) problem(`${id}: kind in the play order should be ${d.kind}`);
   if (d.stage !== Number(st)) problem(`${id}: stage in the play order is ${st} but its file says ${d.stage}`);
@@ -196,7 +226,7 @@ for (const id of order) {
     if (cash < items[d.starts].price) problem(`${d.starts}: a two-star player is £${fmt(items[d.starts].price - cash)} short when it is needed`);
     cash = Math.max(0, cash - items[d.starts].price);
   }
-  cash += Math.round(baseCash[d.stage] * (d.kind === "New" ? 1 : REPEAT_PAY) * starPay["2"]);
+  cash += Math.round(baseCash[d.stage] * (d.kind === "Repeat" ? REPEAT_PAY : 1) * starPay["2"]);
 }
 
 // ---------------------------------------------------------------- repeats
@@ -262,22 +292,128 @@ for (const [id, { from, when }] of Object.entries(requests)) {
   if (affected.length && Math.min(...affected) <= at) problem(`${id}: its request email arrives too late to affect the incident it changes`);
 }
 
+// ---------------------------------------------------------------- toolbox
+const cut = (text, from, to) => text.slice(text.indexOf(from), text.indexOf(to));
+const parts = {};
+for (const m of all(cut(B, "### The parts", "### Tools for patterns that have no part"), /^\| ([^|]+) \| ([^|]+) \|([^|]*)\|([^|]*)\|$/gm)) {
+  const name = m[1].trim();
+  if (name !== "Part") parts[name] = { tools: m[3].trim(), pattern: m[4].trim() };
+}
+const patternTools = Object.fromEntries(
+  all(cut(B, "### Tools for patterns that have no part", "## How to read a Build"), /^\| ([^|]+) \| ([^|]+) \|$/gm)
+    .map((m) => [m[1].trim(), m[2].trim()])
+    .filter(([p]) => p !== "Pattern"),
+);
+for (const [name, part] of Object.entries(parts)) {
+  if (part.pattern && !patternTaughtIn[part.pattern]) problem(`Toolbox: part "${name}" names the pattern "${part.pattern}", which is not a Pattern Book name`);
+}
+for (const p of Object.keys(patternTools)) if (!patternTaughtIn[p]) problem(`Toolbox: "${p}" is not a Pattern Book name`);
+for (const pattern of Object.keys(patternTaughtIn)) {
+  const viaPart = Object.values(parts).some((p) => p.pattern === pattern && p.tools);
+  if (!viaPart && !patternTools[pattern]) problem(`Toolbox: the pattern "${pattern}" has no familiar tools`);
+  if (viaPart && patternTools[pattern]) problem(`Toolbox: the pattern "${pattern}" has tools in both tables. Keep one`);
+}
+
+// ---------------------------------------------------------------- builds
+const basePart = (p) => p.replace(/ \([^)]*\)$/, "");
+for (const d of Object.values(builds)) {
+  const at = pos[d.id];
+  const everything = [...d.tray, ...d.decoys];
+  if (everything.length < 4 || everything.length > 7) problem(`${d.id}: the tray should hold 4 to 7 parts, counting decoys. It has ${everything.length}`);
+  if (d.decoys.length < 1) problem(`${d.id}: needs at least one decoy, so Hint 2 has something to remove`);
+  for (const p of everything) {
+    const part = parts[basePart(p)];
+    if (!part) problem(`${d.id}: "${p}" is not a part in the toolbox`);
+    else if (part.pattern && pos[patternTaughtIn[part.pattern]] > at) problem(`${d.id}: "${p}" needs the pattern "${part.pattern}", which has not been learned yet at that point`);
+  }
+  const used = new Set(d.solution.flat());
+  if (d.solution.length < 3) problem(`${d.id}: the Solution needs at least 3 arrows`);
+  for (const p of used) if (!d.tray.includes(p)) problem(`${d.id}: the Solution uses "${p}", which is not in the Tray`);
+  for (const p of d.tray) if (!used.has(p)) problem(`${d.id}: "${p}" is in the Tray but not in the Solution. Make it a decoy or use it`);
+  const arrows = new Set(d.solution.map(([a, b]) => `${a} -> ${b}`));
+  if (d.sees !== d.wrong.length || d.says !== d.wrong.length) problem(`${d.id}: every wrong move needs one Sees line and one Says line`);
+  for (const w of d.wrong) {
+    if (w.type === "uses" && !d.decoys.includes(w.a)) problem(`${d.id}: wrong move uses "${w.a}", which is not a decoy`);
+    if (w.type === "missing" && !d.tray.includes(w.a)) problem(`${d.id}: wrong move says "${w.a}" is missing, but it is not in the Tray`);
+    if (w.type === "connects") {
+      for (const p of [w.a, w.b]) if (!everything.includes(p)) problem(`${d.id}: wrong move connects "${p}", which is not in the tray`);
+      if (arrows.has(`${w.a} -> ${w.b}`)) problem(`${d.id}: wrong move "${w.a}" to "${w.b}" is part of the Solution`);
+    }
+  }
+  for (const decoy of d.decoys) {
+    if (!d.wrong.some((w) => w.type === "uses" && w.a === decoy)) problem(`${d.id}: the decoy "${decoy}" has no wrong move explaining why it fails`);
+  }
+  if (!d.tray.includes(d.hint)) problem(`${d.id}: "Hint 1 places" must be a part from the Tray`);
+  for (const p of d.practises) {
+    if (!patternTaughtIn[p]) problem(`${d.id}: practises "${p}", which is not a Pattern Book name`);
+    else if (pos[patternTaughtIn[p]] > at) problem(`${d.id}: practises "${p}", which has not been learned yet at that point`);
+  }
+}
+
+// ---------------------------------------------------------------- extra steps
+const sources = Object.fromEntries(all(cut(E, "## Log sources", "## How to read a Triage step"), /^\| ([a-z]+) \| ([^|]+) \|$/gm).map((m) => [m[1], m[2].trim()]));
+for (const [src, name] of Object.entries(sources)) if (!B.includes(name)) problem(`EXTRA_STEPS.md: log source "${src}" stands for "${name}", which is not in the toolbox`);
+const triaged = [];
+const tuned = [];
+for (const { m, body } of sections(E, /^## ([TU])(\d+) on (\S+) (.*)$/gm)) {
+  const sid = m[1] + m[2];
+  const inc = incidents[m[3]];
+  if (!inc) { problem(`${sid}: is attached to ${m[3]}, which does not exist`); continue; }
+  if (inc.title !== m[4].trim()) problem(`${sid}: heading title does not match the title of ${m[3]}`);
+  if (inc.kind === "Build") problem(`${sid}: extra steps attach to new and repeat incidents, not Builds`);
+  if (m[1] === "T") {
+    triaged.push(m[3]);
+    const lines = all(body, /^  - \*\*(routine|symptom|cause)\.\*\* (INFO|WARN|ERROR) ([a-z]+): "(.*)"$/gm);
+    if (lines.length !== 6) problem(`${sid}: needs exactly 6 log lines, found ${lines.length}`);
+    for (const kind of ["cause", "symptom"]) if (lines.filter((l) => l[1] === kind).length !== 1) problem(`${sid}: needs exactly one ${kind} line`);
+    for (const l of lines) {
+      if (!sources[l[3]]) problem(`${sid}: log source "${l[3]}" is not in the log sources table`);
+      if (words(l[4]) > 10) problem(`${sid}: a log line is over 10 words: "${l[4]}"`);
+    }
+    if (!body.includes("**Why:**")) problem(`${sid}: missing Why`);
+  } else {
+    tuned.push(m[3]);
+    const stops = one(body, /\*\*Stops:\*\* (.*)/, `${sid} Stops`).split(" / ").map((s) => s.trim());
+    const waves = all(body, /^  - "(.*)" Right: (.*)$/gm);
+    if (stops.length < 3) problem(`${sid}: the dial needs at least 3 stops`);
+    if (waves.length !== 3) problem(`${sid}: needs exactly 3 waves, found ${waves.length}`);
+    for (const w of waves) if (!stops.includes(w[2].trim())) problem(`${sid}: the Right stop "${w[2].trim()}" is not one of the Stops`);
+    for (const field of ["Dial", "Fact", "Too low", "Too high", "Just right", "Lesson"]) {
+      if (!body.includes(`**${field}:**`)) problem(`${sid}: missing ${field}`);
+    }
+  }
+}
+for (const [label, ids] of [["Triage", triaged], ["Tune", tuned]]) {
+  if (new Set(ids).size !== ids.length) problem(`EXTRA_STEPS.md: an incident has more than one ${label} step`);
+}
+for (const app of ["Blueprint", "Terminal", "SysDash"]) {
+  if (!UI.includes(`| ${app} |`)) problem(`UI_THEME.md: the desktop icons table has no ${app} icon`);
+}
+
 // ---------------------------------------------------------------- counts written in prose
 const nNew = Object.keys(fresh).length;
 const nRep = Object.keys(repeats).length;
 const nItems = Object.keys(items).length;
+const nBuild = Object.keys(builds).length;
 const expectText = (name, text, needle) => { if (!text.includes(needle)) problem(`${name}: should say "${needle}"`); };
 expectText("GAME_DESIGN.md", G, `| New | ${nNew} |`);
 expectText("GAME_DESIGN.md", G, `| Repeat | ${nRep} |`);
+expectText("GAME_DESIGN.md", G, `| Build | ${nBuild} |`);
+expectText("GAME_DESIGN.md", G, `| Triage | ${triaged.length} |`);
+expectText("GAME_DESIGN.md", G, `| Tune | ${tuned.length} |`);
 expectText("GAME_DESIGN.md", G, `There are ${total} incidents`);
 expectText("GAME_DESIGN.md", G, `Total stars out of ${total * 3}`);
 expectText("GAME_DESIGN.md", G, `solved first try, out of ${total}`);
 expectText("GAME_DESIGN.md", G, `Patterns mastered, out of ${everyday.length}`);
 expectText("CHALLENGES.md", C, `the ${nNew} new incidents`);
 expectText("REPEATS.md", R, `the ${nRep} repeat incidents`);
+expectText("BLUEPRINTS.md", B, `the ${nBuild} Build incidents`);
+expectText("EXTRA_STEPS.md", E, `the ${triaged.length} Triage steps and ${tuned.length} Tune steps`);
 expectText("UPGRADES.md", U, `There are ${nItems} items`);
 expectText("START_HERE.md", S, `The ${nNew} new incidents`);
 expectText("START_HERE.md", S, `The ${nRep} repeat incidents`);
+expectText("START_HERE.md", S, `The ${nBuild} Build incidents`);
+expectText("START_HERE.md", S, `The ${triaged.length} Triage steps and ${tuned.length} Tune steps`);
 expectText("START_HERE.md", S, `The ${nItems} Shop items`);
 
 // ---------------------------------------------------------------- colours
@@ -294,6 +430,7 @@ const whiteTextOn = [
 ];
 for (const [label, hex] of whiteTextOn) if (contrast("#FFFFFF", hex) < 4.5) problem(`UI_THEME.md: white text on ${label} (${hex}) is below 4.5 to 1`);
 if (contrast(colour("Main text"), cream) < 4.5) problem("UI_THEME.md: main text on the window body is below 4.5 to 1");
+if (contrast(colour("Terminal text"), colour("Terminal background")) < 4.5) problem("UI_THEME.md: Terminal text on its background is below 4.5 to 1");
 for (const label of ["OK", "Warning", "Critical"]) if (contrast(colour(label), cream) < 3) problem(`UI_THEME.md: the ${label} colour on the window body is below 3 to 1`);
 
 // ---------------------------------------------------------------- the hub
@@ -310,7 +447,7 @@ else {
 for (const f of docNames) if (f !== "START_HERE.md" && !S.includes(f)) problem(`START_HERE.md: ${f} is not in its files table`);
 
 // ---------------------------------------------------------------- report
-console.log(`Docs checked: ${docNames.length} files, ${total} incidents (${nNew} new, ${nRep} repeat), ${nItems} Shop items.`);
+console.log(`Docs checked: ${docNames.length} files, ${total} incidents (${nNew} new, ${nRep} repeat, ${nBuild} build), ${triaged.length} Triage and ${tuned.length} Tune steps, ${nItems} Shop items.`);
 console.log(`Users on the required path: ${fmt(users)}. Best possible finish: ${fmt(TARGET_USERS + optional)}.`);
 if (problems.length === 0) {
   console.log("0 problems. The docs agree with each other.");

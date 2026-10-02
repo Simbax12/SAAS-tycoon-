@@ -2,7 +2,7 @@
 
 Copy these into a typed data file exactly as written. Do not add, remove or reword incidents, options, answers or hints. If something looks wrong, ask.
 
-The 10 repeat incidents are in REPEATS.md. The order everything is played in is in the play order table in GAME_DESIGN.md.
+The 10 repeat incidents are in REPEATS.md. The 5 Build incidents are in BLUEPRINTS.md. Triage and Tune steps that attach to these incidents are in EXTRA_STEPS.md. The order everything is played in is in the play order table in GAME_DESIGN.md.
 
 ## How to read an incident
 
@@ -71,7 +71,7 @@ One server does everything. The app and the database live on the same machine.
 
 - **Starts:** feat-payments
 - **Arrives by:** Email from a customer. "You charged me twice for Blip Plus. I only tapped Pay once!"
-- **Users gained:** 450
+- **Users gained:** 250
 - **Sees:** One tap on Pay sends two arrows to the Payments box. Two charges appear.
 - **Maya:** "People tap Pay twice, or their phone retries, and we charge them twice."
 - **Options:**
@@ -141,7 +141,7 @@ The app and the database are now on separate machines. The database is the weak 
 
 - **Starts:** feat-photos
 - **Arrives by:** Email from Sam. "Photos are a hit, but people say they load slowly. Can you look?"
-- **Users gained:** 30,000
+- **Users gained:** 20,000
 - **Sees:** Large photo files crawl from the Server to faraway users. The Server's network bar is red.
 - **Maya:** "Photos load slowly, and our server spends all its effort sending image files."
 - **Options:**
@@ -211,7 +211,7 @@ One app server can no longer cope.
 
 - **Starts:** feat-email
 - **Arrives by:** Email from Zoe. "Sign-ups halved today. People say the sign-up page just hangs."
-- **Users gained:** 3,500,000
+- **Users gained:** 2,000,000
 - **Sees:** A sign-up arrow gets stuck at the Email box with a spinner. A line of waiting users builds up.
 - **Maya:** "Sign-up waits for the welcome email to send. When email is slow, sign-up freezes."
 - **Options:**
@@ -281,7 +281,7 @@ The data itself is now the problem.
 
 - **Starts:** feat-verified
 - **Arrives by:** Email from Sam. "Our biggest star just posted and Blip slowed to a crawl. Her manager is on the phone."
-- **Users gained:** 25,000,000
+- **Users gained:** 15,000,000
 - **Sees:** A celebrity posts. Millions of arrows fan out at once. The Queue box overflows.
 - **Maya:** "A star with 50 million followers posted. We tried to copy it into 50 million feeds at once."
 - **Options:**
@@ -352,7 +352,7 @@ Blip is everywhere. Distance, disasters and attackers are the new problems.
 
 - **Starts:** automatic. This is the final incident.
 - **Arrives by:** Server alert. "Traffic is 40 times normal. Most of it looks fake."
-- **Users gained:** 250,000,000
+- **Users gained:** 200,000,000
 - **Sees:** A swarm of red arrows from all over the map hits the front door. Real users are squeezed out.
 - **Maya:** "Millions of fake requests a second are hitting us. Real users cannot get through."
 - **Options:**

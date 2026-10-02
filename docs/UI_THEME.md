@@ -9,6 +9,7 @@ The look is inspired by desktops of that era. It must not copy one.
 - Do not use Microsoft or Windows names, logos, icons, sounds or the original wallpaper photo.
 - Draw everything with CSS and inline SVG.
 - The computer in the game is called "BlipOS".
+- Real tool names such as Redis or Kafka appear as plain text only, so the player learns the names used at work. Never use a product's logo or brand colours. Every icon is an original drawing.
 
 ## Desktop
 
@@ -30,6 +31,9 @@ One click or tap opens a window. Do not require a double click.
 | Envelope | Inbox | Every email, newest first, each with its sender badge |
 | Warning triangle | Incident | The current incident. Shows a red badge when one is waiting |
 | Network of boxes | System Map | The diagram of Blip's architecture. It grows as the game goes on |
+| Rolled-up plan | Blueprint | The drawing app for Build incidents, and every design the player has finished |
+| Dark screen with a prompt | Terminal | The log viewer for Triage steps |
+| Dial gauge | SysDash | The live dashboard for Tune steps |
 | Shopping trolley | Shop | The store, in three tabs: Features, Servers, Your setup |
 | Open book | Pattern Book | Every pattern learned, with its "Use this when" line and pips |
 | Bar chart | Stats | Progress bar to 1 billion, current stage, stars, investor top-ups |
@@ -115,11 +119,50 @@ Each pattern has an icon. The same icon is used in the Pattern Book, on repeat i
 | Failover | Heartbeat line |
 | Rate limiting | Turnstile gate |
 
-A Pattern Book entry shows: icon, name, the "Use this when" line, and any "Also seen as" lines.
+A Pattern Book entry shows: icon, name, the "Use this when" line, its familiar tools from the toolbox in BLUEPRINTS.md under the heading "Tools you will meet", and any "Also seen as" and "Built in" lines.
 
 The five everyday patterns also show three pips. A gold pip is a filled circle with a small star. A silver pip is a filled circle. An empty pip is an outline. Three gold pips show a "Mastered" badge.
 
 A repeat incident card shows the pattern's icon large, its name, and a small "Remind me" button.
+
+## Blueprint
+
+The drawing app. It opens from its icon or from a Build incident.
+
+- **Tray** on the left. Each part is a card with its icon, its name and, beneath, "like" and its first familiar tool.
+- **Canvas** on the right: a pale grid.
+- **Sticky note** at the top of the canvas with the Build's Goal.
+- **Placing a part:** drag it from the tray to the canvas, or tap the part and then tap the canvas.
+- **Joining parts:** drag from one part to another, or tap the first part and then the second. An arrow appears, pointing from the first to the second.
+- **Removing:** tap a part or an arrow, then tap "Remove".
+- Every action works with taps alone and with the keyboard alone. Dragging is never required.
+- **"Deploy and test"** button at the bottom right. It is greyed out until at least one arrow is drawn.
+- **Traffic:** dots travel along the arrows. A wrong arrow flashes red and shows a cross icon and the word "Stopped".
+- A part placed by Hint 1 shows a small pin icon and cannot be moved or removed.
+- **My designs:** when no Build is waiting, Blueprint lists the finished designs. Opening one shows it, read only.
+- On a phone the tray is a strip along the top that scrolls sideways, and the canvas fills the rest.
+
+## Terminal
+
+The log viewer. It opens from its icon or from a Triage step.
+
+- A dark window with cream text, in the same font as everything else.
+- Six rows, one per log line. Each row is a button at least 48px tall.
+- Each row shows a level badge, the source name and the message. The badge is an icon and a word: a circle for INFO, a triangle for WARN, a cross for ERROR.
+- Nothing scrolls and nothing blinks. The lines wait for the player.
+- A tapped line that is not the cause turns grey and stays on screen.
+- When no Triage step is waiting, Terminal shows the lines from past Triage steps with each cause marked.
+
+## SysDash
+
+The live dashboard. It opens from its icon or from a Tune step.
+
+- The step's Fact sits at the top.
+- One large gauge in the middle with three bands. Each band has an icon and its words: "Too low", "Just right", "Too high".
+- One dial below it: a slider that snaps to the step's stops, each stop labelled. Minus and plus buttons beside it move one stop, so dragging is never required.
+- A "Run wave" button, and a counter such as "Wave 1 of 3".
+- After "Run wave" the needle moves to a band and the matching sentence appears.
+- When no Tune step is waiting, SysDash shows users, cash and the current stage as simple gauges.
 
 ## The player's setup
 
@@ -147,6 +190,8 @@ Items bought from "Your setup" should be visible, so spending feels real.
 | Start button | #2E7D32 |
 | Window body | #F4F0E0 (cream) |
 | Main text | #1E1E1E |
+| Terminal background | #1E1E1E |
+| Terminal text | #F4F0E0 |
 | OK | #2E8B3D |
 | Warning | #A86F00 |
 | Critical | #C83232 |
