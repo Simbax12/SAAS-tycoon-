@@ -7,7 +7,7 @@ The whole game is a computer desktop in the style of the early 2000s. The player
 The look is inspired by desktops of that era. It must not copy one.
 
 - Do not use Microsoft or Windows names, logos, icons, sounds or the original wallpaper photo.
-- Draw everything with CSS and inline SVG.
+- Draw the desktop with CSS and inline SVG. The room around the computer is the only exception: it is video clips and pictures (see ROOM.md > The room: the world around the computer).
 - The computer in the game is called "BlipOS".
 - Real tool names such as Redis or Kafka appear as plain text only, so the player learns the names used at work. Never use a product's logo or brand colours. Every icon is an original drawing.
 
@@ -20,7 +20,7 @@ The look is inspired by desktops of that era. It must not copy one.
   - Middle: a tab for each open window.
   - Right: the tray. It shows users, cash and a clock.
 - **Balloons:** small speech balloons rise from the tray, for example "New email from Sam" or "New in the Shop".
-- **Start-up:** on first load, show a short BlipOS loading bar (2 seconds at most), then Maya's welcome email.
+- **Start-up:** after the player sits down at the computer (see ROOM.md > The first time the game is opened), show a short BlipOS loading bar (2 seconds at most), then Maya's welcome email.
 
 ## Desktop icons
 
@@ -170,6 +170,8 @@ The live dashboard. It opens from its icon or from a Tune step.
 - When no Tune step is waiting, SysDash shows users, cash and the current stage as simple gauges.
 
 ## The player's setup
+
+On the computer layout, these items also appear on the desk in the room (see ROOM.md > The desk).
 
 Items bought from "Your setup" should be visible, so spending feels real.
 

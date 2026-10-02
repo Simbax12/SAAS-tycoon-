@@ -12,7 +12,7 @@ The everyday problems come back again and again in new disguises, so what the pl
 
 The work is varied. Some problems are solved by drawing the design in a Blueprint app. Some start with reading logs in a Terminal, or end with tuning a dial in SysDash. Parts carry the names of real tools, such as Redis and Kafka.
 
-The whole game looks like an early 2000s computer desktop. The player opens parts of the game by clicking icons.
+The whole game looks like an early 2000s computer desktop. The player opens parts of the game by clicking icons. The computer sits in a low-poly 3D room, shown as short video clips: the player walks to the desk and sits down, and the room grows with Blip.
 
 ## Who it is for
 
@@ -27,6 +27,7 @@ A visual learner who is new to backend architecture. The game must be dyslexia-f
 | REPEATS.md | The 10 repeat incidents with pattern cards, answers and hints | Building repeat incidents, pips or refreshers |
 | BLUEPRINTS.md | The 5 Build incidents with trays, solutions and wrong moves, and the toolbox of parts and real tool names | Building the Blueprint app, Build incidents or anything that shows a tool name |
 | GAME_LOGIC.md | The engine: game state, player actions, the order things happen in, open questions | Writing the reducer or any game logic |
+| ROOM.md | The room around the computer: the intro, sitting down, the five rooms, the desk, and how to make the clips | Building the intro, the room frame or anything outside the screen |
 | EXTRA_STEPS.md | The 10 Triage steps and 5 Tune steps | Building Terminal, SysDash or either extra step |
 | UPGRADES.md | The 19 Shop items with prices, users gained, effects and request emails | Building the Shop, request emails or any upgrade effect |
 | UI_THEME.md | Desktop look, icons, windows, alerts, sender badges, the three work apps, readability rules | Building anything on screen |
@@ -44,12 +45,13 @@ After any change to these files, run `node scripts/check-docs.mjs`. It must prin
 - One reducer holds all game state.
 - Progress saves to localStorage.
 - No extra libraries unless you ask first.
+- The room clips play in a plain HTML video element. No 3D library is used.
 
 ## Folder layout
 
 ```
 CLAUDE.md        the hub: map, links, rules
-/docs            these nine files
+/docs            these ten files
 /scripts         check-docs.mjs (checks the docs agree with each other)
 /data            challenges.ts, repeats.ts, blueprints.ts, extraSteps.ts, upgrades.ts,
                  emails.ts, stages.ts, playOrder.ts
@@ -57,9 +59,11 @@ CLAUDE.md        the hub: map, links, rules
 /game            reducer, types, rules (users, stars, money, hints, pips)
 /components
   /desktop       wallpaper, icons, taskbar, window frame, server alert, balloon
+  /room          the intro, the room frame, sit down and stand up
   /windows       Inbox, Incident, SystemMap, Shop, PatternBook, Stats, HowToPlay, Settings, RecycleBin,
                  Blueprint, Terminal, SysDash
 /app             the single page
+/public/room     the room clips and stills, one set per stage
 PROGRESS.md
 ```
 
@@ -67,21 +71,21 @@ PROGRESS.md
 
 | Milestone | What gets built | Done when |
 |---|---|---|
-| 1. Desktop | Wallpaper, icons, taskbar, windows that open and close | Every icon opens its window on a phone and on a computer |
+| 1. Desktop | Wallpaper, icons, taskbar, windows that open and close. The room frame with a placeholder still, "Tap the screen to sit down" and "Stand up" | Every icon opens its window on a phone and on a computer, and the desktop sits inside the monitor on a computer |
 | 2. Engine and Stage 1 | Data files, reducer, server alerts, Inbox and emails, new incident flow, stars, users, saving | The four new incidents of Stage 1 can be played and survive a page refresh |
 | 3. Help | Tutorial, first-time tips, How to Play, hints, Pattern Book, Recycle Bin | A player who picks wrong twice is guided to the answer |
 | 4. Shop and money | Cash, Shop cards with price dots, request emails, all Stage 1 items and their effects, feature unlocks, investor top-up | Buying Payments unlocks incident 1.3, and the game cannot get stuck |
 | 5. Repeats and Stage 2 | Repeat incident flow, pattern cards, "Remind me", pips, refreshers, thank-you emails, the new and repeat incidents of Stage 2 | R1 and R2 can be played, and the Pattern Book shows their pips |
 | 6. Work apps | Blueprint and the Build flow, Terminal and Triage, SysDash and Tune, the toolbox and tool names in the Pattern Book, with B1, B2, T1 and T2 | B1 and B2 can be built with taps alone, and T1 pays its bonus |
 | 7. Stages 3 to 5 | Remaining incidents, Builds, extra steps and Shop items, growing System Map, win screen | The game can be played from 0 to 1 billion users |
-| 8. Polish | Animation, sound, balance, readability check | Every rule in UI_THEME.md passes at 375px wide |
+| 8. Polish | Animation, sound, balance, readability check, the real room clips and stills for all five stages | Every rule in UI_THEME.md passes at 375px wide |
 
 Until Milestone 6, Builds and extra steps are skipped. The play order moves straight past them.
 
 ## First message to send the AI
 
 ```
-Read CLAUDE.md and docs/START_HERE.md, then the eight files START_HERE.md lists.
+Read CLAUDE.md and docs/START_HERE.md, then the nine files START_HERE.md lists.
 
 Tell me in a few lines:
 1. How the game plays, in your own words

@@ -8,10 +8,12 @@ What is built, what is next, and the decisions made. Keep this short and current
 - `scripts/check-docs.mjs` checks that the docs agree. It prints "0 problems".
 - 35 incidents written: 20 new, 10 repeats, 5 Builds. Also 10 Triage steps, 5 Tune steps and 19 Shop items.
 - docs/GAME_LOGIC.md: the engine plan, from the first email to the win screen, with six worked examples. It has 11 open questions waiting for answers.
+- docs/ROOM.md: the low-poly room around the computer, shown as video clips. The clips are not made yet.
 - No game code yet.
 
 ## Next
 
+- Make the room clips and stills with Wan 2.2, following ROOM.md Part 3. Measure each still's screen box. Start with Stage 1.
 - Answer the open questions at the end of docs/GAME_LOGIC.md.
 - Milestone 1: Desktop. See the build order in docs/START_HERE.md.
 
@@ -33,6 +35,11 @@ What is built, what is next, and the decisions made. Keep this short and current
 | 2026-10-02 | Saves hold ids, never text or row numbers, and old saves are migrated, never wiped | New incidents, rule changes and typo fixes must not move or wipe a player |
 | 2026-10-02 | Every customer has a fixed first name, listed in GAME_DESIGN.md | The cast table said to use a different name each time, but no list existed |
 | 2026-10-02 | The two workbook PDFs were removed from docs/ and the author is credited here | The repo is public and the workbook is someone else's work. They are still in the git history |
+| 2026-10-02 | The game has a room around the computer: mostly 2D play, with short 3D clips for walking to the desk and sitting down | Gives the feel of sitting down to do a real job, like IT Specialist Simulator, without copying its design |
+| 2026-10-02 | The room is video clips made with Wan 2.2, not live 3D | No 3D library is needed, the clips look better for less code, and phones cope easily |
+| 2026-10-02 | The room frame shows on the computer layout only. On a phone the desktop fills the screen | Every pixel is needed at 375px wide |
+| 2026-10-02 | One room per stage, from a garage to a glass tower. "Your setup" items appear on the desk | The room shows Blip growing, and spending feels real |
+| 2026-10-02 | Milestone 1 uses a placeholder still. The real clips arrive in Milestone 8, or sooner if they are ready | The code does not have to wait for the video |
 | 2026-10-02 | PROGRESS.md was created before Milestone 1 | Asked for a change log now |
 
 ## Change log
@@ -48,4 +55,6 @@ What is built, what is next, and the decisions made. Keep this short and current
 
 - The 14 customer first names in GAME_DESIGN.md > Customer names.
 - "This would work", shown when Test first is used on the right answer (GAME_LOGIC.md, Q4).
+- "Tap the screen to sit down", "Stand up" and "Skip" (ROOM.md).
 | 2026-10-02 | Answered Q2, Q7 and Q11 in GAME_DESIGN.md and UPGRADES.md. GAME_LOGIC.md: saves use ids and migrations, a fixed shuffle, Test first in Builds, tips, reset keeps settings, a phase diagram and six worked examples. Added customer names and a check for them. Removed the workbook PDFs |
+| 2026-10-02 | Added docs/ROOM.md and a check that its rooms and desk items match the stages and Shop. Updated UI_THEME.md, GAME_LOGIC.md, START_HERE.md and the hub |

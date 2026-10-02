@@ -466,6 +466,20 @@ if (QS) {
   for (const [, q] of all(QS, /\((Q\d+)\)/g)) if (!asked.has(q)) problem(`GAME_LOGIC.md: mentions ${q}, which is not in the open questions table`);
 }
 
+// ---------------------------------------------------------------- the room
+const RM = T["ROOM.md"];
+if (RM) {
+  const stageNames = Object.fromEntries(all(G, /^\| (\d) \| ([^|]+) \| [^|]+ \| [^|]+ \| £[\d,]+ \|$/gm).map((m) => [m[1], m[2].trim()]));
+  const rooms = all(cut(RM, "# Part 2: The rooms", "## The desk"), /^\| (\d) \| /gm).map((m) => m[1]);
+  for (const st of Object.keys(stageNames)) if (!rooms.includes(st)) problem(`ROOM.md: Stage ${st} has no room`);
+  for (const st of rooms) if (!stageNames[st]) problem(`ROOM.md: has a room for Stage ${st}, which is not a stage`);
+  const boxes = all(RM.slice(RM.indexOf("## Screen boxes")), /^\| (\d) \| /gm).map((m) => m[1]);
+  for (const st of Object.keys(stageNames)) if (!boxes.includes(st)) problem(`ROOM.md: Stage ${st} has no screen box row`);
+  const desk = all(cut(RM, "## The desk", "# Part 3"), /^\| (gear-[a-z]+) \|/gm).map((m) => m[1]);
+  for (const id of Object.keys(items).filter((i) => i.startsWith("gear-"))) if (!desk.includes(id)) problem(`ROOM.md: the desk table has no row for ${id}`);
+  for (const id of desk) if (!items[id]) problem(`ROOM.md: the desk table lists ${id}, which is not a Shop item`);
+}
+
 // ---------------------------------------------------------------- the hub
 if (!HUB) problem("CLAUDE.md is missing from the repo root");
 else {

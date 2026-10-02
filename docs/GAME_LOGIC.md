@@ -286,13 +286,13 @@ Run these in order. Each email shows its own balloon, one after another (Q10).
 2. **Refresher emails** that are now due.
 3. **Request emails** whose "Arrives" names the incident just solved (see UPGRADES.md > Request emails). Skip any for items already owned (Q6).
 4. Set `currentId` to the next id in the play order.
-5. **If the stage has changed:** Maya's stage opening email. Then request emails that arrive at the start of this stage. Then any other email for the start of this stage. Then the "New in the Shop" balloon.
+5. **If the stage has changed:** the new stage's room clips play first (see ROOM.md > When a new stage starts). Then Maya's stage opening email. Then request emails that arrive at the start of this stage. Then any other email for the start of this stage. Then the "New in the Shop" balloon.
 6. **Start the next incident** (see "When the run starts").
 
 ## The start of the game
 
 1. Make a fresh state with a new `seed`.
-2. Show the BlipOS loading bar (see UI_THEME.md > Desktop).
+2. Play the room intro and wait for the player to sit down (see ROOM.md > The first time the game is opened). Then show the BlipOS loading bar (see UI_THEME.md > Desktop).
 3. Send Maya's Stage 1 opening email.
 4. Start the first incident. Its email arrives and the tutorial begins (see GAME_DESIGN.md > Tutorial).
 
