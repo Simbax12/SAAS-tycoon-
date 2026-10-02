@@ -16,7 +16,7 @@ This file is the hub. It holds no game content of its own. It says where every f
 | [docs/EXTRA_STEPS.md](docs/EXTRA_STEPS.md) | Every Triage step (log lines) and Tune step (dial, waves) | Building Terminal, SysDash or either extra step |
 | [docs/UPGRADES.md](docs/UPGRADES.md) | Every Shop item: the price rule, prices, users gained, effects, request emails | Building the Shop, request emails or any upgrade effect |
 | [docs/UI_THEME.md](docs/UI_THEME.md) | The look: desktop, windows, alerts, sender badges, the three work apps, pattern icons, colours, readability rules | Building anything on screen |
-| PROGRESS.md | What is built, what is next, decisions made. Created at Milestone 1 | Starting any session after Milestone 1 |
+| PROGRESS.md | What is built, what is next, decisions made, and a change log | Starting any session |
 | [scripts/check-docs.mjs](scripts/check-docs.mjs) | The check that proves the docs still agree with each other | Committing any change to the docs |
 
 Do not read every file every time. Read this file, then only the files the task needs.
@@ -130,7 +130,7 @@ It must print "0 problems" before you commit. If it reports a problem, fix the d
 4. If something is missing, unclear, or two files disagree, stop and ask. Do not guess.
 5. Game content lives in data files. Game logic must never hard-code a single incident, email or upgrade.
 6. Build one milestone at a time, in the order in START_HERE.md. Stop after each one so I can play it.
-7. Keep PROGRESS.md short and current: what is done, what is next, decisions made.
+7. Keep PROGRESS.md short and current: what is done, what is next, decisions made. Add a line to its change log for every change to the docs or the code.
 8. All words shown on screen come from the docs. If you need new on-screen text, keep it under 12 words and list it in PROGRESS.md for me to check.
 9. Write docs and on-screen text in plain words and short sentences, with plain punctuation. The readability rules in UI_THEME.md apply to everything the player reads.
 10. Changes to the docs are committed straight to main once the check prints "0 problems". I have agreed to this, so there is no need to ask each time.
