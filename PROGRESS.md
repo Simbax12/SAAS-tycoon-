@@ -8,12 +8,13 @@ What is built, what is next, and the decisions made. Keep this short and current
 - `scripts/check-docs.mjs` checks that the docs agree. It prints "0 problems".
 - 35 incidents written: 20 new, 10 repeats, 5 Builds. Also 10 Triage steps, 5 Tune steps and 19 Shop items.
 - docs/GAME_LOGIC.md: the engine plan, from the first email to the win screen, with six worked examples. It has 11 open questions waiting for answers.
-- docs/ROOM.md: the low-poly room around the computer, shown as video clips. The clips are not made yet.
+- docs/ROOM.md: the low-poly room around the computer, shown as video clips.
+- Stage 1 room clips and stills are in public/room/, cut from one Wan 2.2 take. Its screen box is measured.
 - No game code yet.
 
 ## Next
 
-- Make the room clips and stills with Wan 2.2, following ROOM.md Part 3. Measure each still's screen box. Start with Stage 1.
+- Make the room clips for Stages 2 to 5 with Wan 2.2, following ROOM.md Part 3. Send each take to be cut and measured.
 - Answer the open questions at the end of docs/GAME_LOGIC.md.
 - Milestone 1: Desktop. See the build order in docs/START_HERE.md.
 
@@ -40,6 +41,8 @@ What is built, what is next, and the decisions made. Keep this short and current
 | 2026-10-02 | The room frame shows on the computer layout only. On a phone the desktop fills the screen | Every pixel is needed at 375px wide |
 | 2026-10-02 | One room per stage, from a garage to a glass tower. "Your setup" items appear on the desk | The room shows Blip growing, and spending feels real |
 | 2026-10-02 | Milestone 1 uses a placeholder still. The real clips arrive in Milestone 8, or sooner if they are ready | The code does not have to wait for the video |
+| 2026-10-02 | Each stage has two stills: a desk still to tap, and a seat still that holds the desktop | In the first real clip the monitor in the desk view was only 15% of the picture wide, far too small for the desktop |
+| 2026-10-02 | Room clips can be made as one Wan 2.2 take and cut in two | The walk-in and sit-down clips then match perfectly |
 | 2026-10-02 | PROGRESS.md was created before Milestone 1 | Asked for a change log now |
 
 ## Change log
@@ -58,3 +61,4 @@ What is built, what is next, and the decisions made. Keep this short and current
 - "Tap the screen to sit down", "Stand up" and "Skip" (ROOM.md).
 | 2026-10-02 | Answered Q2, Q7 and Q11 in GAME_DESIGN.md and UPGRADES.md. GAME_LOGIC.md: saves use ids and migrations, a fixed shuffle, Test first in Builds, tips, reset keeps settings, a phase diagram and six worked examples. Added customer names and a check for them. Removed the workbook PDFs |
 | 2026-10-02 | Added docs/ROOM.md and a check that its rooms and desk items match the stages and Shop. Updated UI_THEME.md, GAME_LOGIC.md, START_HERE.md and the hub |
+| 2026-10-02 | Added the Stage 1 room clips and stills to public/room/. ROOM.md now has desk and seat stills, the one-take method, and the Stage 1 screen box |
