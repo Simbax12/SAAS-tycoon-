@@ -186,3 +186,14 @@ export function StandUpIcon({ size = 24 }: IconProps) {
     </svg>
   );
 }
+
+// A magnifying glass: a plus to zoom in, a minus to zoom out (docs/UI_THEME.md > Desktop).
+export function ZoomIcon({ size = 26, zoomedIn = false }: IconProps & { zoomedIn?: boolean }) {
+  return (
+    <svg width={size} height={size} viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+      <circle cx="10" cy="10" r="6.5" stroke="currentColor" strokeWidth="2.2" fill="none" />
+      <path d="M15 15 L21 21" stroke="currentColor" strokeWidth="2.6" strokeLinecap="round" />
+      <path d={zoomedIn ? "M7 10 H13" : "M7 10 H13 M10 7 V13"} stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" />
+    </svg>
+  );
+}

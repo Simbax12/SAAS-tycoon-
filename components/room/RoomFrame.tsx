@@ -1,6 +1,6 @@
 "use client";
 
-import { useCallback, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { roomByStage, roomFiles } from "@/data/rooms";
 import { stageByNumber, type StageNumber } from "@/data/stages";
 import Desktop from "@/components/desktop/Desktop";
@@ -9,6 +9,7 @@ import { StandUpIcon } from "@/components/desktop/icons";
 import type { Windows } from "@/components/desktop/useWindows";
 import type { Screen } from "@/components/useScreen";
 import { boxStyle, placePicture } from "./placePicture";
+import { useZoom } from "./useZoom";
 
 // Where the player is in the room (docs/ROOM.md > Part 1: What the player sees).
 // walk: the walk-in clip. desk: the desk still, waiting for a tap. sit: the sit-down clip.
@@ -41,18 +42,47 @@ export default function RoomFrame({ stage, screen, windows, firstVisit }: Props)
     setPhase("seated");
   }, []);
 
-  const pic = placePicture(screen.width, screen.height, room, isPhone);
-  const picStyle: React.CSSProperties = { position: "absolute", left: pic.left, top: pic.top, width: pic.width, height: pic.height };
+  // Zoom only applies to the desktop on the computer layout (docs/ROOM.md > During play).
+  const { zoomed: zoomChoice, toggle: toggleZoom } = useZoom();
+  // The view slides only when the player zooms, never while the browser window is resized.
+  const [sliding, setSliding] = useState(false);
+  const slideTimer = useRef<ReturnType<typeof setTimeout> | undefined>(undefined);
+  useEffect(() => () => clearTimeout(slideTimer.current), []);
+  const onZoom = useCallback(() => {
+    if (!reducedMotion) {
+      setSliding(true);
+      clearTimeout(slideTimer.current);
+      slideTimer.current = setTimeout(() => setSliding(false), 550);
+    }
+    toggleZoom();
+  }, [reducedMotion, toggleZoom]);
 
   const clip = phase === "walk" || phase === "sit";
   const onDesktop = phase === "loading" || phase === "seated";
   const fullScreenDesktop = isPhone && onDesktop;
+  const zoomed = zoomChoice && onDesktop && !isPhone;
+
+  const pic = placePicture(screen.width, screen.height, room, isPhone, zoomed);
+  const picStyle: React.CSSProperties = {
+    position: "absolute",
+    left: pic.left,
+    top: pic.top,
+    width: pic.width,
+    height: pic.height,
+    transition: sliding ? "left 500ms ease, top 500ms ease, width 500ms ease, height 500ms ease" : undefined,
+  };
 
   const desktop =
     phase === "loading" ? (
       <LoadingBar onDone={booted_} reducedMotion={reducedMotion} />
     ) : (
-      <Desktop isPhone={isPhone} windows={windows} onStandUp={() => setPhase("desk")} />
+      <Desktop
+        isPhone={isPhone}
+        windows={windows}
+        onStandUp={() => setPhase("desk")}
+        standUpInMenu={isPhone || zoomed}
+        zoom={isPhone ? undefined : { zoomed, onToggle: onZoom }}
+      />
     );
 
   return (
@@ -121,8 +151,8 @@ export default function RoomFrame({ stage, screen, windows, firstVisit }: Props)
         </button>
       )}
 
-      {/* Around the screen, on the computer layout only (docs/ROOM.md > During play). */}
-      {onDesktop && !isPhone && (
+      {/* Around the screen, on the computer layout only, and hidden when zoomed in (docs/ROOM.md > During play). */}
+      {onDesktop && !isPhone && !zoomed && (
         <>
           <div className={`absolute left-4 top-4 ${pill}`}>{stageByNumber(stage).name}</div>
           {phase === "seated" && (

@@ -10,7 +10,7 @@ What is built, what is next, and the decisions made. Keep this short and current
 - docs/GAME_LOGIC.md: the engine plan, from the first email to the win screen, with seven worked examples. All open questions are answered.
 - docs/ROOM.md: the low-poly room around the computer, shown as video clips.
 - Room clips and stills for all five stages are in public/room/, each cut from one Wan 2.2 take. Every screen box and desk box is measured.
-- Milestone 1: Desktop. A Next.js app with the wallpaper, 12 icons, the taskbar with Start menu, tabs and tray, and windows that open, close, drag and stack. The Stage 1 room plays the walk-in clip, waits for "Tap the screen to sit down", plays the sit-down clip, then the BlipOS loading bar. "Stand up" and "Skip" work. Reduced motion skips the clips. Checked at 1440, 1024 and 375 pixels wide.
+- Milestone 1: Desktop. A Next.js app with the wallpaper, 12 icons, the taskbar with Start menu, tabs and tray, and windows that open, close, drag and stack. The Stage 1 room plays the walk-in clip, waits for "Tap the screen to sit down", plays the sit-down clip, then the BlipOS loading bar. "Stand up" and "Skip" work. Reduced motion skips the clips. A zoom button in the tray makes the screen fill the window, with a thin strip of the monitor frame showing. Checked at 1440, 1024 and 375 pixels wide.
 
 ## Next
 
@@ -87,6 +87,8 @@ What is built, what is next, and the decisions made. Keep this short and current
 | 2026-10-03 | Added the Stage 5 room clips and stills. Recorded its screen box. All five rooms are done. ROOM.md: how to measure a curved screen. START_HERE.md: Milestone 1 uses the real Stage 1 room |
 | 2026-10-03 | Answered all open questions in GAME_LOGIC.md. Replaced hints with paid calls to Dana and Victor's lifeline in GAME_DESIGN.md, GAME_LOGIC.md, UPGRADES.md, UI_THEME.md, BLUEPRINTS.md, START_HERE.md and the hub. Added Clue 2 and Clue 3 lines to CHALLENGES.md and REPEATS.md. Added Dana and Victor to the cast with sender badges |
 | 2026-10-03 | Milestone 1 built: Next.js app, data/stages.ts, data/rooms.ts, data/desktopApps.ts, data/howToPlay.ts, components/desktop, components/windows and components/room. Added desk boxes to ROOM.md with a check for them. Hub: code map and commands |
+| 2026-10-03 | The zoom button sits in the taskbar tray, and zoomed in, "Stand up" moves to the Start menu | Every 48px button outside the screen would cover the desktop when it fills the window. The tray is reachable in both views |
+| 2026-10-03 | The zoom choice is kept in the browser, not in the game's save | It is a view preference for this device, like window positions, not progress |
 
 ## On-screen text to check
 
@@ -95,9 +97,11 @@ What is built, what is next, and the decisions made. Keep this short and current
 - The 14 customer first names in GAME_DESIGN.md > Customer names.
 - "This would work", shown when Test first is used on the right answer (UPGRADES.md > Rules when effects combine).
 - "Tap the screen to sit down", "Stand up" and "Skip" (ROOM.md).
+- "Zoom in" and "Zoom out": the tray zoom button's label, shown when the pointer rests on it and read by screen readers.
 - All 36 new clues: the Clue 2 and Clue 3 lines in CHALLENGES.md and REPEATS.md. They were drafted by Claude.
 - Dana's and Victor's cast lines in GAME_DESIGN.md: "An outside systems consultant. Charges by the call" and "A contract engineer. Expensive, blunt, always right".
 - Tutorial step 6: "Stuck? Call Dana. Today it is free."
 - How to Play line 5: "Wrong fix: try again. Stuck? Call Dana, but calls cost cash."
 - Buttons and labels: "Call Dana", "Free call", "No more calls", "Use Victor's lifeline", "Held".
 - Victor's line: "This one. You owe me."
+| 2026-10-03 | Added the zoom button: ROOM.md and UI_THEME.md first, then `components/room/useZoom.ts`, `placePicture.ts`, `RoomFrame.tsx`, the tray and the Start menu |

@@ -6,14 +6,15 @@ import { AppIcon, StandUpIcon } from "./icons";
 
 type Props = {
   isPhone: boolean;
+  showStandUp: boolean;
   onOpen: (id: AppId) => void;
   onStandUp: () => void;
   onClose: () => void;
 };
 
 // The Start menu lists the same items as the desktop icons (docs/UI_THEME.md > Desktop).
-// On a phone it also holds "Stand up" (docs/ROOM.md > During play).
-export default function StartMenu({ isPhone, onOpen, onStandUp, onClose }: Props) {
+// On a phone, and when zoomed in, it also holds "Stand up" (docs/ROOM.md > During play).
+export default function StartMenu({ isPhone, showStandUp, onOpen, onStandUp, onClose }: Props) {
   const first = useRef<HTMLButtonElement>(null);
 
   useEffect(() => {
@@ -48,7 +49,7 @@ export default function StartMenu({ isPhone, onOpen, onStandUp, onClose }: Props
             {app.name}
           </button>
         ))}
-        {isPhone && (
+        {showStandUp && (
           <>
             <hr className="my-1 border-[#B9B29A]" />
             <button type="button" role="menuitem" className={item} onClick={onStandUp}>

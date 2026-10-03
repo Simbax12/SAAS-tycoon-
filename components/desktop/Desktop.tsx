@@ -14,11 +14,15 @@ type Props = {
   isPhone: boolean;
   windows: Windows;
   onStandUp: () => void;
+  // "Stand up" sits in the Start menu on a phone and when zoomed in (docs/ROOM.md > During play).
+  standUpInMenu: boolean;
+  // The tray's zoom button, on the computer layout only.
+  zoom?: { zoomed: boolean; onToggle: () => void };
 };
 
 // The BlipOS desktop: wallpaper, icons, windows and the taskbar (docs/UI_THEME.md > Desktop).
 // It fills whatever box it is given: the monitor's screen box, or the whole phone screen.
-export default function Desktop({ isPhone, windows, onStandUp }: Props) {
+export default function Desktop({ isPhone, windows, onStandUp, standUpInMenu, zoom }: Props) {
   const areaRef = useRef<HTMLDivElement>(null);
   const [area, setArea] = useState<Area>({ width: 0, height: 0 });
   const [startOpen, setStartOpen] = useState(false);
@@ -69,6 +73,7 @@ export default function Desktop({ isPhone, windows, onStandUp }: Props) {
         {startOpen && (
           <StartMenu
             isPhone={isPhone}
+            showStandUp={standUpInMenu}
             onOpen={openApp}
             onClose={closeStart}
             onStandUp={() => {
@@ -85,6 +90,7 @@ export default function Desktop({ isPhone, windows, onStandUp }: Props) {
         startOpen={startOpen}
         users={0}
         cash={0}
+        zoom={zoom}
         onStart={() => setStartOpen((v) => !v)}
         onTab={(w) => windows.focus(w.id)}
       />

@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { appById } from "@/data/desktopApps";
-import { AppIcon, BlipLogo, CashIcon, UsersIcon } from "./icons";
+import { AppIcon, BlipLogo, CashIcon, UsersIcon, ZoomIcon } from "./icons";
 import { fullNumber, shortNumber } from "./format";
 import type { OpenWindow } from "./useWindows";
 
@@ -13,6 +13,7 @@ type Props = {
   startOpen: boolean;
   users: number;
   cash: number;
+  zoom?: { zoomed: boolean; onToggle: () => void };
   onStart: () => void;
   onTab: (w: OpenWindow) => void;
 };
@@ -28,7 +29,7 @@ function useClock() {
 
 // The blue bar along the bottom: Start, a tab per open window, and the tray
 // with users, cash and a clock (docs/UI_THEME.md > Desktop).
-export default function Taskbar({ isPhone, windows, frontId, startOpen, users, cash, onStart, onTab }: Props) {
+export default function Taskbar({ isPhone, windows, frontId, startOpen, users, cash, zoom, onStart, onTab }: Props) {
   const clock = useClock();
   const num = isPhone ? shortNumber : fullNumber;
 
@@ -78,6 +79,20 @@ export default function Taskbar({ isPhone, windows, frontId, startOpen, users, c
         </span>
         {!isPhone && <span aria-label={`Time: ${clock}`}>{clock}</span>}
       </div>
+
+      {/* Zoom in or out on the monitor (docs/ROOM.md > During play). */}
+      {zoom && (
+        <button
+          type="button"
+          onClick={zoom.onToggle}
+          aria-pressed={zoom.zoomed}
+          aria-label={zoom.zoomed ? "Zoom out" : "Zoom in"}
+          title={zoom.zoomed ? "Zoom out" : "Zoom in"}
+          className="flex h-12 w-12 shrink-0 items-center justify-center rounded-md bg-[#1E4BB0] hover:bg-[#2A5FD0]"
+        >
+          <ZoomIcon zoomedIn={zoom.zoomed} />
+        </button>
+      )}
     </footer>
   );
 }
