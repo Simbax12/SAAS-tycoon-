@@ -68,8 +68,8 @@ The Pattern Book shows familiar tools for every pattern. Patterns with a part ab
   - `uses "X"` means the decoy X is connected to anything.
   - `connects "A" to "B"` means an arrow from A to B has been drawn.
   - `missing "X"` means X has no arrows at all.
-- **Hint 1 places:** the part that Hint 1 puts on the canvas and locks.
-- **Nudge:** Maya's hint after a failed deploy.
+- **Call 1 places:** the part that the first call to Dana puts on the canvas and locks (see GAME_DESIGN.md > Calls in a Build).
+- **Nudge:** what Dana says on the first call.
 - **Result:** shown when the design is right.
 - **Practises:** the patterns this Build puts together. The names match their Pattern Book entries exactly.
 
@@ -97,7 +97,7 @@ All Builds start automatically. Builds add no new boxes to the System Map.
   - uses "Plain-text password file"
     Sees: The file opens and every password can be read.
     Says: "Data leak. Readable passwords are never safe, wherever they are kept."
-- **Hint 1 places:** Web server
+- **Call 1 places:** Web server
 - **Nudge:** "Who should be the only one allowed to talk to the database?"
 - **Result:** "Everything goes through the server. It checks each request before anything else is touched."
 - **Practises:** Role-based access control (RBAC), Password hashing
@@ -129,7 +129,7 @@ All Builds start automatically. Builds add no new boxes to the System Map.
   - uses "One big server"
     Sees: The big server copes, then slowly fills up and turns red.
     Says: "It copes for a few weeks at triple the cost. Then growth fills it again."
-- **Hint 1 places:** Cache
+- **Call 1 places:** Cache
 - **Nudge:** "Two things must be fast: answers that repeat, and files that travel far."
 - **Result:** "Repeat answers come from the cache. Photos come from the CDN. The server and database stay calm."
 - **Practises:** Caching, CDN
@@ -163,7 +163,7 @@ All Builds start automatically. Builds add no new boxes to the System Map.
   - missing "Session store"
     Sees: A user logs in on one server. The next server shows a question mark.
     Says: "Each server only remembers its own visitors. Logins need one shared place."
-- **Hint 1 places:** Load balancer
+- **Call 1 places:** Load balancer
 - **Nudge:** "What happens to a login when the server holding it dies?"
 - **Result:** "Any server can answer any user. Logins live in one shared place. Passwords are stored as one-way scrambles."
 - **Practises:** Load balancing, Stateless servers, Password hashing
@@ -192,7 +192,7 @@ All Builds start automatically. Builds add no new boxes to the System Map.
   - uses "Cache"
     Sees: A server restarts and a pile of likes vanishes.
     Says: "Likes lost. A cache can forget everything when it restarts. Likes must wait somewhere safe."
-- **Hint 1 places:** Message queue
+- **Call 1 places:** Message queue
 - **Nudge:** "Does the user need to wait for the like to be saved?"
 - **Result:** "Likes join a queue in an instant. Workers write them to the database at a steady pace."
 - **Practises:** Message queue, Load balancing
@@ -226,7 +226,7 @@ All Builds start automatically. Builds add no new boxes to the System Map.
   - uses "Web server (London)"
     Sees: The London web server strains under a pile of photo files.
     Says: "The web server should not be handing out photos. That is the CDN's job."
-- **Hint 1 places:** CDN (Tokyo)
+- **Call 1 places:** CDN (Tokyo)
 - **Nudge:** "Where should a photo be waiting when someone in Tokyo asks for it?"
 - **Result:** "Each CDN keeps copies close by. It only asks London when it does not have the photo yet."
 - **Practises:** CDN, Multi-region

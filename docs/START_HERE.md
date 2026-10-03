@@ -22,9 +22,9 @@ A visual learner who is new to backend architecture. The game must be dyslexia-f
 
 | File | What it holds | Read it when |
 |---|---|---|
-| GAME_DESIGN.md | The rules: story, cast, play order, alerts and emails, all three incident flows, extra steps, users, stars, money, hints, saving | Building any game logic |
-| CHALLENGES.md | The 20 new incidents with options, answers, hints and users gained | Building new incidents or their data file |
-| REPEATS.md | The 10 repeat incidents with pattern cards, answers and hints | Building repeat incidents, pips or refreshers |
+| GAME_DESIGN.md | The rules: story, cast, play order, alerts and emails, all three incident flows, extra steps, users, stars, money, consultant calls, saving | Building any game logic |
+| CHALLENGES.md | The 20 new incidents with options, answers, clues and users gained | Building new incidents or their data file |
+| REPEATS.md | The 10 repeat incidents with pattern cards, answers and clues | Building repeat incidents, pips or refreshers |
 | BLUEPRINTS.md | The 5 Build incidents with trays, solutions and wrong moves, and the toolbox of parts and real tool names | Building the Blueprint app, Build incidents or anything that shows a tool name |
 | GAME_LOGIC.md | The engine: game state, player actions, the order things happen in, open questions | Writing the reducer or any game logic |
 | ROOM.md | The room around the computer: the intro, sitting down, the five rooms, the desk, and how to make the clips | Building the intro, the room frame or anything outside the screen |
@@ -56,7 +56,7 @@ CLAUDE.md        the hub: map, links, rules
 /data            challenges.ts, repeats.ts, blueprints.ts, extraSteps.ts, upgrades.ts,
                  emails.ts, stages.ts, playOrder.ts
                  (typed copies of the docs)
-/game            reducer, types, rules (users, stars, money, hints, pips)
+/game            reducer, types, rules (users, stars, money, calls, pips)
 /components
   /desktop       wallpaper, icons, taskbar, window frame, server alert, balloon
   /room          the intro, the room frame, sit down and stand up
@@ -73,8 +73,8 @@ PROGRESS.md
 |---|---|---|
 | 1. Desktop | Wallpaper, icons, taskbar, windows that open and close. The room frame with the Stage 1 intro clips and stills, "Tap the screen to sit down" and "Stand up" | Every icon opens its window on a phone and on a computer, and the desktop sits inside the monitor on a computer |
 | 2. Engine and Stage 1 | Data files, reducer, server alerts, Inbox and emails, new incident flow, stars, users, saving | The four new incidents of Stage 1 can be played and survive a page refresh |
-| 3. Help | Tutorial, first-time tips, How to Play, hints, Pattern Book, Recycle Bin | A player who picks wrong twice is guided to the answer |
-| 4. Shop and money | Cash, Shop cards with price dots, request emails, all Stage 1 items and their effects, feature unlocks, investor top-up | Buying Payments unlocks incident 1.3, and the game cannot get stuck |
+| 3. Help | Tutorial, first-time tips, How to Play, calls to Dana, Pattern Book, Recycle Bin | A player who picks wrong twice is guided to the answer |
+| 4. Shop and money | Cash, Shop cards with price dots, request emails, all Stage 1 items and their effects, Victor's lifeline, feature unlocks, investor top-up | Buying Payments unlocks incident 1.3, and the game cannot get stuck |
 | 5. Repeats and Stage 2 | Repeat incident flow, pattern cards, "Remind me", pips, refreshers, thank-you emails, the new and repeat incidents of Stage 2 | R1 and R2 can be played, and the Pattern Book shows their pips |
 | 6. Work apps | Blueprint and the Build flow, Terminal and Triage, SysDash and Tune, the toolbox and tool names in the Pattern Book, with B1, B2, T1 and T2 | B1 and B2 can be built with taps alone, and T1 pays its bonus |
 | 7. Stages 3 to 5 | Remaining incidents, Builds, extra steps and Shop items, growing System Map, win screen | The game can be played from 0 to 1 billion users |

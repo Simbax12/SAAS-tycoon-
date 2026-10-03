@@ -10,13 +10,15 @@ Work arrives the way it does in a real job. The servers raise alerts. The boss, 
 
 | Who | Role | What they send |
 |---|---|---|
-| Maya | Senior engineer and the player's guide. Friendly, brief, never talks down | Stage openers, explanations, hints, refreshers |
+| Maya | Senior engineer and the player's guide. Friendly, brief, never talks down | Stage openers, explanations, refreshers |
 | Sam | The boss (CEO) | Asks for big features. Passes on problems he has heard about |
 | Lena | Head of Finance | Problems with money and staff. Asks for safer servers |
 | Omar | Head of Support | Problems his team sees. Asks for better tools |
 | Zoe | Head of Growth | Sign-up problems. Asks for features that help Blip grow |
 | Customers | People who use Blip | Complaints and wishes. Each one has their own first name, from the list below |
 | The servers | BlipOS itself | Alerts, when a machine notices trouble before a person does |
+| Dana | An outside systems consultant. Charges by the call | Clues, when the player calls her during an incident |
+| Victor | A contract engineer. Expensive, blunt, always right | The answer, when the player uses his lifeline |
 
 ### Customer names
 
@@ -149,6 +151,16 @@ An email lands in the Inbox. A balloon rises from the taskbar: "New email from S
 
 Each incident says how it arrives, with the exact text, in its "Arrives by" line. Request emails and when they arrive are listed in UPGRADES.md.
 
+### The order emails arrive in
+
+After the player taps "Next", emails arrive one after another, each with its own balloon, in this order:
+
+1. The thank-you email, if the incident came from a person.
+2. Refreshers that are due.
+3. Request emails that arrive after this incident.
+4. If a new stage starts: Maya's stage opening email, then request emails for the start of the stage, then any other start-of-stage email.
+5. The next incident.
+
 ### Other emails (exact text)
 
 | When | From | Text |
@@ -168,7 +180,7 @@ Never assume the player knows a technical term. Every new incident follows these
 4. **Choose.** Three option cards appear in a shuffled order. Each card shows the plain description in large text and the industry label in small text beneath.
 5. **Result.** The diagram animates the outcome and the Result sentence appears.
    - Best choice: go to step 6.
-   - Partial or bad choice: the card greys out and a copy goes to the Recycle Bin. Penalties apply. Maya gives the nudge. The player chooses again.
+   - Partial or bad choice: the card greys out and a copy goes to the Recycle Bin. Penalties apply. The player chooses again.
 6. **Learn.** The Pattern Book gains a new entry. The System Map gains its new part. Users count up. Cash is paid. Stars are shown.
 7. **Next.** A "Next" button returns to the desktop. Any thank-you or request emails arrive, then the next incident.
 
@@ -196,7 +208,7 @@ Repetition is what makes the patterns stick. A repeat does not explain the probl
 4. **Remind me.** Each card has a small "Remind me" button. It shows that pattern's "Use this when" line from the Pattern Book. It is free.
 5. **Result.**
    - Right card: the Result sentence appears with a "Seen before" stamp. Go to step 6.
-   - Wrong card: its "Why not" sentence appears. The card greys out and a copy goes to the Recycle Bin. The player loses 1 star. No cash is lost and there is no outage. Maya gives the nudge, which names the earlier incident. The player chooses again.
+   - Wrong card: its "Why not" sentence appears. The card greys out and a copy goes to the Recycle Bin. The player loses 1 star. No cash is lost and there is no outage. The player chooses again.
 6. **Strengthen.** The pattern's next pip fills in the Pattern Book. Its "Also seen as" line is added to the entry. Users count up. Cash is paid. Stars are shown.
 
 If the repeat has a Tune step, it runs between steps 5 and 6.
@@ -228,8 +240,8 @@ A Build asks the player to put patterns together, the way a real design is drawn
 4. **Deploy.** The player taps "Deploy and test". Dots of traffic travel along the arrows.
 5. **Result.**
    - The design is right: traffic flows smoothly and the Result sentence appears. Go to step 6.
-   - A wrong move from the Build's list applies: its "Sees" animation plays and its "Says" sentence appears. The player loses 1 star. Maya gives the nudge.
-   - Anything else is wrong: traffic stops at the first missing or wrong arrow and flashes red, with the words "Something is missing or in the wrong place." The player loses 1 star. Maya gives the nudge.
+   - A wrong move from the Build's list applies: its "Sees" animation plays and its "Says" sentence appears. The player loses 1 star. A copy of the "Says" sentence goes to the Recycle Bin.
+   - Anything else is wrong: traffic stops at the first missing or wrong arrow and flashes red, with the words "Something is missing or in the wrong place." The player loses 1 star. Nothing goes to the Recycle Bin.
    - After a failed deploy the canvas stays as it was, so the player can fix it and deploy again. No cash is lost and there is no outage.
 6. **Strengthen.** Each pattern in the Build's "Practises" line gains a "Built in" line in the Pattern Book. The finished design is saved in Blueprint so the player can look at it again. Users count up. Cash is paid. Stars are shown.
 
@@ -237,10 +249,12 @@ A Build asks the player to put patterns together, the way a real design is drawn
 
 A design is right when its arrows are exactly the Build's Solution. Where parts sit on the canvas does not matter. Parts left in the tray do not matter.
 
-### Hints in a Build
+### Calls in a Build
 
-- Hint 1 puts the Build's "Hint 1 places" part on the canvas and locks it there. It is free.
-- Hint 2 removes every decoy from the tray and the canvas. It costs 1 star.
+- Call 1 puts the Build's "Call 1 places" part on the canvas and locks it there. Dana says the Build's Nudge.
+- Call 2 removes every decoy from the tray and the canvas.
+- Each call after that places and locks one more part from the Tray, in the order the Tray lists them, skipping parts already locked. The last call is the one that places the last part.
+- Calls in a Build cost the same as anywhere else (see "Consultant calls").
 - After two failed deploys, Blueprint draws the Solution. Maya shows the Result sentence and the player taps "Deploy and test".
 
 ## Extra steps: Triage and Tune
@@ -290,16 +304,18 @@ Each incident starts at 3 stars.
 
 - Each wrong choice: lose 1 star
 - Each failed deploy in a Build: lose 1 star
-- Using Hint 2: lose 1 star (unless it is free, see Hints)
+- Calls to Dana and Victor's lifeline cost cash, not stars
 - Minimum: 1 star
 
 ### Solved first try
 
-An incident is solved first try when the player made no wrong choice, had no failed deploy and did not use Hint 2. A free Hint 2 from the Engineering handbook still counts as using it. Hint 1, "Remind me" and "Test first" do not spoil it.
+An incident is solved first try when the player made no wrong choice, had no failed deploy, made no call to Dana and did not use Victor's lifeline. A free call still counts as a call. "Remind me" and "Test first" do not spoil it.
 
 This decides gold pips, refreshers and the first-try count on the win screen.
 
 ## Money
+
+The player starts the game with £0.
 
 | Kind of incident | Cash paid when solved |
 |---|---|
@@ -322,7 +338,7 @@ Extra steps pay a bonus on top.
 | Triage bonus | 10% of the stage's base cash, for finding the cause on the first tap |
 | Tune bonus | 5% of the stage's base cash, for each wave set right |
 
-Round to whole pounds. Upgrade bonuses are applied last.
+Bonuses are paid with the rest of the pay when the incident is solved, not the moment they are earned, so they help pay off a loan too. Upgrade bonuses are applied last. Then the total is rounded once, to whole pounds.
 
 Cash is spent in the Shop. All items, prices and effects are in UPGRADES.md.
 
@@ -335,9 +351,13 @@ There are four kinds of item. Full details are in UPGRADES.md.
 | Must-have features | Add something new to Blip, bring in users and unlock a new incident | Payments unlocks "The Double Charge" |
 | Nice-to-have features | Bring in extra users. Customers ask for them | Dark mode |
 | Servers | Prepare Blip in advance. Each one changes how certain incidents unfold | Monitoring halves outage damage |
-| Your setup | The player's own gear. Each one gives a helping hand | Engineering handbook gives a free hint |
+| Your setup | The player's own gear. Each one gives a helping hand | Engineering handbook gives a free call to Dana |
 
 Prices are not flat. An item costs more when it is a bigger change and when it brings in more users. Every Shop card shows both.
+
+The Shop also sells Victor's lifeline. It is not one of the four kinds, and it can be bought again once used (see UPGRADES.md > Victor's lifeline).
+
+The Shop can be opened at any time, even during an incident. An item bought during an incident only changes incidents that start after it. A must-have feature that the waiting incident needs is the one exception: buying it lets that incident arrive.
 
 ## The game must never get stuck
 
@@ -349,14 +369,38 @@ The top-up is a loan, so spending everything on optional items is not a free rid
 
 Count how many times this happens. Show the count and the amount still owed on the Stats window.
 
+## Consultant calls
+
+Help with an incident is not free. Dana, an outside consultant, gives clues by phone, and each call costs cash. This makes the player think before asking.
+
+- The "Call Dana" button sits in the Incident window, and in Blueprint during a Build. It shows the price of the next call.
+- Each call gives the next clue. In a new or repeat incident, call 1 gives the Nudge, call 2 gives Clue 2 and call 3 gives Clue 3, if the incident has one. Each incident has as many calls as it has clues. Harder incidents have more.
+- In a Build, calls place parts and remove decoys (see "Calls in a Build").
+- Calls never remove an option or a card.
+- Nothing is offered automatically. Dana only speaks when the player calls.
+- When every call is used, the button is replaced by "Use Victor's lifeline", if the player holds one.
+
+| Call in this incident | Price |
+|---|---|
+| Call 1 | 15% of the stage's base cash |
+| Each call after that | 10% of the stage's base cash more than the call before |
+
+Examples: in Stage 1 the calls cost £75, then £125, then £175. In Stage 4 they cost £7,500, then £12,500, then £17,500. Repeats use the same prices as new incidents.
+
+- Every call in incident 1.1 is free, so the tutorial can teach the button.
+- With the Engineering handbook, the first call in each incident is free. Later calls in that incident still cost their usual price.
+- If the player does not have enough cash, the button shows the price in grey with the words "Not enough cash". Calls never use the investor or a loan.
+- A call costs no star, but it does spoil "solved first try", even when it is free.
+
+The game still cannot get stuck without calls. After two wrong choices only the right answer is left, and after two failed deploys Blueprint draws the Solution.
+
 ## Hints and help
 
 | Help | How the player gets it | Cost |
 |---|---|---|
-| Hint 1: the nudge | Tap the Hint button. Also shown automatically after the first wrong choice, and offered after 45 seconds without a choice | Free |
-| Hint 2: remove one wrong option | Tap the Hint button a second time. In a new incident it removes the bad option first | 1 star |
+| Call Dana | Tap "Call Dana". Each call gives the next clue, or in a Build places a part. See "Consultant calls" | Cash, rising with each call. Free in 1.1 |
+| Victor's lifeline | Bought in the Shop beforehand. Once every call in an incident is used, it shows the answer | Its Shop price (see UPGRADES.md > Victor's lifeline) |
 | Guided answer | After two wrong choices only the right one remains. Maya shows its Result sentence and the player taps to apply it | Already at 1 star |
-| Build hints | In a Build, Hint 1 places one key part and Hint 2 removes the decoys. See "Hints in a Build" | Hint 1 free. Hint 2 costs 1 star |
 | Remind me | Repeat incidents only. Shows a card's "Use this when" line | Free |
 | Test first | Needs the Test environment upgrade. Once per incident, try one option and see its result with no penalty | Free |
 | How to Play | Desktop icon, always available | Free |
@@ -372,7 +416,7 @@ The tutorial runs inside incident 1.1. It uses a spotlight: the screen dims exce
 3. "Tap Investigate." (the button in her email)
 4. "Red means something is breaking." (the failing part)
 5. "Pick the fix you think is best." (option cards)
-6. "Stuck? Tap Hint." (Hint button)
+6. "Stuck? Call Dana. Today it is free." (Call Dana button)
 7. "Fixed. Users and cash go up." (taskbar counters)
 8. "Spend cash in the Shop." (Shop icon)
 
@@ -397,7 +441,7 @@ Each tip is shown once, with the same spotlight.
 2. Open the incident. Watch what is breaking.
 3. Pick the fix you think is best.
 4. Right fix: users grow and you earn cash.
-5. Wrong fix: try again. Tap Hint if you are stuck.
+5. Wrong fix: try again. Stuck? Call Dana, but calls cost cash.
 6. Old problems come back. Pick the pattern you learned.
 7. Some problems need a design. Draw it in Blueprint.
 8. Terminal shows the logs. SysDash shows live numbers.

@@ -4,7 +4,7 @@ This file says how the game engine works: what it remembers, what the player can
 
 It holds no rules or numbers of its own. Prices, payouts, penalties, texts and the play order live in the other docs. This file points to them like this: (see GAME_DESIGN.md > Money). The check script makes sure every pointer leads to a real heading.
 
-Where the rules do not yet say what the engine should do, this file says "Open question" and gives a number, like Q3. The questions and the proposed answers are at the end. Until you answer one, build the proposed answer and list it in PROGRESS.md.
+Where the rules do not yet say what the engine should do, this file says "Open question" and gives it a number. The questions and the proposed answers are at the end. Until you answer one, build the proposed answer and list it in PROGRESS.md.
 
 ## How to read this file
 
@@ -35,10 +35,11 @@ The game will keep growing, so a save must survive new incidents, new rules and 
 | `phase` | Where the current incident is. See "The life of one incident" | `waiting` |
 | `run` | Everything about the current incident attempt. See the next table | A fresh run |
 | `users` | Users earned for good. Outage dips are not taken off here | 0 |
-| `cash` | Pounds in the bank. Never below 0 | £0 (Q1) |
+| `cash` | Pounds in the bank. Never below 0 | £0 (see GAME_DESIGN.md > Money) |
 | `loanOwed` | Pounds still owed to the investor | £0 |
 | `topUps` | How many investor top-ups have happened | 0 |
 | `owned` | Ids of Shop items bought | None |
+| `lifeline` | The stage in which the held lifeline was bought, or none (see UPGRADES.md > Victor's lifeline) | None |
 | `emails` | Every email sent, in order, as a key and a read flag. See "Email keys" | None |
 | `recycleBin` | Every wrong choice tried, as an incident id and an option id, card or wrong move | None |
 | `results` | For each solved incident id: its final stars, and whether it was solved first try (see GAME_DESIGN.md > Solved first try) | None |
@@ -60,17 +61,17 @@ A fresh run is made each time a new incident becomes current.
 |---|---|
 | `stars` | Starts at 3. Never below 1 (see GAME_DESIGN.md > Stars) |
 | `tried` | Options or cards the player picked that were wrong |
-| `removed` | Options taken away by upgrades or by Hint 2 |
-| `hintLevel` | 0, 1 or 2 |
-| `hint2Used` | Whether Hint 2 was used, free or not. It spoils first try |
-| `handbookUsed` | Whether the free Hint 2 from the Engineering handbook was used |
+| `removed` | Options taken away by upgrades |
+| `calls` | How many calls to Dana were made. Any call, free or not, spoils first try |
+| `handbookUsed` | Whether the free call from the Engineering handbook was used |
+| `lifelineUsed` | Whether Victor's lifeline was used. It spoils first try |
 | `testUsed` | Whether "Test first" was used. In a Build, whether the next deploy is the test |
 | `dip` | Users lost to an outage in this incident. Given back when it is solved |
 | `failedDeploys` | Build only: how many real deploys failed. A test deploy does not count |
-| `canvas` | Build only: parts placed, arrows drawn, and the part locked by Hint 1 |
+| `canvas` | Build only: parts placed, arrows drawn, parts locked by calls, and whether the decoys were removed |
 | `triageTaps` | Triage only: lines tapped, in order |
 | `tuneWaves` | Tune only: the stop set for each wave, and whether it was right |
-| `paid` | Cash lost to penalties in this incident, for the Stats window |
+| `paid` | Cash lost to penalties and spent on calls in this incident, for the Stats window |
 
 ## Email keys
 
@@ -96,6 +97,8 @@ A customer email shows the name given to its incident or item (see GAME_DESIGN.m
 | Shop items on show | Items whose stage is at or below the current stage (see UPGRADES.md > Upgrades: the Shop) |
 | Needed next | The current incident's "Needs" feature, if it is not owned |
 | Can buy | On show, not owned, and either `cash` is at least the price or the item is Needed next |
+| Calls in this incident | New or repeat: the Nudge plus each Clue line. Build: 2, plus one for each Tray part other than the "Call 1 places" part |
+| Next call price | (see GAME_DESIGN.md > Consultant calls). £0 if the incident is 1.1, or if the Engineering handbook is owned and `handbookUsed` is false |
 | Options still showing | The incident's options, minus `removed`, minus `tried` |
 | Shuffled order | Options, cards, log lines and tray parts are shuffled using `seed` and the incident id. The same save always shows the same order |
 | Pattern Book | Worked out from `results`. A solved new incident adds its pattern. A solved repeat fills a pip, gold if solved first try, and adds its "Also seen as" line. A solved Build adds "Built in" lines |
@@ -154,7 +157,7 @@ When an incident becomes current:
 2. Remove options that owned upgrades take away. These are the "Removed by" lines (see CHALLENGES.md > How to read an incident). Only new incidents lose options this way. If an upgrade removed something, queue Maya's line from that item's effect text.
 3. If the incident needs a feature that is not owned, stay in `waiting`. The Shop shows the feature as Needed next. Otherwise move to `arrived`.
 
-Upgrades bought after this point do not change this incident (Q3).
+Upgrades bought after this point do not change this incident (see GAME_DESIGN.md > The Shop in brief).
 
 ---
 
@@ -165,44 +168,58 @@ Upgrades bought after this point do not change this incident (Q3).
 | Investigate | Phase is `arrived` | Moves to `triage`, or to `choosing` if there is no Triage step. Marks the incident's email as read |
 | Tap a log line | Phase is `triage` | Adds it to `triageTaps`. Cause: move to `choosing`. Symptom or routine: grey it out and show its message (see GAME_DESIGN.md > Triage, in Terminal) |
 | Pick an option or card | Phase is `choosing`, and it is still showing | See "Picking" below |
-| Test first | `srv-test` owned and not used yet in this run | New incident or repeat: shows one option's result and changes nothing else (Q4). Build: makes the next deploy a test. See "Deploying" |
-| Hint | Phase is `choosing` and `hintLevel` is below 2 | See "Hints" below |
+| Test first | `srv-test` owned and not used yet in this run | New incident or repeat: shows one option's result and changes nothing else (see UPGRADES.md > Rules when effects combine). Build: makes the next deploy a test. See "Deploying" |
+| Call Dana | Phase is `choosing`, `calls` is below the calls in this incident, and `cash` is at least the next call price | See "Calls" below |
+| Use Victor's lifeline | Phase is `choosing`, every call in this incident is made, and `lifeline` is the current stage | See "Calls" below |
 | Remind me | A repeat, phase is `choosing` | Nothing. The screen shows the card's "Use this when" line |
-| Place, move or remove a part | A Build, phase is `choosing` | Changes `canvas`. The part locked by Hint 1 cannot be moved or removed |
+| Place, move or remove a part | A Build, phase is `choosing` | Changes `canvas`. Parts locked by calls cannot be moved or removed |
 | Draw or delete an arrow | A Build, phase is `choosing` | Changes `canvas` |
 | Deploy and test | A Build, phase is `choosing` | See "Deploying" below |
 | Apply the guided answer | Phase is `guided` | Moves to `tune`, or to `solved` if there is no Tune step |
 | Set the dial and run a wave | Phase is `tune` | Records the wave. After the third wave, moves to `solved` |
 | Next | Phase is `solved` and the game is not won | Runs the after-solve steps |
 | Buy | The item can be bought | See "Money" below |
+| Buy Victor's lifeline | `lifeline` is none and `cash` is at least its price for the current stage | Takes the price from `cash`. Sets `lifeline` to the current stage |
 | Open an email | Any time | Marks it as read |
 | Tutorial step, skip or replay | Any time | Changes `tutorial` |
 | Change a setting | Any time | Changes `settings` |
 | Reset game or Play again | After the confirm step | A fresh state, keeping `settings` (see GAME_DESIGN.md > Saving) |
 
-The Shop, Inbox, Pattern Book and every other window can be opened in any phase (Q3).
+The Shop, Inbox, Pattern Book and every other window can be opened in any phase (see GAME_DESIGN.md > The Shop in brief).
 
 ## Picking
 
 **In a new incident**, by the option's type (see GAME_DESIGN.md > Option types in new incidents):
 
 - **best:** show its Result. Move to `tune`, or to `solved`.
-- **partial:** take 1 star. Take the partial cash penalty. Add the option to `tried` and to the Recycle Bin. Show the Result and the nudge.
-- **bad:** take 1 star. Take the bad cash penalty and set `dip`, both changed by Monitoring (see UPGRADES.md > Servers). If the Standby server is owned and the current stage is not in `standbyStages`, there is no dip: add the stage to `standbyStages` and show Maya's Standby line. Add the option to `tried` and to the Recycle Bin. Show the Result and the nudge.
+- **partial:** take 1 star. Take the partial cash penalty. Add the option to `tried` and to the Recycle Bin. Show the Result.
+- **bad:** take 1 star. Take the bad cash penalty and set `dip`, both changed by Monitoring (see UPGRADES.md > Servers). If the Standby server is owned and the current stage is not in `standbyStages`, there is no dip: add the stage to `standbyStages` and show Maya's Standby line. Add the option to `tried` and to the Recycle Bin. Show the Result.
 
 **In a repeat**:
 
 - **right card:** show its Result with the "Seen before" stamp. Move to `tune`, or to `solved`.
-- **wrong card:** take 1 star. No cash is lost and there is no dip. Add it to `tried` and to the Recycle Bin. Show its "Why not" line and the nudge.
+- **wrong card:** take 1 star. No cash is lost and there is no dip. Add it to `tried` and to the Recycle Bin. Show its "Why not" line.
 
-**After any wrong pick:** if only the right answer is still showing, move to `guided`. The first wrong pick also shows the nudge, which counts as Hint 1 (Q12).
+**After any wrong pick:** if only the right answer is still showing, move to `guided`. Nothing else is shown. Clues only come from calls.
 
-## Hints
+## Calls
 
-- **Hint 1:** shows the nudge. In a Build, it places the "Hint 1 places" part and locks it. Free. Sets `hintLevel` to 1.
-- **Hint 2:** in a new incident, removes the bad option if it is still showing, otherwise the partial one. In a repeat, removes one wrong card (Q5). In a Build, removes every decoy. Costs 1 star, unless the Engineering handbook is owned and `handbookUsed` is false, in which case it is free and `handbookUsed` becomes true. Sets `hintLevel` to 2 and `hint2Used` to true, free or not.
-- If Hint 2 leaves only the right answer, move to `guided`.
-- The 45-second offer (see GAME_DESIGN.md > Hints and help) only counts time while the Incident window is open and on top (Q13).
+**Call Dana** (see GAME_DESIGN.md > Consultant calls):
+
+1. Work out the next call price. Take it from `cash` and add it to `paid`. If the handbook made it free, set `handbookUsed` to true.
+2. Add 1 to `calls`.
+3. New incident or repeat: show the clue for this call number. Call 1 is the Nudge, call 2 is Clue 2, call 3 is Clue 3.
+4. Build (see GAME_DESIGN.md > Calls in a Build): call 1 places and locks the "Call 1 places" part and shows the Nudge. Call 2 removes every decoy from the tray and the canvas, with any arrows joined to them. Each later call places and locks the next Tray part that is not locked yet.
+5. Stars do not change.
+
+**Use Victor's lifeline** (see UPGRADES.md > Victor's lifeline):
+
+1. Set `lifeline` to none and `lifelineUsed` to true.
+2. New incident or repeat: move to `guided`.
+3. Build: draw the Solution and move to `guided`.
+4. Stars do not change.
+
+When a new stage starts, set `lifeline` to none if it was bought in an earlier stage.
 
 ## Deploying
 
@@ -211,13 +228,13 @@ The Shop, Inbox, Pattern Book and every other window can be opened in any phase 
 
 **A test deploy** is the deploy after the player taps "Test first" in Blueprint (see UPGRADES.md > Rules when effects combine).
 
-- If the design is right, show its Result with the words "This would work", the same as Test first anywhere else (Q4). The player then deploys for real.
+- If the design is right, show its Result with the words "This would work", the same as Test first anywhere else (see UPGRADES.md > Rules when effects combine). The player then deploys for real.
 - If it fails, show the failure. No star is lost. It does not count toward the two failed deploys, does not spoil first try and does not go in the Recycle Bin.
 
 **A real deploy:**
 
 - If the design is right, save the arrows in `blueprints` and move to `solved`.
-- If it fails, take 1 star. Add 1 to `failedDeploys`. Add the wrong move, if one applied, to the Recycle Bin (Q14). Show the nudge. The canvas stays as it is.
+- If it fails, take 1 star. Add 1 to `failedDeploys`. Add the wrong move, if one applied, to the Recycle Bin (see GAME_DESIGN.md > Build incident flow: draw the design). The canvas stays as it is.
 - After the second failed real deploy, draw the Solution and move to `guided`.
 
 ## First-time tips
@@ -241,15 +258,16 @@ When an incident is solved, work out its pay in this order (see GAME_DESIGN.md >
 3. Plus the Triage bonus, if the cause was the first line tapped.
 4. Plus the Tune bonus for each wave set right.
 5. Times 1.1 if the Faster PC is owned.
-6. Round once, to the nearest whole pound (Q8).
+6. Round once, to the nearest whole pound.
 
-Triage and Tune bonuses are paid here, with the rest of the pay, not the moment they are earned (Q9).
+Triage and Tune bonuses are paid here, with the rest of the pay, not the moment they are earned.
 
 All cash coming in pays the loan first: the smaller of the pay and `loanOwed` comes off `loanOwed`, and the rest goes into `cash`.
 
 ## Cash going out
 
 - **Penalties:** taken from `cash`, rounded to whole pounds. `cash` stops at £0. Penalties never add to the loan.
+- **Calls and lifelines:** taken from `cash`. They can only be bought when `cash` covers them, so they never add to the loan.
 - **Buying:** the price comes off `cash`. The item goes into `owned`. Its "Users gained" are added to `users` at once (see UPGRADES.md > Upgrades: the Shop). If it is the feature the current incident is waiting for, move that incident to `arrived`.
 
 ## The investor top-up
@@ -269,7 +287,7 @@ The loan never passes through `cash` on its own, so it cannot be spent on anythi
 
 ## When an incident is solved
 
-1. Store the run's `stars`, and whether it was solved first try, in `results`. First try means `tried` is empty, `failedDeploys` is 0 and `hint2Used` is false (see GAME_DESIGN.md > Solved first try).
+1. Store the run's `stars`, and whether it was solved first try, in `results`. First try means `tried` is empty, `failedDeploys` is 0, `calls` is 0 and `lifelineUsed` is false (see GAME_DESIGN.md > Solved first try).
 2. The Pattern Book and pips change by themselves, because they are worked out from `results` (see GAME_DESIGN.md > Pips and mastery).
 3. A repeat that was not solved first try is added to `refreshersDue` (see GAME_DESIGN.md > Refreshers).
 4. Pay cash and add users, as above.
@@ -280,13 +298,13 @@ The loan never passes through `cash` on its own, so it cannot be spent on anythi
 
 ## After the player taps Next
 
-Run these in order. Each email shows its own balloon, one after another (Q10).
+Run these in order. Each email shows its own balloon, one after another (see GAME_DESIGN.md > The order emails arrive in).
 
 1. **Thank-you email**, if the incident came from a customer, Sam, Lena, Omar or Zoe (see GAME_DESIGN.md > Other emails (exact text)).
 2. **Refresher emails** that are now due.
-3. **Request emails** whose "Arrives" names the incident just solved (see UPGRADES.md > Request emails). Skip any for items already owned (Q6).
+3. **Request emails** whose "Arrives" names the incident just solved (see UPGRADES.md > Request emails). Skip any for items already owned (see UPGRADES.md > Request emails).
 4. Set `currentId` to the next id in the play order.
-5. **If the stage has changed:** the new stage's room clips play first (see ROOM.md > When a new stage starts). Then Maya's stage opening email. Then request emails that arrive at the start of this stage. Then any other email for the start of this stage. Then the "New in the Shop" balloon.
+5. **If the stage has changed:** drop an unused lifeline from an earlier stage. The new stage's room clips play first (see ROOM.md > When a new stage starts). Then Maya's stage opening email. Then request emails that arrive at the start of this stage. Then any other email for the start of this stage. Then the "New in the Shop" balloon.
 6. **Start the next incident** (see "When the run starts").
 
 ## The start of the game
@@ -322,7 +340,7 @@ Each example is one incident traced with exact numbers. Each one should become a
 
 - Cash before £1,000. No upgrades, so the bigger-server option is still showing.
 - Triage: the player taps the cause first. Triage bonus earned.
-- The player picks "Buy a bigger database server" (partial). Stars 3 to 2. Penalty 20% of £2,000 = £400. Cash £600. The nudge shows.
+- The player picks "Buy a bigger database server" (partial). Stars 3 to 2. Penalty 20% of £2,000 = £400. Cash £600. No clue is shown.
 - The player picks the best option.
 - Pay: £2,000 x 1 = £2,000, plus Triage bonus 10% of £2,000 = £200. Total £2,200. Cash after £2,800.
 - Users +9,000. First try: no. Caching is learned with pip 1 gold, because pip 1 is always gold.
@@ -350,31 +368,28 @@ Each example is one incident traced with exact numbers. Each one should become a
 - The feature is bought. Cash £0. Users +1,500,000. 3.3 moves to `arrived`.
 - 3.3 is solved with 3 stars. Pay £10,000 x 1.5 = £15,000. £3,000 pays off the loan. Cash after £12,000.
 
-## Example 6: B2 The Fast Front Page, with Test first and Hint 2
+## Example 6: B2 The Fast Front Page, with Test first and two calls
 
-- Test environment owned. Engineering handbook not owned.
-- Hint 1 places the Cache and locks it. Free.
+- Cash before £1,000. Test environment owned. Engineering handbook not owned.
+- The player calls Dana. Price 15% of £2,000 = £300. Cash £700. The Cache is placed and locked, and Dana says the Nudge.
 - The player taps "Test first", draws Web server to Database, and deploys. It is a test deploy: the wrong move about the cache shows, no star is lost, and `failedDeploys` stays 0.
-- The player uses Hint 2. Stars 3 to 2. The One big server decoy is removed. First try is now spoiled.
-- The player deploys the right design. Pay £2,000 x 1 = £2,000. Users +10,000.
+- The player calls again. Price 25% of £2,000 = £500. Cash £200. The One big server decoy is removed. Stars stay at 3. First try is now spoiled.
+- The player deploys the right design. Pay £2,000 x 1.5 = £3,000. Cash after £3,200. Users +10,000.
 - Caching and CDN each gain a "Built in" line. Next sends `thanks:B2` from Zoe.
+
+## Example 7: 4.2 The Table That Got Too Big, with the handbook and Victor's lifeline
+
+- Engineering handbook owned. Earlier in Stage 4 the player bought Victor's lifeline for £100,000, so `lifeline` is 4. Cash £50,000 when 4.2 arrives.
+- 4.2 has three calls: the Nudge, Clue 2 and Clue 3. Call 1 is free with the handbook. Call 2 costs 25% of £50,000 = £12,500. Call 3 costs 35% = £17,500. Cash £20,000.
+- Still unsure, the player uses the lifeline. `lifeline` becomes none. The incident moves to `guided` and the player applies the answer.
+- Stars 3. Pay £50,000 x 1.5 = £75,000. Cash after £95,000. First try: no.
+- The calls and the lifeline cost £130,000 and the incident paid £75,000, so the help cost more than it earned.
 
 ---
 
 # Open questions
 
-Each has a proposed answer. When you decide, the answer moves to its home, usually GAME_DESIGN.md, and the question is removed from here.
+When a question comes up, add a row here with a proposed answer. When you decide, the answer moves to its home, usually GAME_DESIGN.md, and the question is removed from here.
 
 | # | Question | Proposed answer |
 |---|---|---|
-| Q1 | How much cash does the player start with? No doc says | £0. The money check in the script already assumes this |
-| Q3 | Can the player shop during an incident? If they buy an upgrade that removes an option, does it change the open incident? | Yes, they can shop at any time. Upgrades only change incidents that start after the purchase |
-| Q4 | What happens if "Test first" is used on the right answer? | It shows the Result with the words "This would work". The player still has to pick it. It is not a choice |
-| Q5 | Which wrong card does Hint 2 remove in a repeat? | The first wrong card in REPEATS.md that is still showing, so the game is the same each time |
-| Q6 | A request email asks for an item the player already bought. Send it? | No, skip it |
-| Q8 | When is pay rounded? | Once, at the end, after the Faster PC bonus |
-| Q9 | When are Triage and Tune bonuses paid? | With the rest of the pay when the incident is solved, so they also pay off the loan |
-| Q10 | In what order do emails arrive after Next? | Thank-you, then refreshers, then request emails, then the stage opener and start-of-stage emails, then the next incident |
-| Q12 | The first wrong pick shows the nudge by itself. Does that count as Hint 1, so the next tap on Hint gives Hint 2? | Yes |
-| Q13 | Does the 45-second hint offer count while the player is in another window? | No. It only counts while the Incident window is open and on top |
-| Q14 | Do failed deploys in a Build go in the Recycle Bin? | Yes, when a named wrong move caused it, with its "Says" sentence. General failures and test deploys do not |

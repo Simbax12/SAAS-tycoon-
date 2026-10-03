@@ -26,7 +26,8 @@ The rules for how a repeat plays are in GAME_DESIGN.md. The order everything is 
 - **Cards:** three pattern cards, shown in a shuffled order. One is right. The two wrong ones are patterns the player has already learned.
 - **Result:** shown when the right card is picked.
 - **Why not:** shown when that wrong card is picked.
-- **Nudge:** Hint 1. It names the earlier incident.
+- **Nudge:** the clue Dana gives on call 1. It names the earlier incident.
+- **Clue 2:** the clue Dana gives on call 2 (see GAME_DESIGN.md > Consultant calls).
 - **Also seen as:** a line added to the pattern's Pattern Book entry.
 
 All repeats start automatically. Repeats add no new boxes to the System Map. The part of the map that carries the pattern's icon pulses once.
@@ -50,6 +51,7 @@ All repeats start automatically. Repeats add no new boxes to the System Map. The
   - **wrong.** Idempotency keys
     Why not: "The refund only went out once. It should not have been allowed at all."
 - **Nudge:** "Remember The Open Door? Who is allowed to do what?"
+- **Clue 2:** "Her password was safe and the refund ran once. The question is what each role is allowed to do."
 - **Also seen as:** "Staff tools that everyone can use."
 
 ## R2 The Triple Message
@@ -67,6 +69,7 @@ All repeats start automatically. Repeats add no new boxes to the System Map. The
   - **wrong.** Database index
     Why not: "Finding messages faster does not stop one being saved three times."
 - **Nudge:** "Remember The Double Charge? How did the server spot a repeat?"
+- **Clue 2:** "One tap, three posts. The server must spot a send it has already handled."
 - **Also seen as:** "Messages or posts that appear more than once."
 
 ---
@@ -88,6 +91,7 @@ All repeats start automatically. Repeats add no new boxes to the System Map. The
   - **wrong.** Database index
     Why not: "The lookup is already quick. The trouble is how many times it is repeated."
 - **Nudge:** "Remember The Melting Database? The answer is the same every time."
+- **Clue 2:** "One profile, asked for 40,000 times, gives the same answer each time. Keep that answer ready."
 - **Also seen as:** "One popular page that everybody loads."
 
 ## R4 The Slow Inbox
@@ -105,6 +109,7 @@ All repeats start automatically. Repeats add no new boxes to the System Map. The
   - **wrong.** Stateless servers
     Why not: "Logins are fine. The slow part is the database reading every row."
 - **Nudge:** "Remember The Slow Lookup? Why read every page to find one thing?"
+- **Clue 2:** "Forty messages should open at once. The database is reading every row to find them."
 - **Also seen as:** "Any screen that is slow because the database reads every row."
 
 ---
@@ -126,6 +131,7 @@ All repeats start automatically. Repeats add no new boxes to the System Map. The
   - **wrong.** Password hashing
     Why not: "Their passwords are safe. The problem is what they are allowed to open."
 - **Nudge:** "Remember The Open Door and The Refund Button? Check the role, every time."
+- **Clue 2:** "These are real logins, used by real staff. The problem is what a contractor is allowed to open."
 - **Also seen as:** "New kinds of staff who can see too much."
 
 ## R6 The Stuck Upload
@@ -143,6 +149,7 @@ All repeats start automatically. Repeats add no new boxes to the System Map. The
   - **wrong.** Read replicas
     Why not: "This is not a reading problem. The server is doing slow work while the user waits."
 - **Nudge:** "Remember The Frozen Sign-up? Does the user need to wait for this?"
+- **Clue 2:** "The photo is already saved. The extra work after it does not need the user to wait."
 - **Also seen as:** "Uploads that freeze while the server does extra work."
 
 ## R7 The Trending Crush
@@ -160,6 +167,7 @@ All repeats start automatically. Repeats add no new boxes to the System Map. The
   - **wrong.** Read replicas
     Why not: "More copies share the pain, but each one still rebuilds the same list for every visitor."
 - **Nudge:** "Remember The Melting Database and The Profile Stampede? Same answer, asked again and again."
+- **Clue 2:** "The Trending page is the same list for everyone. Work it out once and hand out copies."
 - **Also seen as:** "A list that is the same for everyone."
 
 ---
@@ -181,6 +189,7 @@ All repeats start automatically. Repeats add no new boxes to the System Map. The
   - **wrong.** Load balancing
     Why not: "More workers would only run the repeated job sooner."
 - **Nudge:** "Remember The Double Charge and The Triple Message? Repeats will happen. Make them harmless."
+- **Clue 2:** "Crashed jobs will run again. Give each payout a ticket, so a rerun can see it was already paid."
 - **Also seen as:** "Background jobs that run twice after a crash."
 
 ## R9 The Support Search
@@ -198,6 +207,7 @@ All repeats start automatically. Repeats add no new boxes to the System Map. The
   - **wrong.** Sharding
     Why not: "The data is already split. Each piece still reads every row."
 - **Nudge:** "Remember The Slow Lookup and The Slow Inbox? A new kind of search needs its own lookup list."
+- **Clue 2:** "Searching by email address is new. Nobody made a lookup list for email addresses."
 - **Also seen as:** "A new way of searching that nobody added a lookup list for."
 
 ## R10 The Export That Never Finishes
@@ -215,4 +225,5 @@ All repeats start automatically. Repeats add no new boxes to the System Map. The
   - **wrong.** Failover
     Why not: "Nothing has broken down. The work is simply too slow to do while someone waits."
 - **Nudge:** "Remember The Frozen Sign-up and The Stuck Upload? Slow work belongs in the background."
+- **Clue 2:** "Nine years of posts cannot be packed while the user waits. Do it out of sight and send a link."
 - **Also seen as:** "Big reports and exports that time out."

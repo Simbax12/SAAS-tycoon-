@@ -72,6 +72,8 @@ Each email in the Inbox shows a sender badge, the sender's name and the first li
 | Sam | #2A5FD0 | Tie | Boss |
 | Lena, Omar, Zoe | #6B3FA0 | Clipboard | Team |
 | Customers | #0F6E6E | Speech bubble | Customer |
+| Dana | #A8431C | Phone | Consultant |
+| Victor | #4A4A4A | Life ring | Lifeline |
 
 - Badge text is white.
 - Opening an email shows the full text, 25 words at most, and its button if it has one ("Investigate" or "Open in Shop").
@@ -143,7 +145,7 @@ The drawing app. It opens from its icon or from a Build incident.
 - Every action works with taps alone and with the keyboard alone. Dragging is never required.
 - **"Deploy and test"** button at the bottom right. It is greyed out until at least one arrow is drawn.
 - **Traffic:** dots travel along the arrows. A wrong arrow flashes red and shows a cross icon and the word "Stopped".
-- A part placed by Hint 1 shows a small pin icon and cannot be moved or removed.
+- A part placed by a call to Dana shows a small pin icon and cannot be moved or removed.
 - **My designs:** when no Build is waiting, Blueprint lists the finished designs. Opening one shows it, read only.
 - On a phone the tray is a strip along the top that scrolls sideways, and the canvas fills the rest.
 
@@ -185,6 +187,15 @@ Items bought from "Your setup" should be visible, so spending feels real.
 - A simple round avatar with a friendly face. Original drawing.
 - She speaks in speech bubbles of 25 words or fewer.
 - Her emails are kept in the Inbox so the player can reread them.
+
+## Dana and Victor
+
+- Each has a simple round avatar, an original drawing, and their sender badge.
+- The "Call Dana" button sits at the bottom of the Incident window and of Blueprint during a Build. It shows a phone icon and the price of the next call, or "Free call".
+- When the player cannot afford the next call, the button shows the price in grey with the words "Not enough cash".
+- A call shows a small phone window with Dana's badge and her clue, 25 words or fewer. Earlier clues in the same incident stay listed above it.
+- When every call is used, the button becomes "Use Victor's lifeline" if one is held. Otherwise it is greyed out with the words "No more calls".
+- Victor's line is "This one. You owe me." Then the guided answer shows.
 
 ## Colours
 

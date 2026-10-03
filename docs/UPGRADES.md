@@ -1,6 +1,6 @@
 # Upgrades: the Shop
 
-The Shop icon on the desktop opens the store. There are 19 items in four groups. An item appears in the Shop when the player reaches its stage. Each item can be bought once.
+The Shop icon on the desktop opens the store. There are 19 items in four groups. An item appears in the Shop when the player reaches its stage. Each item can be bought once. The Shop also sells Victor's lifeline, which is not one of the 19 items (see "Victor's lifeline" below).
 
 Do not change prices, user numbers or effects. If something is unclear, ask.
 
@@ -75,7 +75,7 @@ Optional. The player's own gear. They bring in no users. Each item bought also s
 |---|---|---|---|---|---|---|---|
 | gear-monitor | Second monitor | 1 | Small | None | 0 | £100 | The Pattern Book can stay open beside an incident. On a phone, a tab switches between them without closing either |
 | gear-wallpapers | Wallpaper pack | 2 | Small | None | 0 | £400 | Three extra wallpapers in Settings. No effect on play |
-| gear-handbook | Engineering handbook | 2 | Medium | None | 0 | £800 | Hint 2 is free once per incident |
+| gear-handbook | Engineering handbook | 2 | Medium | None | 0 | £800 | The first call to Dana in each incident is free |
 | gear-pc | Faster PC | 3 | Big | None | 0 | £6,000 | 10% more cash from every incident |
 
 ## Request emails
@@ -85,6 +85,8 @@ People ask for most items by email. The email has an "Open in Shop" button that 
 Emails about optional items are suggestions. Nothing bad happens if the player ignores them.
 
 "Arrives" names the incident that must be solved first. See the play order table in GAME_DESIGN.md.
+
+If the player already owns the item, its request email is not sent.
 
 | Item | From | Arrives | Email text |
 |---|---|---|---|
@@ -108,18 +110,41 @@ Emails about optional items are suggestions. Nothing bad happens if the player i
 
 ## Rules when effects combine
 
-- An incident always keeps its best option. Upgrades and hints only ever remove wrong options.
-- If upgrades and hints leave only the best option, Maya shows its Result sentence and the player taps to apply it. Stars are not reduced by upgrades.
+- An incident always keeps its best option. Upgrades only ever remove wrong options. Calls to Dana never remove options. In a Build, call 2 removes the decoys.
+- If upgrades leave only the best option, Maya shows its Result sentence and the player taps to apply it. Stars are not reduced by upgrades.
 - "Test first" does not count as a choice. It cannot be used on an option that has been removed. It works on repeat incidents too.
-- In a Build, "Test first" gives one "Deploy and test" that costs no star if it fails.
-- In a Build, the Engineering handbook makes Hint 2 free once, the same as anywhere else.
+- "Test first" on the right answer shows its Result with the words "This would work". The player must still pick it.
+- In a Build, "Test first" gives one "Deploy and test" that costs no star if it fails. If the design is right, it shows "This would work" and the player then deploys for real.
+- In a Build, the Engineering handbook makes the first call free, the same as anywhere else.
+- An upgrade bought during an incident does not change that incident. It changes incidents that start after it.
 - Monitoring and Standby server only change new incidents. Builds and repeats have no outage.
 - Options are only removed by upgrades in new incidents. Repeat incidents always show three cards.
 - The Faster PC bonus is applied after the star multiplier. It applies to every incident, and to Triage and Tune bonuses.
 
+## Victor's lifeline
+
+Victor is a contract engineer. When every call to Dana in an incident is used and the player still does not see the answer, Victor gives it.
+
+| Stage | Price |
+|---|---|
+| 1 | £1,000 |
+| 2 | £4,000 |
+| 3 | £20,000 |
+| 4 | £100,000 |
+| 5 | £500,000 |
+
+- The price is 2 x the base cash of the current stage. That is more than any incident in the stage pays, so buying lifelines never makes a profit.
+- It must be bought in the Shop before it is used. The incident has no Buy button for it.
+- The player can hold one at a time. Once it is used, another can be bought.
+- A lifeline is only good for the stage it was bought in. When a new stage starts, an unused one is lost, with no refund. Cheap lifelines cannot be saved for later stages.
+- It can only be used once every call to Dana in the incident has been made.
+- In a new or repeat incident, Victor names the right answer and the incident moves to the guided answer. In a Build, Blueprint draws the Solution and the player taps "Deploy and test".
+- Stars stay as they are. Using it spoils "solved first try".
+- It never uses the investor or a loan. It brings in no users.
+
 ## Shop layout
 
-Three tabs: Features, Servers, Your setup. The Features tab lists must-have features first, then nice-to-have features.
+Three tabs: Features, Servers, Your setup. The Features tab lists must-have features first, then nice-to-have features. The Your setup tab shows Victor's lifeline first. Its card shows the price for the current stage, and "Held" while the player has one.
 
 Each item is a card with:
 

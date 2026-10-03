@@ -9,8 +9,8 @@ This file is the hub. It holds no game content of its own. It says where every f
 | File | What it owns | Read it before |
 |---|---|---|
 | [docs/START_HERE.md](docs/START_HERE.md) | Tech stack, folder layout, build order, the message that starts each milestone | Starting any milestone |
-| [docs/GAME_DESIGN.md](docs/GAME_DESIGN.md) | The rules: cast, stages, play order, how things arrive, all three incident flows, extra steps, users, stars, money, hints, tutorial, win screen | Writing any game logic |
-| [docs/CHALLENGES.md](docs/CHALLENGES.md) | Every new incident: text, options, answers, hints, users gained, Pattern Book entries | Building new incidents or their data file |
+| [docs/GAME_DESIGN.md](docs/GAME_DESIGN.md) | The rules: cast, stages, play order, how things arrive, all three incident flows, extra steps, users, stars, money, consultant calls, tutorial, win screen | Writing any game logic |
+| [docs/CHALLENGES.md](docs/CHALLENGES.md) | Every new incident: text, options, answers, clues, users gained, Pattern Book entries | Building new incidents or their data file |
 | [docs/REPEATS.md](docs/REPEATS.md) | Every repeat incident, and the list of everyday patterns | Building repeats, pips or refreshers |
 | [docs/BLUEPRINTS.md](docs/BLUEPRINTS.md) | Every Build incident: goal, tray, decoys, solution, wrong moves. The toolbox: every part and the real tool names | Building Blueprint, Build incidents or anything that shows a tool name |
 | [docs/GAME_LOGIC.md](docs/GAME_LOGIC.md) | The engine: what the game remembers, every player action, the order things happen in, and open questions about the rules | Writing the reducer or any game logic |
@@ -98,7 +98,7 @@ Every fact is written in one file only. Other files point to it and never copy i
 | Fact | Its home |
 |---|---|
 | The order incidents are played in | Play order table in GAME_DESIGN.md |
-| An incident's text, options, answers, hints, users gained and how it arrives | CHALLENGES.md or REPEATS.md |
+| An incident's text, options, answers, clues, users gained and how it arrives | CHALLENGES.md or REPEATS.md |
 | Pattern names and "Use this when" lines | "Pattern Book" lines in CHALLENGES.md |
 | Which patterns come back, and where | Everyday patterns table in REPEATS.md |
 | A Build's goal, tray, decoys, solution and wrong moves | BLUEPRINTS.md |
@@ -106,8 +106,8 @@ Every fact is written in one file only. Other files point to it and never copy i
 | Triage log lines, Tune dials and waves | EXTRA_STEPS.md |
 | What extra steps pay, and how every flow runs | GAME_DESIGN.md |
 | What the engine remembers, the player actions, and the order things happen in | GAME_LOGIC.md |
-| Prices, users gained from items, effects, request emails | UPGRADES.md |
-| Base cash per stage, star multipliers, penalties, the loan rule | GAME_DESIGN.md |
+| Prices, users gained from items, effects, request emails, Victor's lifeline | UPGRADES.md |
+| Base cash per stage, star multipliers, penalties, the loan rule, call prices | GAME_DESIGN.md |
 | Who can send things, and their roles | Cast table in GAME_DESIGN.md |
 | Each customer's first name | Customer names table in GAME_DESIGN.md |
 | Tutorial steps, tips and the How to Play text | GAME_DESIGN.md |
@@ -152,7 +152,7 @@ It must print "0 problems" before you commit. If it reports a problem, fix the d
 
 1. The docs are the source of truth. Code copies from the docs, never the other way round. If code and docs disagree, the docs win.
 2. To change the game: change the doc first, run the check, then change the data file and the code.
-3. Never invent or change incidents, answers, hints, emails, prices or rewards unless I ask. Copy them from the docs into typed data files.
+3. Never invent or change incidents, answers, clues, emails, prices or rewards unless I ask. Copy them from the docs into typed data files.
 4. If something is missing, unclear, or two files disagree, stop and ask. Do not guess.
 5. Game content lives in data files. Game logic must never hard-code a single incident, email or upgrade.
 6. Build one milestone at a time, in the order in START_HERE.md. Stop after each one so I can play it.

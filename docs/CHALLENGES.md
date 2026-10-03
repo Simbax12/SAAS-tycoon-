@@ -1,6 +1,6 @@
 # Challenges: the 20 new incidents
 
-Copy these into a typed data file exactly as written. Do not add, remove or reword incidents, options, answers or hints. If something looks wrong, ask.
+Copy these into a typed data file exactly as written. Do not add, remove or reword incidents, options, answers or clues. If something looks wrong, ask.
 
 The 10 repeat incidents are in REPEATS.md. The 5 Build incidents are in BLUEPRINTS.md. Triage and Tune steps that attach to these incidents are in EXTRA_STEPS.md. The order everything is played in is in the play order table in GAME_DESIGN.md.
 
@@ -13,7 +13,8 @@ The 10 repeat incidents are in REPEATS.md. The 5 Build incidents are in BLUEPRIN
 - **Maya:** her one-sentence explanation, shown after the player taps Investigate.
 - **Options:** each has a type, a plain description (large text), an industry label (small text) and a Result sentence. They are shown in a shuffled order.
 - **Removed by:** an upgrade that removes this option from the start (see UPGRADES.md).
-- **Nudge:** Hint 1.
+- **Nudge:** the clue Dana gives on call 1.
+- **Clue 2, Clue 3:** the clues Dana gives on later calls. Each incident has as many calls as it has clues (see GAME_DESIGN.md > Consultant calls).
 - **Pattern Book:** the entry the player earns.
 - **Map change:** what is added to the System Map.
 
@@ -43,6 +44,7 @@ One server does everything. The app and the database live on the same machine.
     Label: Secret URL
     Result: "The secret address leaked through a shared link. Strangers are inside."
 - **Nudge:** "Where should the check happen so that nobody can skip it?"
+- **Clue 2:** "Hiding or renaming the page does not lock it. The server must check who is asking, on every request."
 - **Pattern Book:** Role-based access control (RBAC). "Use this when different users are allowed to do different things."
 - **Map change:** A shield appears on the Server box.
 
@@ -64,6 +66,7 @@ One server does everything. The app and the database live on the same machine.
     Label: Fast unsalted hash (MD5)
     Result: "Attackers cracked most of them in minutes using lists of known scrambles."
 - **Nudge:** "Do we ever need to read a password back? Or only check that it matches?"
+- **Clue 2:** "Keep nothing that can be turned back into a password. Make each one different, so one crack does not crack them all."
 - **Pattern Book:** Password hashing. "Use this whenever you store passwords. Never store the real thing."
 - **Map change:** A padlock appears on the Database box.
 
@@ -85,6 +88,7 @@ One server does everything. The app and the database live on the same machine.
     Label: Blind retries
     Result: "Slow payments were not failed payments. Some people are now charged three times."
 - **Nudge:** "How could the server tell a repeat from a new payment?"
+- **Clue 2:** "A grey button does not stop a phone retrying on its own. The server must know it has seen this payment before."
 - **Pattern Book:** Idempotency keys. "Use this when doing something twice by accident would cause harm, like a payment."
 - **Map change:** A key appears on the arrow from Server to Payments.
 
@@ -106,6 +110,7 @@ One server does everything. The app and the database live on the same machine.
     Label: Home-made encryption
     Result: "The key to unscramble it had to live in the code too. The stranger used both."
 - **Nudge:** "If our code leaks again, what should still be safe?"
+- **Clue 2:** "A key kept in the code leaks with the code. Keep it in a locked place that we can change at any time."
 - **Pattern Book:** Secrets manager. "Use this for passwords and keys your servers need. Never write them into the code."
 - **Map change:** A Secrets box with a safe on it appears beside the Server box.
 
@@ -134,6 +139,7 @@ The app and the database are now on separate machines. The database is the weak 
     Label: More app servers
     Result: "More servers sent even more questions to the same tired database."
 - **Nudge:** "The answer is the same every time. Do we need to ask every time?"
+- **Clue 2:** "More servers or a bigger one still ask the database every time. Keep the answer close and reuse it."
 - **Pattern Book:** Caching. "Use this when many people ask for the same thing and it rarely changes."
 - **Map change:** A Cache box appears between Server and Database.
 
@@ -155,6 +161,7 @@ The app and the database are now on separate machines. The database is the weak 
     Label: In-memory copy
     Result: "The app ran out of memory and crashed."
 - **Nudge:** "How do you find a word in a book without reading every page?"
+- **Clue 2:** "A cache only helps names asked for before. Help the database jump straight to any name, the first time."
 - **Pattern Book:** Database index. "Use this when you often search a big table by the same field."
 - **Map change:** An index tab appears on the Database box.
 
@@ -176,6 +183,7 @@ The app and the database are now on separate machines. The database is the weak 
     Label: Files in the database
     Result: "The database ballooned and every query got slower."
 - **Nudge:** "What if the photos did not have to travel so far?"
+- **Clue 2:** "Smaller files still come from one far-away server. Store them once and send copies from near each user."
 - **Pattern Book:** CDN. "Use this for files that are the same for everyone, like images and video."
 - **Map change:** A Storage box appears, and a ring of small CDN boxes appears near Users.
 
@@ -197,6 +205,8 @@ The app and the database are now on separate machines. The database is the weak 
     Label: Copy data into every row
     Result: "People who changed their name now show the old one on years of posts."
 - **Nudge:** "Would you go to the shop 51 times for 51 things on one list?"
+- **Clue 2:** "The problem is the number of trips, not how long each one takes. Get everything the page needs at once."
+- **Clue 3:** "Copying names into posts leaves old names behind when people change them. Ask for posts and authors in one query."
 - **Pattern Book:** Eager loading. "Use this when a page shows a list and details for every item. Fetch them together."
 - **Map change:** The many thin arrows from Server to Database merge into one thick arrow.
 
@@ -225,6 +235,7 @@ One app server can no longer cope.
     Label: Auto-restart
     Result: "Every restart kicked out everyone online. Peak time became restart time."
 - **Nudge:** "What is safer than one strong server?"
+- **Clue 2:** "A bigger or restarted server is still one server. If it dies, Blip dies. Share the work out."
 - **Pattern Book:** Load balancing. "Use this when one server cannot handle the traffic, or when one crash must not stop everything."
 - **Map change:** A Load Balancer box appears. The Server box becomes three.
 
@@ -246,6 +257,7 @@ One app server can no longer cope.
     Label: Longer sessions
     Result: "Nothing changed. The other servers still never knew about the login."
 - **Nudge:** "The login is saved where only one server can see it. Where else could it live?"
+- **Clue 2:** "Sending users back to one server fails when that server dies. Let any server read any login."
 - **Pattern Book:** Stateless servers. "Use this whenever you run more than one server."
 - **Map change:** A Session Store box appears, joined to all three servers.
 
@@ -267,6 +279,7 @@ One app server can no longer cope.
     Label: Instant retries
     Result: "We flooded the email service and it blocked us completely."
 - **Nudge:** "Does the user need the email to be sent before they can carry on?"
+- **Clue 2:** "Waiting longer or retrying still makes the user wait. Let sign-up finish, and send the email afterwards."
 - **Pattern Book:** Message queue. "Use this for slow work that the user does not need to wait for."
 - **Map change:** A Queue box and a Worker box appear.
 
@@ -288,6 +301,8 @@ One app server can no longer cope.
     Label: Retries
     Result: "We sent three times the traffic to a service that was already struggling. It stayed down for hours."
 - **Nudge:** "If a shop is closed, do you keep knocking on the door?"
+- **Clue 2:** "Retries hit a broken service even harder. A shorter wait still waits every time. Stop calling it for a while."
+- **Clue 3:** "Think of a fuse in a house. After a few failures, cut the line, use a backup plan, then test it later."
 - **Pattern Book:** Circuit breaker. "Use this when a service you depend on can fail. Stop calling it until it recovers."
 - **Map change:** A Fraud Check box appears, with a switch on the arrow that leads to it.
 
@@ -315,6 +330,7 @@ The data itself is now the problem.
     Label: Dual writes
     Result: "Some writes failed halfway. The databases now disagree with each other."
 - **Nudge:** "Reading and writing are different jobs. Do they need the same machine?"
+- **Clue 2:** "Most traffic is reads. Could other machines answer the reads, while one machine still takes every write?"
 - **Pattern Book:** Read replicas. "Use this when reads far outnumber writes. Copies can be a moment behind."
 - **Map change:** The Database becomes one Primary box with two Replica boxes.
 
@@ -337,6 +353,8 @@ The data itself is now the problem.
     Result: "The newest database gets most of the traffic. It is overloaded while the old ones sit idle."
     Removed by: srv-analytics
 - **Nudge:** "How can we split the data so that every piece gets a fair share of the work?"
+- **Clue 2:** "Archiving only buys time. The data must be split, but by something that spreads the work evenly."
+- **Clue 3:** "Split by date and the newest database gets all the traffic. Every user has an ID. Use that."
 - **Pattern Book:** Sharding. "Use this when the data is too big for one database. Pick a key that spreads the load evenly."
 - **Map change:** The Primary box splits into Shard 1, Shard 2 and Shard 3.
 
@@ -359,6 +377,8 @@ The data itself is now the problem.
     Result: "Opening the app now takes seconds for every single user."
     Removed by: srv-analytics
 - **Nudge:** "Should a post from a star be handled the same way as a post from you or me?"
+- **Clue 2:** "More workers still make 50 million copies. Building every feed fresh is slow for everyone. Treat huge accounts differently."
+- **Clue 3:** "Push posts to small audiences. For a star, let followers pull the post when they open the app."
 - **Pattern Book:** Fan-out. "Use this when one action must reach many people. Push to small audiences, pull for huge ones."
 - **Map change:** A Feed Service box appears with two paths: Push and Pull.
 
@@ -380,6 +400,8 @@ The data itself is now the problem.
     Label: No time limit
     Result: "Long searches piled up and slowed the databases for everyone."
 - **Nudge:** "What if each word already knew which posts it appears in?"
+- **Clue 2:** "A time limit does not make search smarter. Our databases were not built to find words buried inside text."
+- **Clue 3:** "A tool made for search keeps a list for every word, with the posts it appears in."
 - **Pattern Book:** Search engine. "Use this when people search for words inside lots of text."
 - **Map change:** A Search box appears beside the shards.
 
@@ -407,6 +429,7 @@ Blip is everywhere. Distance, disasters and attackers are the new problems.
     Label: Faster servers
     Result: "The servers were never the slow part. The distance was."
 - **Nudge:** "The servers are fast. Which part of the journey is slow?"
+- **Clue 2:** "Faster servers do not shorten an ocean. A CDN only helps with files. Put servers and data near the users."
 - **Pattern Book:** Multi-region. "Use this when your users are spread around the world."
 - **Map change:** The map switches to a world view with three regions.
 
@@ -429,6 +452,7 @@ Blip is everywhere. Distance, disasters and attackers are the new problems.
     Result: "Rebuilding took hours, and everything since last night was lost."
     Removed by: srv-drills
 - **Nudge:** "Who reacts faster at 3am: a person or an automatic health check?"
+- **Clue 2:** "A backup takes hours to restore. A guide still needs a person awake. Let machines notice and switch on their own."
 - **Pattern Book:** Failover. "Use this when downtime is costly. Practise it before you need it."
 - **Map change:** Heartbeat lines appear between the three regions.
 
@@ -450,6 +474,8 @@ Blip is everywhere. Distance, disasters and attackers are the new problems.
     Label: Rolling update
     Result: "For ten minutes old and new code shared the same payments. Some people were charged, but no order was saved."
 - **Nudge:** "What if new code could be switched off without shipping anything?"
+- **Clue 2:** "Swapping servers one at a time still gives everyone the bug in the end. We need a way to undo it fast."
+- **Clue 3:** "A canary limits who is hit, but undoing it means shipping again. Which option has an off switch?"
 - **Pattern Book:** Feature flags. "Use this when a change is risky. Turn it on for a few people first, and keep an off switch."
 - **Map change:** A row of on and off switches appears above the three regions.
 
@@ -472,5 +498,6 @@ Blip is everywhere. Distance, disasters and attackers are the new problems.
     Result: "Millions of real users were locked out, and the bots simply moved."
     Removed by: srv-drills
 - **Nudge:** "Can we stop the fake traffic before it gets inside?"
+- **Clue 2:** "More servers just feed the attack. Blocking a country blocks real users too. Stop the flood at the door."
 - **Pattern Book:** Rate limiting. "Use this to protect any public service from abuse or overload."
 - **Map change:** An Edge Shield box appears in front of everything.

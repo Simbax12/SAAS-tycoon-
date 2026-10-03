@@ -7,14 +7,14 @@ What is built, what is next, and the decisions made. Keep this short and current
 - Game design docs in `docs/`, with CLAUDE.md as the hub.
 - `scripts/check-docs.mjs` checks that the docs agree. It prints "0 problems".
 - 35 incidents written: 20 new, 10 repeats, 5 Builds. Also 10 Triage steps, 5 Tune steps and 19 Shop items.
-- docs/GAME_LOGIC.md: the engine plan, from the first email to the win screen, with six worked examples. It has 11 open questions waiting for answers.
+- docs/GAME_LOGIC.md: the engine plan, from the first email to the win screen, with seven worked examples. All open questions are answered.
 - docs/ROOM.md: the low-poly room around the computer, shown as video clips.
 - Room clips and stills for all five stages are in public/room/, each cut from one Wan 2.2 take. Every screen box is measured.
 - No game code yet.
 
 ## Next
 
-- Answer the open questions at the end of docs/GAME_LOGIC.md.
+- Check the new clue text and on-screen text listed at the end of this file.
 - Milestone 1: Desktop. See the build order in docs/START_HERE.md.
 
 ## Decisions
@@ -49,6 +49,17 @@ What is built, what is next, and the decisions made. Keep this short and current
 | 2026-10-03 | The first Stage 4 take was rejected | It was photo-realistic, showed the real Windows XP wallpaper photo, had a lit sign with letters and an iMac-like monitor. The re-take used the loft still as a style picture |
 | 2026-10-03 | Stage 5 keeps its curved monitor | Wan made it curved even when asked for flat. The curve is slight, so the screen box is the largest rectangle inside it |
 | 2026-10-02 | PROGRESS.md was created before Milestone 1 | Asked for a change log now |
+| 2026-10-03 | Q1, Q3, Q4, Q6, Q8, Q9, Q10 and Q14 answered as proposed. Each answer now lives in GAME_DESIGN.md or UPGRADES.md | Agreed with the proposals |
+| 2026-10-03 | Hints are replaced by paid calls to Dana, an outside consultant | Free hints let players click through with no real cost. Paying makes them try first |
+| 2026-10-03 | Call 1 costs 15% of the stage's base cash. Each later call costs 10% more | Help gets dearer the more is needed |
+| 2026-10-03 | Each incident has as many calls as it has clues. Most have 2. Harder ones, where the options are close, have 3: 2.4, 3.4, 4.2, 4.3, 4.4 and 5.4 | Harder incidents may take some players more than two clues |
+| 2026-10-03 | Calls never remove options. In a Build, call 1 places a part, call 2 removes the decoys, and each later call places one more part | The player still has to work out the answer |
+| 2026-10-03 | Calls cost no star but spoil "solved first try", even when free | Not charged twice. Gold pips still mean the player recalled the pattern alone |
+| 2026-10-03 | No automatic nudge after a wrong pick, and no 45-second offer | Help only comes when the player asks and pays. Two wrong picks still lead to the guided answer, so nobody gets stuck |
+| 2026-10-03 | All calls are free in 1.1. The Engineering handbook makes the first call in each incident free | The tutorial must teach the button. Some players need several calls on hard incidents |
+| 2026-10-03 | Victor's lifeline gives the answer once every call is used. It is pre-bought in the Shop for 2 x the stage's base cash, one held at a time, lost at the end of its stage. It spoils first try but keeps stars | It must never pay for itself. Dropping it at stage end stops buying cheap ones early for later stages |
+| 2026-10-03 | Q5, Q12 and Q13 were dropped | Calls replaced the hints they asked about |
+| 2026-10-03 | The Build field "Hint 1 places" is renamed "Call 1 places". The check script reads the new name and now checks lifeline prices | Hints no longer exist |
 
 ## Change log
 
@@ -58,12 +69,6 @@ What is built, what is next, and the decisions made. Keep this short and current
 | 2026-10-02 | Created PROGRESS.md |
 | 2026-10-02 | Added Triage steps T6 to T10 for 1.4, 2.4, 3.4, 4.4 and 5.4. Added Tune steps U4 for 3.4 and U5 for 5.4 |
 | 2026-10-02 | Added docs/GAME_LOGIC.md with 14 open questions. The check script now checks pointers between docs and question numbers. Hub and START_HERE.md updated |
-
-## On-screen text to check
-
-- The 14 customer first names in GAME_DESIGN.md > Customer names.
-- "This would work", shown when Test first is used on the right answer (GAME_LOGIC.md, Q4).
-- "Tap the screen to sit down", "Stand up" and "Skip" (ROOM.md).
 | 2026-10-02 | Answered Q2, Q7 and Q11 in GAME_DESIGN.md and UPGRADES.md. GAME_LOGIC.md: saves use ids and migrations, a fixed shuffle, Test first in Builds, tips, reset keeps settings, a phase diagram and six worked examples. Added customer names and a check for them. Removed the workbook PDFs |
 | 2026-10-02 | Added docs/ROOM.md and a check that its rooms and desk items match the stages and Shop. Updated UI_THEME.md, GAME_LOGIC.md, START_HERE.md and the hub |
 | 2026-10-02 | Added the Stage 1 room clips and stills to public/room/. ROOM.md now has desk and seat stills, the one-take method, and the Stage 1 screen box |
@@ -71,3 +76,16 @@ What is built, what is next, and the decisions made. Keep this short and current
 | 2026-10-03 | Added the Stage 3 room clips and stills, with a gentle push-in. Recorded its screen box. ROOM.md: the loft room row and the push-in method |
 | 2026-10-03 | Added the Stage 4 room clips and stills. Recorded its screen box. ROOM.md: the data centre room row |
 | 2026-10-03 | Added the Stage 5 room clips and stills. Recorded its screen box. All five rooms are done. ROOM.md: how to measure a curved screen. START_HERE.md: Milestone 1 uses the real Stage 1 room |
+| 2026-10-03 | Answered all open questions in GAME_LOGIC.md. Replaced hints with paid calls to Dana and Victor's lifeline in GAME_DESIGN.md, GAME_LOGIC.md, UPGRADES.md, UI_THEME.md, BLUEPRINTS.md, START_HERE.md and the hub. Added Clue 2 and Clue 3 lines to CHALLENGES.md and REPEATS.md. Added Dana and Victor to the cast with sender badges |
+
+## On-screen text to check
+
+- The 14 customer first names in GAME_DESIGN.md > Customer names.
+- "This would work", shown when Test first is used on the right answer (UPGRADES.md > Rules when effects combine).
+- "Tap the screen to sit down", "Stand up" and "Skip" (ROOM.md).
+- All 36 new clues: the Clue 2 and Clue 3 lines in CHALLENGES.md and REPEATS.md. They were drafted by Claude.
+- Dana's and Victor's cast lines in GAME_DESIGN.md: "An outside systems consultant. Charges by the call" and "A contract engineer. Expensive, blunt, always right".
+- Tutorial step 6: "Stuck? Call Dana. Today it is free."
+- How to Play line 5: "Wrong fix: try again. Stuck? Call Dana, but calls cost cash."
+- Buttons and labels: "Call Dana", "Free call", "No more calls", "Use Victor's lifeline", "Held".
+- Victor's line: "This one. You owe me."

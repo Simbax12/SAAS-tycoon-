@@ -38,6 +38,8 @@ function sections(text, re) {
   }));
 }
 
+const cut = (text, from, to) => text.slice(text.indexOf(from), text.indexOf(to));
+
 // ---------------------------------------------------------------- load
 const docNames = readdirSync(join(root, "docs")).filter((f) => f.endsWith(".md")).sort();
 const T = Object.fromEntries(docNames.map((f) => [f, read(`docs/${f}`)]));
@@ -140,7 +142,7 @@ for (const { m, body } of sections(B, /^(?:# Stage (\d)|## (B\d+) (.*))$/gm)) {
     wrong: all(body, /^  - (uses|missing|connects) "([^"]+)"(?: to "([^"]+)")?$/gm).map((x) => ({ type: x[1], a: x[2], b: x[3] })),
     sees: all(body, /^    Sees: /gm).length,
     says: all(body, /^    Says: "/gm).length,
-    hint: one(body, /\*\*Hint 1 places:\*\* (.*)/, `${id} Hint 1 places`).trim(),
+    hint: one(body, /\*\*Call 1 places:\*\* (.*)/, `${id} Call 1 places`).trim(),
     practises: list("Practises"),
   };
 }
@@ -229,6 +231,15 @@ for (const id of order) {
   cash += Math.round(baseCash[d.stage] * (d.kind === "Repeat" ? REPEAT_PAY : 1) * starPay["2"]);
 }
 
+// ---------------------------------------------------------------- Victor's lifeline
+// UPGRADES.md: the lifeline costs 2 x the stage's base cash, one row per stage.
+const LIFELINE_TIMES = 2;
+const lifeline = Object.fromEntries(all(cut(U, "## Victor's lifeline", "## Shop layout"), /^\| (\d) \| £([\d,]+) \|$/gm).map((m) => [m[1], num(m[2])]));
+for (const st of Object.keys(baseCash)) {
+  if (!(st in lifeline)) problem(`UPGRADES.md: Victor's lifeline has no price for Stage ${st}`);
+  else if (lifeline[st] !== baseCash[st] * LIFELINE_TIMES) problem(`UPGRADES.md: Victor's lifeline in Stage ${st} should cost £${fmt(baseCash[st] * LIFELINE_TIMES)}`);
+}
+
 // ---------------------------------------------------------------- repeats
 const everyday = all(R, /^\| (.*?) \| .*? \| (\d\.\d) \| (R\d+), (R\d+) \|$/gm);
 for (const [, pattern, learned, a, b] of everyday) {
@@ -292,7 +303,6 @@ for (const [id, { from, when }] of Object.entries(requests)) {
   if (affected.length && Math.min(...affected) <= at) problem(`${id}: its request email arrives too late to affect the incident it changes`);
 }
 
-const cut = (text, from, to) => text.slice(text.indexOf(from), text.indexOf(to));
 
 // ---------------------------------------------------------------- customer names
 // Every email from a customer has exactly one name in GAME_DESIGN.md, and each name is used once.
@@ -338,7 +348,7 @@ for (const d of Object.values(builds)) {
   const at = pos[d.id];
   const everything = [...d.tray, ...d.decoys];
   if (everything.length < 4 || everything.length > 7) problem(`${d.id}: the tray should hold 4 to 7 parts, counting decoys. It has ${everything.length}`);
-  if (d.decoys.length < 1) problem(`${d.id}: needs at least one decoy, so Hint 2 has something to remove`);
+  if (d.decoys.length < 1) problem(`${d.id}: needs at least one decoy, so call 2 has something to remove`);
   for (const p of everything) {
     const part = parts[basePart(p)];
     if (!part) problem(`${d.id}: "${p}" is not a part in the toolbox`);
@@ -361,7 +371,7 @@ for (const d of Object.values(builds)) {
   for (const decoy of d.decoys) {
     if (!d.wrong.some((w) => w.type === "uses" && w.a === decoy)) problem(`${d.id}: the decoy "${decoy}" has no wrong move explaining why it fails`);
   }
-  if (!d.tray.includes(d.hint)) problem(`${d.id}: "Hint 1 places" must be a part from the Tray`);
+  if (!d.tray.includes(d.hint)) problem(`${d.id}: "Call 1 places" must be a part from the Tray`);
   for (const p of d.practises) {
     if (!patternTaughtIn[p]) problem(`${d.id}: practises "${p}", which is not a Pattern Book name`);
     else if (pos[patternTaughtIn[p]] > at) problem(`${d.id}: practises "${p}", which has not been learned yet at that point`);
