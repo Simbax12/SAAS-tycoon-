@@ -171,7 +171,7 @@ It must print "0 problems" before you commit. If it reports a problem, fix the d
 
 ## Code map
 
-This links each doc to the code that copies from it. None of the code exists yet. Change "Planned" to "Built" when a file is created, and keep the paths current.
+This links each doc to the code that copies from it. Change "Planned" to "Built" when a file is created, and keep the paths current.
 
 | Doc | Code that copies from it | Status |
 |---|---|---|
@@ -180,15 +180,20 @@ This links each doc to the code that copies from it. None of the code exists yet
 | docs/BLUEPRINTS.md | `data/blueprints.ts` | Planned |
 | docs/EXTRA_STEPS.md | `data/extraSteps.ts` | Planned |
 | docs/UPGRADES.md | `data/upgrades.ts`, `data/emails.ts` | Planned |
-| docs/GAME_DESIGN.md | `data/stages.ts`, `data/playOrder.ts`, `game/reducer.ts` | Planned |
+| docs/GAME_DESIGN.md | `data/stages.ts`, `data/howToPlay.ts` | Built |
+| docs/GAME_DESIGN.md | `data/playOrder.ts`, `game/reducer.ts` | Planned |
 | docs/GAME_LOGIC.md | `game/reducer.ts`, `game/types.ts` | Planned |
-| docs/UI_THEME.md | `components/desktop`, `components/windows` | Planned |
-| docs/ROOM.md | `components/room`, `public/room` | Planned |
+| docs/UI_THEME.md | `data/desktopApps.ts`, `components/desktop`, `components/windows`, `app/globals.css` | Built |
+| docs/ROOM.md | `data/rooms.ts`, `components/room`, `public/room` | Built |
+
+Other code: `app/page.tsx` and `app/layout.tsx` are the single page. `components/Game.tsx` holds the page together. `components/useScreen.ts` picks the phone or computer layout.
 
 ## Commands
 
 | Command | What it does |
 |---|---|
 | `node scripts/check-docs.mjs` | Checks the docs agree with each other. Needs only Node, no install |
-
-Commands to run, build and test the game are added here at Milestone 1.
+| `npm install` | Installs the game's packages. Run once |
+| `npm run dev` | Runs the game at http://localhost:3000 while you work |
+| `npm run build` | Builds the game and checks the types. Must pass before you commit code |
+| `npm run typecheck` | Checks the types only, faster than a build |

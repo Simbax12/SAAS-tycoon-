@@ -483,6 +483,8 @@ if (RM) {
   const rooms = all(cut(RM, "# Part 2: The rooms", "## The desk"), /^\| (\d) \| /gm).map((m) => m[1]);
   for (const st of Object.keys(stageNames)) if (!rooms.includes(st)) problem(`ROOM.md: Stage ${st} has no room`);
   for (const st of rooms) if (!stageNames[st]) problem(`ROOM.md: has a room for Stage ${st}, which is not a stage`);
+  const deskBoxes = all(cut(RM, "## Desk boxes", "## Screen boxes"), /^\| (\d) \| /gm).map((m) => m[1]);
+  for (const st of Object.keys(stageNames)) if (!deskBoxes.includes(st)) problem(`ROOM.md: Stage ${st} has no desk box row`);
   const boxes = all(RM.slice(RM.indexOf("## Screen boxes")), /^\| (\d) \| /gm).map((m) => m[1]);
   for (const st of Object.keys(stageNames)) if (!boxes.includes(st)) problem(`ROOM.md: Stage ${st} has no screen box row`);
   const desk = all(cut(RM, "## The desk", "# Part 3"), /^\| (gear-[a-z]+) \|/gm).map((m) => m[1]);

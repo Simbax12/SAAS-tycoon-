@@ -1,0 +1,67 @@
+@import "tailwindcss";
+
+/* Colours and fonts copied from docs/UI_THEME.md > Colours and > Readability rules. */
+@theme {
+  --font-sans: Verdana, Tahoma, sans-serif;
+  --color-sky-top: #4a9de0;
+  --color-sky-bottom: #bfe3ff;
+  --color-hill-top: #5daa3c;
+  --color-hill-bottom: #3f8a2b;
+  --color-bar: #2a5fd0;
+  --color-alert: #c83232;
+  --color-start: #2e7d32;
+  --color-cream: #f4f0e0;
+  --color-ink: #1e1e1e;
+  --color-ok: #2e8b3d;
+  --color-warning: #a86f00;
+  --color-critical: #c83232;
+}
+
+html,
+body {
+  height: 100%;
+  margin: 0;
+  overflow: hidden;
+  background: #111111;
+  color: var(--color-ink);
+  font-family: var(--font-sans);
+  font-size: 18px;
+  line-height: 1.5;
+  -webkit-tap-highlight-color: transparent;
+}
+
+/* Visible focus for keyboard players. */
+:focus-visible {
+  outline: 3px solid #ffd447;
+  outline-offset: 2px;
+}
+
+@keyframes monitor-pulse {
+  0%,
+  100% {
+    box-shadow: 0 0 0 3px rgba(255, 212, 71, 0.9), 0 0 12px 4px rgba(255, 212, 71, 0.5);
+  }
+  50% {
+    box-shadow: 0 0 0 6px rgba(255, 212, 71, 1), 0 0 24px 10px rgba(255, 212, 71, 0.7);
+  }
+}
+
+.monitor-pulse {
+  animation: monitor-pulse 1.2s ease-in-out infinite;
+}
+
+@keyframes loading-fill {
+  from {
+    width: 0%;
+  }
+  to {
+    width: 100%;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .monitor-pulse {
+    animation: none;
+    box-shadow: 0 0 0 5px rgba(255, 212, 71, 1);
+  }
+}

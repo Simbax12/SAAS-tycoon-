@@ -9,13 +9,14 @@ What is built, what is next, and the decisions made. Keep this short and current
 - 35 incidents written: 20 new, 10 repeats, 5 Builds. Also 10 Triage steps, 5 Tune steps and 19 Shop items.
 - docs/GAME_LOGIC.md: the engine plan, from the first email to the win screen, with seven worked examples. All open questions are answered.
 - docs/ROOM.md: the low-poly room around the computer, shown as video clips.
-- Room clips and stills for all five stages are in public/room/, each cut from one Wan 2.2 take. Every screen box is measured.
-- No game code yet.
+- Room clips and stills for all five stages are in public/room/, each cut from one Wan 2.2 take. Every screen box and desk box is measured.
+- Milestone 1: Desktop. A Next.js app with the wallpaper, 12 icons, the taskbar with Start menu, tabs and tray, and windows that open, close, drag and stack. The Stage 1 room plays the walk-in clip, waits for "Tap the screen to sit down", plays the sit-down clip, then the BlipOS loading bar. "Stand up" and "Skip" work. Reduced motion skips the clips. Checked at 1440, 1024 and 375 pixels wide.
 
 ## Next
 
+- Play Milestone 1: `npm install`, then `npm run dev`, then open http://localhost:3000. Try it on a phone width too.
 - Check the new clue text and on-screen text listed at the end of this file.
-- Milestone 1: Desktop. See the build order in docs/START_HERE.md.
+- Milestone 2: Engine and Stage 1. See the build order in docs/START_HERE.md.
 
 ## Decisions
 
@@ -60,6 +61,14 @@ What is built, what is next, and the decisions made. Keep this short and current
 | 2026-10-03 | Victor's lifeline gives the answer once every call is used. It is pre-bought in the Shop for 2 x the stage's base cash, one held at a time, lost at the end of its stage. It spoils first try but keeps stars | It must never pay for itself. Dropping it at stage end stops buying cheap ones early for later stages |
 | 2026-10-03 | Q5, Q12 and Q13 were dropped | Calls replaced the hints they asked about |
 | 2026-10-03 | The Build field "Hint 1 places" is renamed "Call 1 places". The check script reads the new name and now checks lifeline prices | Hints no longer exist |
+| 2026-10-03 | Each desk still now has a measured desk box in ROOM.md, and the check script checks every stage has one | The pulsing outline for "Tap the screen to sit down" needs to know where the monitor is |
+| 2026-10-03 | The computer layout is used when the browser is at least 768 by 560 pixels. Anything smaller gets the phone layout | Below that the screen box is too small for 18px text |
+| 2026-10-03 | Every clip and still of a stage is drawn in the same place, so they line up. The room fills the browser, but is shrunk if needed to keep the screen box clear of a 72px strip at the top and bottom | The stage name and "Stand up" must never cover the desktop |
+| 2026-10-03 | The phone tray shows users and cash, not the clock | The phone layout rule lists only users and cash, and there is no room at 375px |
+| 2026-10-03 | Until a window is built in its milestone, it shows its icon and its "Opens" line from UI_THEME.md. How to Play already shows its exact text | No new words were needed |
+| 2026-10-03 | Arrow keys move a window when its title bar has focus | Every action should work with the keyboard alone |
+| 2026-10-03 | Until saving arrives in Milestone 2, every visit counts as the first, so the walk-in clip always plays. The loading bar shows on the first sit-down of each visit | There is no save to say the player has been here before |
+| 2026-10-03 | TypeScript is pinned to version 5 | Next.js 16 is not yet tested with TypeScript 7 |
 
 ## Change log
 
@@ -77,8 +86,11 @@ What is built, what is next, and the decisions made. Keep this short and current
 | 2026-10-03 | Added the Stage 4 room clips and stills. Recorded its screen box. ROOM.md: the data centre room row |
 | 2026-10-03 | Added the Stage 5 room clips and stills. Recorded its screen box. All five rooms are done. ROOM.md: how to measure a curved screen. START_HERE.md: Milestone 1 uses the real Stage 1 room |
 | 2026-10-03 | Answered all open questions in GAME_LOGIC.md. Replaced hints with paid calls to Dana and Victor's lifeline in GAME_DESIGN.md, GAME_LOGIC.md, UPGRADES.md, UI_THEME.md, BLUEPRINTS.md, START_HERE.md and the hub. Added Clue 2 and Clue 3 lines to CHALLENGES.md and REPEATS.md. Added Dana and Victor to the cast with sender badges |
+| 2026-10-03 | Milestone 1 built: Next.js app, data/stages.ts, data/rooms.ts, data/desktopApps.ts, data/howToPlay.ts, components/desktop, components/windows and components/room. Added desk boxes to ROOM.md with a check for them. Hub: code map and commands |
 
 ## On-screen text to check
+
+- Screen reader labels added in Milestone 1, not shown on screen: "Close" and the window name, "Users:", "Cash:" and "Time:" with their numbers.
 
 - The 14 customer first names in GAME_DESIGN.md > Customer names.
 - "This would work", shown when Test first is used on the right answer (UPGRADES.md > Rules when effects combine).
