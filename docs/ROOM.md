@@ -65,7 +65,7 @@ Each stage has its own room. The rooms tell the story of Blip growing up.
 |---|---|---|---|
 | 1 | A garage with a bare brick wall and a concrete floor | A chunky beige box monitor with a curved glass screen | A workbench, one old tower PC, a desk lamp, a cardboard box of cables |
 | 2 | A small rented office with one window | A flat grey monitor on a stand | A second-hand desk, a whiteboard, a pot plant |
-| 3 | An open-plan office with rows of desks | A wide flat monitor | Other desks in soft focus, a coffee mug, sticky notes on the wall |
+| 3 | A converted warehouse loft at golden hour, with tall factory windows, beams and hanging lamps | A wide flat black monitor on a thin stand | Long shared tables with empty chairs, tall plants, an orange beanbag, a coffee mug |
 | 4 | A tall office with glass walls and a city view | A large thin monitor | A standing desk, a server rack light glowing behind glass |
 | 5 | The top floor of a glass tower at night | A wide curved monitor | City lights below, a world map glowing on a far wall |
 
@@ -109,6 +109,7 @@ Before cutting:
 - Trim any jump or flicker in the last frames. Video tools often glitch right at the end.
 - Crop to 16 by 9 from the middle, then resize to 1280 by 720.
 - Remove the sound track.
+- If the screen ends a little too small, add a slow push-in to the sit-down clip: start at normal size, so it still matches the desk still, and ease in by up to 10%, centred on the screen. Only do this when the take is wider than 1280 pixels, so nothing is blown up.
 
 ## Rules for every clip
 
@@ -127,6 +128,6 @@ Measure these from each seat still once it is made. Until then the game uses a p
 |---|---|---|---|---|
 | 1 | 30.3% | 16.9% | 44.7% | 62.5% |
 | 2 | 20.2% | 13.2% | 58.6% | 59.7% |
-| 3 | To measure | To measure | To measure | To measure |
+| 3 | 22.5% | 13.3% | 55.0% | 52.5% |
 | 4 | To measure | To measure | To measure | To measure |
 | 5 | To measure | To measure | To measure | To measure |

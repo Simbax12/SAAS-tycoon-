@@ -9,12 +9,12 @@ What is built, what is next, and the decisions made. Keep this short and current
 - 35 incidents written: 20 new, 10 repeats, 5 Builds. Also 10 Triage steps, 5 Tune steps and 19 Shop items.
 - docs/GAME_LOGIC.md: the engine plan, from the first email to the win screen, with six worked examples. It has 11 open questions waiting for answers.
 - docs/ROOM.md: the low-poly room around the computer, shown as video clips.
-- Stage 1 and Stage 2 room clips and stills are in public/room/, each cut from one Wan 2.2 take. Their screen boxes are measured.
+- Stage 1, 2 and 3 room clips and stills are in public/room/, each cut from one Wan 2.2 take. Their screen boxes are measured.
 - No game code yet.
 
 ## Next
 
-- Make the room clips for Stages 3 to 5 with Wan 2.2, following ROOM.md Part 3. Send each take to be cut and measured.
+- Make the room clips for Stages 4 and 5 with Wan 2.2, following ROOM.md Part 3. Send each take to be cut and measured.
 - Answer the open questions at the end of docs/GAME_LOGIC.md.
 - Milestone 1: Desktop. See the build order in docs/START_HERE.md.
 
@@ -44,6 +44,8 @@ What is built, what is next, and the decisions made. Keep this short and current
 | 2026-10-02 | Each stage has two stills: a desk still to tap, and a seat still that holds the desktop | In the first real clip the monitor in the desk view was only 15% of the picture wide, far too small for the desktop |
 | 2026-10-02 | Room clips can be made as one Wan 2.2 take and cut in two | The walk-in and sit-down clips then match perfectly |
 | 2026-10-02 | The screen-size rule for seat stills is now a quarter of the picture's area, not 60% of its height | A wide monitor can hold more desktop with less height. Stage 2 covers 35% of the picture, Stage 1 28% |
+| 2026-10-03 | Stage 3 is a warehouse loft at golden hour, not a plain open-plan office | It looked better as a growing start-up, and still steps up from the small office |
+| 2026-10-03 | Stage 3's sit-down clip has a 10% digital push-in at the end | The take's screen covered 24% of the picture, just under the quarter rule. A new take was not needed |
 | 2026-10-02 | PROGRESS.md was created before Milestone 1 | Asked for a change log now |
 
 ## Change log
@@ -64,3 +66,4 @@ What is built, what is next, and the decisions made. Keep this short and current
 | 2026-10-02 | Added docs/ROOM.md and a check that its rooms and desk items match the stages and Shop. Updated UI_THEME.md, GAME_LOGIC.md, START_HERE.md and the hub |
 | 2026-10-02 | Added the Stage 1 room clips and stills to public/room/. ROOM.md now has desk and seat stills, the one-take method, and the Stage 1 screen box |
 | 2026-10-02 | Added the Stage 2 room clips and stills. Recorded its screen box. Changed the seat still size rule to area |
+| 2026-10-03 | Added the Stage 3 room clips and stills, with a gentle push-in. Recorded its screen box. ROOM.md: the loft room row and the push-in method |
