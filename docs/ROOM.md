@@ -66,7 +66,7 @@ Each stage has its own room. The rooms tell the story of Blip growing up.
 | 1 | A garage with a bare brick wall and a concrete floor | A chunky beige box monitor with a curved glass screen | A workbench, one old tower PC, a desk lamp, a cardboard box of cables |
 | 2 | A small rented office with one window | A flat grey monitor on a stand | A second-hand desk, a whiteboard, a pot plant |
 | 3 | A converted warehouse loft at golden hour, with tall factory windows, beams and hanging lamps | A wide flat black monitor on a thin stand | Long shared tables with empty chairs, tall plants, an orange beanbag, a coffee mug |
-| 4 | A tall office with glass walls and a city view | A large thin monitor | A standing desk, a server rack light glowing behind glass |
+| 4 | An engineering office on a mezzanine, above a huge data centre hall in cool blue light | A large flat monitor with a pale grey lower edge | Rows of server racks with small blue lights, a glass railing, two potted plants, a glass of water |
 | 5 | The top floor of a glass tower at night | A wide curved monitor | City lights below, a world map glowing on a far wall |
 
 The monitor's screen must always show the BlipOS wallpaper (see UI_THEME.md > Desktop), never a real product's wallpaper.
@@ -119,6 +119,8 @@ Before cutting:
 - The monitor is straight on and in the middle of the picture at the end of both clips, so the screen box is a clean rectangle.
 - The sit-down clip ends with the camera still for at least half a second, and the screen covering at least a quarter of the picture (its width times its height). Closer is better: the desktop has to be readable inside it.
 - Never name a real game, product or artist in the prompt. The rooms must be our own.
+- Give Wan an earlier stage's desk still as the style picture, so every room has the same flat, low-poly look. Without one, Wan drifts towards a realistic photo look.
+- The screen shows a flat cartoon hill with no clouds. A real wallpaper photo, or a monitor that copies a real product's shape, means a new take.
 
 ## Screen boxes
 
@@ -129,5 +131,5 @@ Measure these from each seat still once it is made. Until then the game uses a p
 | 1 | 30.3% | 16.9% | 44.7% | 62.5% |
 | 2 | 20.2% | 13.2% | 58.6% | 59.7% |
 | 3 | 22.5% | 13.3% | 55.0% | 52.5% |
-| 4 | To measure | To measure | To measure | To measure |
+| 4 | 15.5% | 6.7% | 68.3% | 70.3% |
 | 5 | To measure | To measure | To measure | To measure |
