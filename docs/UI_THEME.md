@@ -18,7 +18,7 @@ The look is inspired by desktops of that era. It must not copy one.
 - **Taskbar:** a blue bar along the bottom.
   - Left: a green rounded "Start" button. It opens a menu listing the same items as the desktop icons.
   - Middle: a tab for each open window.
-  - Right: the tray. It shows users, cash and a clock.
+  - Right: the tray. It shows users, cash and a clock. On the computer layout it also has a zoom button: a magnifying glass with a plus to zoom in, or a minus to zoom out (see ROOM.md > During play).
 - **Balloons:** small speech balloons rise from the tray, for example "New email from Sam" or "New in the Shop".
 - **Start-up:** after the player sits down at the computer (see ROOM.md > The first time the game is opened), show a short BlipOS loading bar (2 seconds at most), then Maya's welcome email.
 

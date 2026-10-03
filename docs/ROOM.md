@@ -45,6 +45,14 @@ Blip has moved somewhere bigger. Before Maya's stage opening email, the new stag
 - Bottom left: items the player bought from "Your setup", drawn on the desk (see "The desk" below).
 - Bottom right: a "Stand up" button. It shows the desk still and "Tap the screen to sit down". This is the pause screen. The game state does not change.
 
+**Zoom:** on the computer layout, a zoom button in the taskbar tray switches between two views (see UI_THEME.md > Desktop).
+
+- **Zoomed out**, the view above: the whole monitor, with the room around it.
+- **Zoomed in:** the screen box fills the window, with 20px of the room picture left showing on every side, so a thin strip of the monitor's frame is still visible. The stage name is hidden, and "Stand up" moves into the Start menu, as on a phone, so nothing covers the desktop.
+- The view slides smoothly from one to the other in half a second. With reduced motion it switches at once.
+- The choice is remembered on this device, the same way as a setting. It is not part of the game's save.
+- The phone layout has no zoom button, because the desktop already fills the screen.
+
 **Phone layout:** the desktop fills the whole screen, with no room around it. Every pixel is needed at 375px wide. The clips still play, cropped to keep the monitor in the middle. "Stand up" is in the Start menu.
 
 ## Reduced motion
