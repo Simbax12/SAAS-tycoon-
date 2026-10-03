@@ -71,14 +71,14 @@ PROGRESS.md
 
 | Milestone | What gets built | Done when |
 |---|---|---|
-| 1. Desktop | Wallpaper, icons, taskbar, windows that open and close. The room frame with a placeholder still, "Tap the screen to sit down" and "Stand up" | Every icon opens its window on a phone and on a computer, and the desktop sits inside the monitor on a computer |
+| 1. Desktop | Wallpaper, icons, taskbar, windows that open and close. The room frame with the Stage 1 intro clips and stills, "Tap the screen to sit down" and "Stand up" | Every icon opens its window on a phone and on a computer, and the desktop sits inside the monitor on a computer |
 | 2. Engine and Stage 1 | Data files, reducer, server alerts, Inbox and emails, new incident flow, stars, users, saving | The four new incidents of Stage 1 can be played and survive a page refresh |
 | 3. Help | Tutorial, first-time tips, How to Play, hints, Pattern Book, Recycle Bin | A player who picks wrong twice is guided to the answer |
 | 4. Shop and money | Cash, Shop cards with price dots, request emails, all Stage 1 items and their effects, feature unlocks, investor top-up | Buying Payments unlocks incident 1.3, and the game cannot get stuck |
 | 5. Repeats and Stage 2 | Repeat incident flow, pattern cards, "Remind me", pips, refreshers, thank-you emails, the new and repeat incidents of Stage 2 | R1 and R2 can be played, and the Pattern Book shows their pips |
 | 6. Work apps | Blueprint and the Build flow, Terminal and Triage, SysDash and Tune, the toolbox and tool names in the Pattern Book, with B1, B2, T1 and T2 | B1 and B2 can be built with taps alone, and T1 pays its bonus |
 | 7. Stages 3 to 5 | Remaining incidents, Builds, extra steps and Shop items, growing System Map, win screen | The game can be played from 0 to 1 billion users |
-| 8. Polish | Animation, sound, balance, readability check, the real room clips and stills for all five stages | Every rule in UI_THEME.md passes at 375px wide |
+| 8. Polish | Animation, sound, balance, readability check, the room clips that play when each new stage starts | Every rule in UI_THEME.md passes at 375px wide |
 
 Until Milestone 6, Builds and extra steps are skipped. The play order moves straight past them.
 

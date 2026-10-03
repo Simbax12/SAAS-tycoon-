@@ -124,7 +124,7 @@ Before cutting:
 
 ## Screen boxes
 
-Measure these from each seat still once it is made. Until then the game uses a placeholder still with the box in the middle.
+Measure these from each seat still once it is made. For a curved screen, the box is the largest rectangle that fits fully inside it, so only a few pixels of wallpaper show at the curve. Until then the game uses a placeholder still with the box in the middle.
 
 | Stage | Left | Top | Width | Height |
 |---|---|---|---|---|
@@ -132,4 +132,4 @@ Measure these from each seat still once it is made. Until then the game uses a p
 | 2 | 20.2% | 13.2% | 58.6% | 59.7% |
 | 3 | 22.5% | 13.3% | 55.0% | 52.5% |
 | 4 | 15.5% | 6.7% | 68.3% | 70.3% |
-| 5 | To measure | To measure | To measure | To measure |
+| 5 | 17.1% | 23.1% | 64.8% | 47.6% |

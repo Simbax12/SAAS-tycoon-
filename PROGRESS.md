@@ -9,12 +9,11 @@ What is built, what is next, and the decisions made. Keep this short and current
 - 35 incidents written: 20 new, 10 repeats, 5 Builds. Also 10 Triage steps, 5 Tune steps and 19 Shop items.
 - docs/GAME_LOGIC.md: the engine plan, from the first email to the win screen, with six worked examples. It has 11 open questions waiting for answers.
 - docs/ROOM.md: the low-poly room around the computer, shown as video clips.
-- Stage 1 to 4 room clips and stills are in public/room/, each cut from one Wan 2.2 take. Their screen boxes are measured.
+- Room clips and stills for all five stages are in public/room/, each cut from one Wan 2.2 take. Every screen box is measured.
 - No game code yet.
 
 ## Next
 
-- Make the room clip for Stage 5 with Wan 2.2. Give Wan an earlier still as the style picture, following ROOM.md Part 3. Send each take to be cut and measured.
 - Answer the open questions at the end of docs/GAME_LOGIC.md.
 - Milestone 1: Desktop. See the build order in docs/START_HERE.md.
 
@@ -48,6 +47,7 @@ What is built, what is next, and the decisions made. Keep this short and current
 | 2026-10-03 | Stage 3's sit-down clip has a 10% digital push-in at the end | The take's screen covered 24% of the picture, just under the quarter rule. A new take was not needed |
 | 2026-10-03 | Stage 4 is an office above a data centre hall, not a glass office with a city view | It shows the stage's problem, data that is too big, and keeps Stage 5's city at night special |
 | 2026-10-03 | The first Stage 4 take was rejected | It was photo-realistic, showed the real Windows XP wallpaper photo, had a lit sign with letters and an iMac-like monitor. The re-take used the loft still as a style picture |
+| 2026-10-03 | Stage 5 keeps its curved monitor | Wan made it curved even when asked for flat. The curve is slight, so the screen box is the largest rectangle inside it |
 | 2026-10-02 | PROGRESS.md was created before Milestone 1 | Asked for a change log now |
 
 ## Change log
@@ -70,3 +70,4 @@ What is built, what is next, and the decisions made. Keep this short and current
 | 2026-10-02 | Added the Stage 2 room clips and stills. Recorded its screen box. Changed the seat still size rule to area |
 | 2026-10-03 | Added the Stage 3 room clips and stills, with a gentle push-in. Recorded its screen box. ROOM.md: the loft room row and the push-in method |
 | 2026-10-03 | Added the Stage 4 room clips and stills. Recorded its screen box. ROOM.md: the data centre room row |
+| 2026-10-03 | Added the Stage 5 room clips and stills. Recorded its screen box. All five rooms are done. ROOM.md: how to measure a curved screen. START_HERE.md: Milestone 1 uses the real Stage 1 room |
