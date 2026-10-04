@@ -103,6 +103,7 @@ What is built, what is next, and the decisions made. Keep this short and current
 | 2026-10-03 | Milestone 1 built: Next.js app, data/stages.ts, data/rooms.ts, data/desktopApps.ts, data/howToPlay.ts, components/desktop, components/windows and components/room. Added desk boxes to ROOM.md with a check for them. Hub: code map and commands |
 | 2026-10-03 | Added the zoom button: ROOM.md and UI_THEME.md first, then `components/room/useZoom.ts`, `placePicture.ts`, `RoomFrame.tsx`, the tray and the Start menu |
 | 2026-10-04 | Milestone 2 built: `data/challenges.ts` (Stage 1), `data/playOrder.ts`, `data/emails.ts`, `data/people.ts`, `data/patterns.ts`, `data/systemMap.ts`, `data/upgrades.ts` (must-have features), `game/`, `components/useGame.ts`, the Inbox, Incident, System Map and Settings windows, server alerts and balloons. Hub: code map and `npm test` |
+| 2026-10-04 | `components/useGame.ts`: the game still plays, without saving, when the browser blocks storage. A private test build was published as a claude.ai page for playing on a phone |
 
 ## On-screen text to check
 

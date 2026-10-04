@@ -6,6 +6,15 @@ import { newSeed } from "@/game/rules";
 import { loadGame, saveGame } from "@/game/save";
 import type { Action, GameState } from "@/game/types";
 
+// Reading window.localStorage itself can throw when storage is blocked. The game then plays without saving.
+function storage(): Storage | null {
+  try {
+    return window.localStorage;
+  } catch {
+    return null;
+  }
+}
+
 export type Game = { state: GameState; dispatch: (action: Action) => void };
 
 // Holds the game state, loads the save once, and saves after every change (docs/GAME_LOGIC.md > Saving).
@@ -15,7 +24,8 @@ export function useGame(): Game & { hadSave: boolean | null } {
   const [hadSave, setHadSave] = useState<boolean | null>(null);
 
   useEffect(() => {
-    const saved = loadGame(window.localStorage);
+    const store = storage();
+    const saved = store ? loadGame(store) : null;
     dispatch(saved ? { type: "load", state: saved } : { type: "reset", seed: newSeed() });
     setHadSave(saved !== null);
   }, []);
@@ -23,7 +33,8 @@ export function useGame(): Game & { hadSave: boolean | null } {
   // Nothing is saved until the game has begun, so a visit that ends before sitting down
   // still counts as the first one next time (docs/ROOM.md > The first time the game is opened).
   useEffect(() => {
-    if (hadSave !== null && state.emails.length > 0) saveGame(window.localStorage, state);
+    const store = storage();
+    if (store && hadSave !== null && state.emails.length > 0) saveGame(store, state);
   }, [state, hadSave]);
 
   return { state, dispatch, hadSave };
