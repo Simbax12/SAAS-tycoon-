@@ -78,6 +78,8 @@ Optional. The player's own gear. They bring in no users. Each item bought also s
 | gear-handbook | Engineering handbook | 2 | Medium | None | 0 | £800 | The first call to Dana in each incident is free |
 | gear-pc | Faster PC | 3 | Big | None | 0 | £6,000 | 10% more cash from every incident |
 
+Without the Second monitor, the Incident window and the Pattern Book cannot be open at the same time. Opening one closes the other.
+
 ## Request emails
 
 People ask for most items by email. The email has an "Open in Shop" button that opens the Shop at that item.
@@ -144,7 +146,7 @@ Victor is a contract engineer. When every call to Dana in an incident is used an
 
 ## Shop layout
 
-Three tabs: Features, Servers, Your setup. The Features tab lists must-have features first, then nice-to-have features. The Your setup tab shows Victor's lifeline first. Its card shows the price for the current stage, and "Held" while the player has one.
+Three tabs: Features, Servers, Your setup. The Features tab lists must-have features first, then nice-to-have features. The Your setup tab shows Victor's lifeline first. Its card shows the price for the current stage, and "Held" while the player has one. It has no dots, because its price does not come from the price rule.
 
 Each item is a card with:
 
@@ -154,7 +156,11 @@ Each item is a card with:
   - Change: 1 dot for Small, 2 for Medium, 3 for Big
   - Users: 0 dots for None, 1 for Some, 2 for Lots, 3 for Huge
 - "Users gained" as a number, for example "+15,000 users". Items with none show "No new users"
-- One line saying what it does
+- One line saying what it does:
+  - Servers and "Your setup" items show their Effect.
+  - A must-have feature says "Unlocks:" and the title of the incident it unlocks.
+  - A nice-to-have feature says "Optional. Brings in extra users."
+  - Victor's lifeline says "Gives the answer once every call is used."
 - Who asked for it, shown as a small sender badge
 - A Buy button
 
