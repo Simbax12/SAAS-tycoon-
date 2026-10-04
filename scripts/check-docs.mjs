@@ -414,6 +414,14 @@ for (const { m, body } of sections(E, /^## ([TU])(\d+) on (\S+) (.*)$/gm)) {
 for (const [label, ids] of [["Triage", triaged], ["Tune", tuned]]) {
   if (new Set(ids).size !== ids.length) problem(`EXTRA_STEPS.md: an incident has more than one ${label} step`);
 }
+// UI_THEME.md > Shop item icons: one row for every Shop item, with the same name, and one for the lifeline.
+const itemIcons = Object.fromEntries(all(cut(UI, "## Shop item icons", "## Test first"), /^\| ((?:feat|srv|gear)-[a-z]+|lifeline) \| ([^|]+) \| [^|]+ \|$/gm).map((m) => [m[1], m[2].trim()]));
+for (const d of Object.values(items)) {
+  if (!itemIcons[d.id]) problem(`UI_THEME.md: Shop item icons has no row for ${d.id}`);
+  else if (itemIcons[d.id] !== d.name.trim()) problem(`UI_THEME.md: Shop item icons calls ${d.id} "${itemIcons[d.id]}", but UPGRADES.md calls it "${d.name.trim()}"`);
+}
+for (const id of Object.keys(itemIcons)) if (id !== "lifeline" && !items[id]) problem(`UI_THEME.md: Shop item icons lists ${id}, which is not a Shop item`);
+if (!itemIcons.lifeline) problem("UI_THEME.md: Shop item icons has no row for Victor's lifeline");
 for (const app of ["Blueprint", "Terminal", "SysDash"]) {
   if (!UI.includes(`| ${app} |`)) problem(`UI_THEME.md: the desktop icons table has no ${app} icon`);
 }

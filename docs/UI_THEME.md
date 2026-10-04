@@ -141,6 +141,50 @@ Each card follows the layout in UPGRADES.md. The two price reasons are drawn as 
 - Beside each row is its word: Small, Medium or Big, and None, Some, Lots or Huge.
 - The price sits at the top right of the card in large type.
 
+## Shop item icons
+
+Each Shop card shows its item's icon. Original drawings, like every other icon.
+
+| Item | Name | Icon |
+|---|---|---|
+| feat-payments | Payments | Credit card |
+| feat-photos | Photo sharing | Camera |
+| feat-email | Email notifications | Envelope with a bell |
+| feat-verified | Verified accounts | Round badge with a tick |
+| feat-global | Global launch | Rocket |
+| feat-darkmode | Dark mode | Crescent moon |
+| feat-groups | Group chats | Three speech bubbles |
+| feat-voice | Voice notes | Microphone |
+| feat-translate | Auto-translate | Two letters joined by an arrow |
+| srv-test | Test environment | Flask |
+| srv-bigger | Bigger server | Tall server tower |
+| srv-monitoring | Monitoring | Heartbeat line on a screen |
+| srv-standby | Standby server | Two servers, one dimmed |
+| srv-analytics | Analytics | Pie chart |
+| srv-drills | Disaster drills | Alarm bell |
+| gear-monitor | Second monitor | Two screens side by side |
+| gear-wallpapers | Wallpaper pack | Framed picture of a hill |
+| gear-handbook | Engineering handbook | Thick book |
+| gear-pc | Faster PC | Tower PC with a lightning mark |
+| lifeline | Victor's lifeline | Life ring |
+
+## Test first
+
+With the Test environment owned, a "Test first" button with a flask icon sits beside "Call Dana" (see UPGRADES.md > Servers).
+
+- Tapping it shows "Tap a fix to test it." and a "Cancel" button.
+- The next card tapped is tested, not picked. Its Result shows in a box marked "Test". The right answer also shows "This would work" (see UPGRADES.md > Rules when effects combine).
+- The button then goes away until the next incident.
+
+## Stats
+
+The Stats window shows, from top to bottom:
+
+- Users, as a number and the progress bar to 1 billion (see GAME_DESIGN.md > Progress bar).
+- The current stage, for example "Stage 1: Garage".
+- Stars: the stars earned so far, out of 3 for each incident solved, for example "11 of 12 stars".
+- Investor top-ups: how many there have been, and "Loan owed" with the amount still owed (see GAME_DESIGN.md > The game must never get stuck).
+
 ## Pattern Book and pattern cards
 
 Each pattern has an icon. The same icon is used in the Pattern Book, on repeat incident cards and on the System Map.
@@ -219,7 +263,7 @@ On the computer layout, these items also appear on the desk in the room (see ROO
 
 Items bought from "Your setup" should be visible, so spending feels real.
 
-- Second monitor: the Pattern Book can sit beside the Incident window.
+- Second monitor: the Pattern Book can sit beside the Incident window. On a computer, opening one while the other is open puts the two side by side, each half the desktop wide. On a phone, a tab at the top of both windows switches between them. Without it, opening one closes the other (see UPGRADES.md > Your setup).
 - Wallpaper pack: three more original wallpapers (sunset hill, night sky, snowy hill).
 - Engineering handbook: a small book icon sits on the taskbar tray.
 - Faster PC: the BlipOS loading bar becomes quicker and the tray shows a lightning mark.
