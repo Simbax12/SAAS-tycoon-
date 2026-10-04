@@ -27,6 +27,7 @@ export default function DesktopIcons({ isPhone, badges, onOpen }: Props) {
             type="button"
             onClick={() => onOpen(app.id)}
             aria-label={label}
+            data-tour={`${app.id}Icon`}
             className="flex min-h-[48px] flex-col items-center justify-start gap-1 rounded-md p-1 text-center hover:bg-white/25 focus-visible:bg-white/25"
           >
             <span className="relative">

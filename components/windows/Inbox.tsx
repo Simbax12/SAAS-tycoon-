@@ -6,6 +6,7 @@ import { useDesktop } from "@/components/desktop/DesktopContext";
 import { useGameContext } from "@/components/useGame";
 import { emailView, type EmailView } from "@/game/emails";
 import { incidentOpen } from "@/game/rules";
+import { TUTORIAL_INCIDENT } from "@/data/tutorial";
 
 // Every email, newest first, each with its sender badge (docs/UI_THEME.md > Emails and sender badges).
 // Emails are never deleted, so the Inbox is the story so far.
@@ -27,6 +28,7 @@ export default function Inbox() {
         <li key={e.key}>
           <button
             type="button"
+            data-tour={e.view.investigate === TUTORIAL_INCIDENT ? "tutorialEmail" : undefined}
             onClick={() => {
               setOpenKey(e.key);
               dispatch({ type: "openEmail", key: e.key });
@@ -68,6 +70,7 @@ function OpenEmail({ view, onBack }: { view: EmailView; onBack: () => void }) {
       {canInvestigate && (
         <button
           type="button"
+          data-tour="investigate"
           onClick={() => {
             dispatch({ type: "investigate" });
             openApp("incident");

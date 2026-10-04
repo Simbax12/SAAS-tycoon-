@@ -68,7 +68,7 @@ export default function Taskbar({ isPhone, windows, frontId, startOpen, users, c
         })}
       </div>
 
-      <div className="flex h-12 shrink-0 items-center gap-2 rounded-md bg-[#1E4BB0] px-2 text-[18px]">
+      <div className="flex h-12 shrink-0 items-center gap-2 rounded-md bg-[#1E4BB0] px-2 text-[18px]" data-tour="trayCounters">
         <span className="flex items-center gap-1" aria-label={`Users: ${fullNumber(users)}`}>
           <UsersIcon />
           <span aria-hidden="true">{num(users)}</span>

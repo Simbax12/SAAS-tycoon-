@@ -3,7 +3,9 @@
 
 import { challengeById, type Challenge } from "../data/challenges";
 import { playOrder, playOrderRow, type IncidentKind, type PlayOrderRow } from "../data/playOrder";
-import { penalties, REPEAT_PAY_SHARE, stageByNumber, starMultiplier, type StageNumber } from "../data/stages";
+import { callPrices, penalties, REPEAT_PAY_SHARE, stageByNumber, starMultiplier, type StageNumber } from "../data/stages";
+import { TUTORIAL_INCIDENT } from "../data/tutorial";
+import { itemEffects } from "../data/upgrades";
 import { BUILDS_BUILT } from "./built";
 import type { GameState, Run, Stars } from "./types";
 
@@ -25,6 +27,45 @@ export const loseStar = (stars: Stars): Stars => (stars > 1 ? ((stars - 1) as St
 // docs/GAME_DESIGN.md > Solved first try.
 export const solvedFirstTry = (run: Run) =>
   run.tried.length === 0 && run.failedDeploys === 0 && run.calls === 0 && !run.lifelineUsed;
+
+// --- Calls to Dana (docs/GAME_DESIGN.md > Consultant calls) ---
+
+// A new or repeat incident has one call per clue: the Nudge, then each Clue line.
+// Builds get their own count when Blueprint arrives in Milestone 6.
+export function callsIn(state: GameState): number {
+  const challenge = currentChallenge(state);
+  return challenge ? 1 + challenge.clues.length : 0;
+}
+
+// The clues given so far in this incident, in order.
+export function cluesGiven(state: GameState): string[] {
+  const challenge = currentChallenge(state);
+  if (!challenge) return [];
+  return [challenge.nudge, ...challenge.clues].slice(0, state.run.calls);
+}
+
+// The price of the next call. Every call in the tutorial incident is free, and the Engineering
+// handbook makes the first call in each incident free (docs/GAME_LOGIC.md > Derived values).
+export function nextCallPrice(state: GameState): number {
+  if (state.currentId === TUTORIAL_INCIDENT) return 0;
+  if (state.owned.includes(itemEffects.freeFirstCall) && !state.run.handbookUsed) return 0;
+  const share = callPrices.first + callPrices.step * state.run.calls;
+  return Math.round(baseCash(currentStage(state)) * share);
+}
+
+export type CallButton =
+  | { kind: "call"; price: number; affordable: boolean }
+  | { kind: "lifeline" }
+  | { kind: "noMore" };
+
+// What the button at the bottom of the Incident window offers (docs/UI_THEME.md > Dana and Victor).
+export function callButton(state: GameState): CallButton {
+  if (state.run.calls < callsIn(state)) {
+    const price = nextCallPrice(state);
+    return { kind: "call", price, affordable: state.cash >= price };
+  }
+  return state.lifeline === currentStage(state) ? { kind: "lifeline" } : { kind: "noMore" };
+}
 
 // --- The play order ---
 

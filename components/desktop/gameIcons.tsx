@@ -186,3 +186,54 @@ export function WarningIcon({ size = 26 }: Props) {
     </Svg>
   );
 }
+
+// Dana's round avatar: a consultant with a headset (docs/UI_THEME.md > Dana and Victor).
+export function DanaAvatar({ size = 48 }: Props) {
+  return (
+    <svg width={size} height={size} viewBox="0 0 48 48" aria-hidden="true" focusable="false" className="shrink-0">
+      <circle cx="24" cy="24" r="23" fill="#A8431C" />
+      <path d="M10 30 C9 14 16 8 24 8 C32 8 39 14 38 30 L34 30 C34 20 30 16 24 16 C18 16 14 20 14 30 Z" fill="#1E1E1E" />
+      <circle cx="24" cy="27" r="12" fill="#8D5A3B" />
+      <path d="M12 26 A12 12 0 0 1 36 26" fill="none" stroke="#F4F0E0" strokeWidth="2.4" />
+      <rect x="9.5" y="24" width="5" height="8" rx="2" fill="#F4F0E0" />
+      <path d="M12 32 C12 37 16 38 20 37" fill="none" stroke="#F4F0E0" strokeWidth="2" />
+      <circle cx="19.5" cy="27" r="1.8" fill={INK} />
+      <circle cx="28.5" cy="27" r="1.8" fill={INK} />
+      <path d="M20 32 C22 34 26 34 28 32" fill="none" stroke={INK} strokeWidth="1.8" strokeLinecap="round" />
+    </svg>
+  );
+}
+
+// Victor's round avatar: blunt, short hair, a straight mouth.
+export function VictorAvatar({ size = 48 }: Props) {
+  return (
+    <svg width={size} height={size} viewBox="0 0 48 48" aria-hidden="true" focusable="false" className="shrink-0">
+      <circle cx="24" cy="24" r="23" fill="#4A4A4A" />
+      <circle cx="24" cy="26" r="13" fill="#D9A47E" />
+      <path d="M11 22 C12 13 18 11 24 11 C30 11 36 13 37 22 C33 18 29 17 24 17 C19 17 15 18 11 22 Z" fill="#9A9A9A" />
+      <path d="M17 23 H22 M26 23 H31" stroke={INK} strokeWidth="2" strokeLinecap="round" />
+      <circle cx="19.5" cy="26.5" r="1.8" fill={INK} />
+      <circle cx="28.5" cy="26.5" r="1.8" fill={INK} />
+      <path d="M20 33 H28" stroke={INK} strokeWidth="2" strokeLinecap="round" />
+    </svg>
+  );
+}
+
+export function PhoneIcon({ size = 24 }: Props) {
+  return (
+    <Svg size={size}>
+      <path d="M6 3 L9.5 3 L11 8 L8.5 9.5 A11 11 0 0 0 14.5 15.5 L16 13 L21 14.5 L21 18 A3 3 0 0 1 18 21 A15 15 0 0 1 3 6 A3 3 0 0 1 6 3 Z" fill="currentColor" />
+    </Svg>
+  );
+}
+
+// A Pattern Book pip (docs/UI_THEME.md > Pattern Book and pattern cards): gold has a small star,
+// silver is filled, empty is an outline.
+export function PipIcon({ pip, size = 26 }: { pip: "gold" | "silver" | "empty"; size?: number }) {
+  return (
+    <Svg size={size}>
+      <circle cx="12" cy="12" r="9.5" fill={pip === "gold" ? "#F2B632" : pip === "silver" ? "#B9BEC6" : "none"} stroke={INK} strokeWidth="1.6" />
+      {pip === "gold" && <path d="M12 6.5 L13.6 10 L17.3 10.3 L14.5 12.7 L15.4 16.4 L12 14.5 L8.6 16.4 L9.5 12.7 L6.7 10.3 L10.4 10 Z" fill="#FFFFFF" stroke={INK} strokeWidth="0.8" />}
+    </Svg>
+  );
+}

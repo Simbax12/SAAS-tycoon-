@@ -5,10 +5,12 @@ import { challengeById } from "../data/challenges";
 import { startOfStage, thanksText } from "../data/emails";
 import { playOrder } from "../data/playOrder";
 import { penalties } from "../data/stages";
-import { upgradeById } from "../data/upgrades";
+import { TUTORIAL_INCIDENT } from "../data/tutorial";
+import { itemEffects, upgradeById } from "../data/upgrades";
 import { SHOP_BUILT } from "./built";
 import {
   badPenalty,
+  callButton,
   currentChallenge,
   currentRow,
   currentStage,
@@ -170,11 +172,38 @@ function pick(state: GameState, optionId: string): GameState {
   });
 }
 
+// docs/GAME_LOGIC.md > Calls. Calls cost cash, never a star, and never remove an option.
+function call(state: GameState): GameState {
+  if (state.phase !== "choosing") return state;
+  const button = callButton(state);
+  if (button.kind !== "call" || !button.affordable) return state;
+  const handbookFree =
+    button.price === 0 && state.currentId !== TUTORIAL_INCIDENT && state.owned.includes(itemEffects.freeFirstCall);
+  return {
+    ...state,
+    cash: state.cash - button.price,
+    run: {
+      ...state.run,
+      calls: state.run.calls + 1,
+      paid: state.run.paid + button.price,
+      handbookUsed: state.run.handbookUsed || handbookFree,
+    },
+  };
+}
+
+// Victor gives the answer once every call is used (docs/UPGRADES.md > Victor's lifeline).
+function useLifeline(state: GameState): GameState {
+  if (state.phase !== "choosing" || callButton(state).kind !== "lifeline") return state;
+  return { ...state, lifeline: null, phase: "guided", run: { ...state.run, lifelineUsed: true } };
+}
+
 // docs/GAME_LOGIC.md > After the player taps Next.
 function next(state: GameState): GameState {
   if (state.phase !== "solved" || state.won) return state;
   const challenge = currentChallenge(state)!;
   let s = state;
+  // The tutorial runs inside its incident only, so it ends when the player moves on.
+  if (typeof s.tutorial === "number" && s.currentId === TUTORIAL_INCIDENT) s = { ...s, tutorial: "done" };
 
   // 1. The thank-you email, if the incident came from a person who sends one.
   if (challenge.arrives.by === "email" && thanksText(challenge.arrives.from)) s = sendEmail(s, `thanks:${challenge.id}`);
@@ -227,6 +256,18 @@ export function reducer(state: GameState, action: Action): GameState {
 
     case "openEmail":
       return readEmail(state, action.key);
+
+    case "call":
+      return call(state);
+
+    case "useLifeline":
+      return useLifeline(state);
+
+    case "tutorial":
+      return { ...state, tutorial: action.step };
+
+    case "tipSeen":
+      return state.tipsSeen.includes(action.id) ? state : { ...state, tipsSeen: [...state.tipsSeen, action.id] };
 
     case "reset":
       return freshState(action.seed, state.settings);

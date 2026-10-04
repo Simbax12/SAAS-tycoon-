@@ -22,3 +22,7 @@ export const upgrades: Upgrade[] = [
 ];
 
 export const upgradeById = (id: string): Upgrade | undefined => upgrades.find((u) => u.id === id);
+
+// Which item gives which effect, so the engine never names an item itself.
+// docs/UPGRADES.md > Your setup: "The first call to Dana in each incident is free".
+export const itemEffects = { freeFirstCall: "gear-handbook" };

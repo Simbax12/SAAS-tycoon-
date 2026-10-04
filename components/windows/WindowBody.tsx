@@ -3,6 +3,8 @@ import { AppIcon } from "@/components/desktop/icons";
 import HowToPlay from "./HowToPlay";
 import Inbox from "./Inbox";
 import Incident from "./Incident";
+import PatternBook from "./PatternBook";
+import RecycleBin from "./RecycleBin";
 import Settings from "./Settings";
 import SystemMap from "./SystemMap";
 
@@ -27,6 +29,10 @@ export default function WindowBody({ id }: { id: AppId }) {
       return <Incident />;
     case "systemMap":
       return <SystemMap />;
+    case "patternBook":
+      return <PatternBook />;
+    case "recycleBin":
+      return <RecycleBin />;
     case "settings":
       return <Settings />;
     default:

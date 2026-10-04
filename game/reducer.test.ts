@@ -6,7 +6,7 @@ import assert from "node:assert/strict";
 import { challenges } from "../data/challenges";
 import { emailView } from "./emails";
 import { freshState, reducer, SAVE_VERSION } from "./reducer";
-import { nextIncident, shuffled, usersOnScreen } from "./rules";
+import { callButton, callsIn, cluesGiven, nextCallPrice, nextIncident, shuffled, usersOnScreen } from "./rules";
 import { loadGame, saveGame, saveKey, type Storage } from "./save";
 import type { Action, GameState } from "./types";
 
@@ -166,4 +166,68 @@ test("a save whose incident left the play order carries on from the first unsolv
   const loaded = loadGame(store)!;
   assert.equal(loaded.currentId, "1.2");
   assert.equal(loaded.phase, "arrived");
+});
+
+// --- Milestone 3: calls to Dana and the tutorial ---
+
+const call: Action = { type: "call" };
+
+test("every call in the tutorial incident is free, and each gives the next clue", () => {
+  let s = play(begun(), { type: "investigate" }, call, call);
+  assert.equal(s.cash, 0);
+  assert.equal(s.run.calls, 2);
+  assert.deepEqual(cluesGiven(s), [challenges[0].nudge, ...challenges[0].clues].slice(0, 2));
+  // 1.1 has the Nudge and one Clue line, so a third call does nothing.
+  assert.equal(callsIn(s), 2);
+  assert.equal(reducer(s, call), s);
+  assert.deepEqual(callButton(s), { kind: "noMore" });
+  // A call costs no star, but spoils first try.
+  s = reducer(s, pick("best"));
+  assert.deepEqual(s.results["1.1"], { stars: 3, firstTry: false });
+});
+
+test("calls cost 15% of base cash, then 10% more each time, and never go into debt", () => {
+  let s = play(begun(), ...solveBest, { type: "next" }, { type: "investigate" }); // £750, on 1.2
+  assert.deepEqual(callButton(s), { kind: "call", price: 75, affordable: true });
+  s = reducer(s, call);
+  assert.equal(s.cash, 675);
+  assert.equal(nextCallPrice(s), 125);
+  s = { ...s, cash: 100 };
+  assert.deepEqual(callButton(s), { kind: "call", price: 125, affordable: false });
+  assert.equal(reducer(s, call), s);
+  // Calls never remove an option.
+  assert.deepEqual(s.run.removed, []);
+  assert.equal(s.run.paid, 75);
+});
+
+test("the handbook makes the first call in each incident free", () => {
+  let s = play(begun(), ...solveBest, { type: "next" }, { type: "investigate" });
+  s = { ...s, owned: [...s.owned, "gear-handbook"] };
+  s = reducer(s, call);
+  assert.equal(s.cash, 750);
+  assert.equal(s.run.handbookUsed, true);
+  // The second call costs the second call's price.
+  assert.equal(nextCallPrice(s), 125);
+});
+
+test("Victor's lifeline shows the answer once every call is used, and keeps stars", () => {
+  let s = play(begun(), ...solveBest, { type: "next" }, { type: "investigate" });
+  s = { ...s, cash: 10_000, lifeline: 1 };
+  assert.equal(reducer(s, { type: "useLifeline" }), s);
+  for (let i = 0; i < callsIn(s); i++) s = reducer(s, call);
+  assert.deepEqual(callButton(s), { kind: "lifeline" });
+  s = reducer(s, { type: "useLifeline" });
+  assert.equal(s.phase, "guided");
+  assert.equal(s.lifeline, null);
+  s = reducer(s, { type: "applyGuided" });
+  assert.deepEqual(s.results["1.2"], { stars: 3, firstTry: false });
+});
+
+test("the tutorial ends when the player moves on from its incident, and tips are seen once", () => {
+  let s = play(begun(), { type: "tutorial", step: 4 });
+  assert.equal(s.tutorial, 4);
+  s = play(s, ...solveBest, { type: "next" });
+  assert.equal(s.tutorial, "done");
+  s = play(s, { type: "tipSeen", id: "alert" }, { type: "tipSeen", id: "alert" });
+  assert.deepEqual(s.tipsSeen, ["alert"]);
 });

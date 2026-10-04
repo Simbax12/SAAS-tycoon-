@@ -9,6 +9,7 @@ import { emailView } from "@/game/emails";
 import Balloons from "./Balloons";
 import { DesktopContext } from "./DesktopContext";
 import DesktopIcons, { type IconBadges } from "./DesktopIcons";
+import Guide from "./Guide";
 import ServerAlert from "./ServerAlert";
 import StartMenu from "./StartMenu";
 import Taskbar from "./Taskbar";
@@ -32,6 +33,10 @@ type Props = {
 export default function Desktop({ isPhone, reducedMotion, windows, onStandUp, standUpInMenu, zoom }: Props) {
   const { state, dispatch } = useGameContext();
   const areaRef = useRef<HTMLDivElement>(null);
+  const rootRef = useRef<HTMLDivElement>(null);
+  // The tutorial replay from Settings. Screen state only, never saved.
+  const [tourStep, setTourStep] = useState<number | null>(null);
+  const [guiding, setGuiding] = useState(false);
   const [area, setArea] = useState<Area>({ width: 0, height: 0 });
   const [startOpen, setStartOpen] = useState(false);
   const { windows: open, front } = windows;
@@ -59,7 +64,11 @@ export default function Desktop({ isPhone, reducedMotion, windows, onStandUp, st
     [windows, area],
   );
   const closeStart = useCallback(() => setStartOpen(false), []);
-  const tools = useMemo(() => ({ openApp, reducedMotion }), [openApp, reducedMotion]);
+  const startTour = useCallback(() => {
+    windows.close("settings");
+    setTourStep(1);
+  }, [windows]);
+  const tools = useMemo(() => ({ openApp, reducedMotion, startTour }), [openApp, reducedMotion, startTour]);
 
   // The Inbox shows its unread count. The Incident icon shows a red badge while one is waiting.
   const unread = state.emails.filter((e) => !e.read && emailView(e.key)).length;
@@ -73,7 +82,7 @@ export default function Desktop({ isPhone, reducedMotion, windows, onStandUp, st
 
   return (
     <DesktopContext.Provider value={tools}>
-      <div className="absolute inset-0 flex flex-col overflow-hidden bg-sky-top text-ink">
+      <div ref={rootRef} className="absolute inset-0 flex flex-col overflow-hidden bg-sky-top text-ink">
         <div ref={areaRef} className="relative min-h-0 flex-1">
           <Wallpaper />
           <div className="absolute inset-0">
@@ -106,7 +115,7 @@ export default function Desktop({ isPhone, reducedMotion, windows, onStandUp, st
               }}
             />
           )}
-          <Balloons emails={state.emails} onOpen={() => openApp("inbox")} />
+          <Balloons emails={state.emails} hidden={guiding} onOpen={() => openApp("inbox")} />
           {startOpen && (
             <StartMenu
               isPhone={isPhone}
@@ -131,6 +140,7 @@ export default function Desktop({ isPhone, reducedMotion, windows, onStandUp, st
           onStart={() => setStartOpen((v) => !v)}
           onTab={(w) => windows.focus(w.id)}
         />
+        <Guide root={rootRef} windows={open} isPhone={isPhone} tourStep={tourStep} onTourStep={setTourStep} onActive={setGuiding} />
       </div>
     </DesktopContext.Provider>
   );

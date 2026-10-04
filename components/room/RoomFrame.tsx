@@ -87,7 +87,14 @@ export default function RoomFrame({ stage, screen, windows, firstVisit }: Props)
     );
 
   return (
-    <main className="fixed inset-0 overflow-hidden bg-[#111111]">
+    <main
+      className="fixed inset-0 overflow-hidden bg-[#111111]"
+      // The room never scrolls. Moving focus to a button can nudge a clipped box, so put it back.
+      onScroll={(e) => {
+        e.currentTarget.scrollLeft = 0;
+        e.currentTarget.scrollTop = 0;
+      }}
+    >
       {!fullScreenDesktop && (
         <div style={picStyle}>
           {clip ? (

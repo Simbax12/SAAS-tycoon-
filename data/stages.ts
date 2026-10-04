@@ -32,3 +32,7 @@ export const penalties = {
   badCash: 0.1,
   badDip: 0.1,
 };
+
+// Copied from docs/GAME_DESIGN.md > Consultant calls, as shares of the stage's base cash.
+// Call 1 costs `first`. Each call after that costs `step` more than the call before.
+export const callPrices = { first: 0.15, step: 0.1 };

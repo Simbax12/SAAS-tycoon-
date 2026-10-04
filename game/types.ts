@@ -78,6 +78,13 @@ export type Action =
   | { type: "applyGuided" }
   | { type: "next" }
   | { type: "openEmail"; key: string }
+  // Call Dana for the next clue (docs/GAME_LOGIC.md > Calls).
+  | { type: "call" }
+  | { type: "useLifeline" }
+  // Move the tutorial to a step, or skip or finish it (docs/GAME_DESIGN.md > Tutorial).
+  | { type: "tutorial"; step: number | "skipped" | "done" }
+  // A first-time tip has been shown and put away.
+  | { type: "tipSeen"; id: string }
   // A fresh game, keeping the settings. The seed is picked outside the reducer so it stays pure.
   | { type: "reset"; seed: number }
   // Replaces the state with one loaded from a save.

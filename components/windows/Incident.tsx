@@ -1,11 +1,25 @@
 "use client";
 
 import { thanksText } from "@/data/emails";
+import { victorLine } from "@/data/people";
 import { patternIcons } from "@/data/patterns";
-import { CrossIcon, MayaAvatar, PatternIcon, StarIcon, TickIcon, WarningIcon } from "@/components/desktop/gameIcons";
+import {
+  CrossIcon,
+  DanaAvatar,
+  MayaAvatar,
+  PatternIcon,
+  PhoneIcon,
+  SenderBadge,
+  StarIcon,
+  TickIcon,
+  VictorAvatar,
+  WarningIcon,
+} from "@/components/desktop/gameIcons";
 import { fullNumber } from "@/components/desktop/format";
+import { useEffect, useRef } from "react";
+import { scrollWithin } from "@/components/desktop/scrollWithin";
 import { useGameContext } from "@/components/useGame";
-import { currentChallenge, currentRow, nextIncident, payFor, shuffled } from "@/game/rules";
+import { callButton, cluesGiven, currentChallenge, currentRow, nextIncident, payFor, shuffled } from "@/game/rules";
 import type { Stars as StarCount } from "@/game/types";
 import Diagram from "./Diagram";
 
@@ -68,7 +82,12 @@ export default function Incident() {
       {phase === "arrived" && (
         <>
           <p className="text-[18px]">{challenge.arrives.text}</p>
-          <button type="button" onClick={() => dispatch({ type: "investigate" })} className={`${button} self-start bg-[#FFE08A] hover:bg-[#FFD35C]`}>
+          <button
+            type="button"
+            data-tour="investigate"
+            onClick={() => dispatch({ type: "investigate" })}
+            className={`${button} self-start bg-[#FFE08A] hover:bg-[#FFD35C]`}
+          >
             Investigate
           </button>
         </>
@@ -87,7 +106,7 @@ export default function Incident() {
             </p>
           )}
 
-          <div className="flex flex-col gap-3">
+          <div className="flex flex-col gap-3" data-tour="options">
             {showing.map((o) => {
               const tried = run.tried.includes(o.id);
               return (
@@ -112,11 +131,22 @@ export default function Incident() {
               );
             })}
           </div>
+
+          <Calls />
         </>
       )}
 
       {phase === "guided" && (
         <>
+          {run.lifelineUsed && (
+            <div className="flex items-start gap-3">
+              <VictorAvatar />
+              <p className="rounded-2xl border-2 border-[#4A4A4A] bg-white px-4 py-2 text-[18px]">
+                <span className="sr-only">Victor: </span>
+                {victorLine}
+              </p>
+            </div>
+          )}
           <MayaSays>{best.result}</MayaSays>
           <button type="button" autoFocus onClick={() => dispatch({ type: "applyGuided" })} className={`${button} self-start bg-[#FFE08A] hover:bg-[#FFD35C]`}>
             Apply this fix
@@ -126,6 +156,85 @@ export default function Incident() {
 
       {phase === "solved" && <Solved />}
     </div>
+  );
+}
+
+// Calls to Dana: her phone window with every clue so far, then the button for the next call
+// (docs/UI_THEME.md > Dana and Victor, and docs/GAME_DESIGN.md > Consultant calls).
+function Calls() {
+  const { state, dispatch } = useGameContext();
+  const clues = cluesGiven(state);
+  const next = callButton(state);
+  // Each new clue scrolls into view, so the player sees what they paid for.
+  const latest = useRef<HTMLLIElement>(null);
+  useEffect(() => scrollWithin(latest.current), [clues.length]);
+
+  return (
+    <>
+      {clues.length > 0 && (
+        <section aria-label="Call with Dana" className="overflow-hidden rounded-lg border-2 border-[#A8431C] bg-white">
+          <header className="flex items-center gap-2 bg-[#A8431C] px-3 py-1.5 text-white">
+            <PhoneIcon size={22} />
+            <span className="text-[18px] font-bold">Dana</span>
+          </header>
+          <ol className="flex flex-col gap-3 p-3">
+            {clues.map((clue, i) => (
+              <li
+                key={i}
+                ref={i === clues.length - 1 ? latest : undefined}
+                className="flex items-start gap-3"
+                aria-live={i === clues.length - 1 ? "polite" : undefined}
+              >
+                <DanaAvatar size={40} />
+                <p className="flex flex-col items-start gap-1 text-[18px]">
+                  <SenderBadge from="dana" />
+                  {clue}
+                </p>
+              </li>
+            ))}
+          </ol>
+        </section>
+      )}
+
+      {next.kind === "call" && (
+        <button
+          type="button"
+          data-tour="callDana"
+          disabled={!next.affordable}
+          onClick={() => dispatch({ type: "call" })}
+          className={`${button} flex items-center gap-2 self-start ${
+            next.affordable ? "bg-white hover:bg-[#FBEDE6]" : "border-[#8A8A8A] bg-[#DDDAD0] text-[#4A4A4A]"
+          }`}
+        >
+          <PhoneIcon />
+          Call Dana
+          <span className="font-normal">{next.price === 0 ? "Free call" : `£${fullNumber(next.price)}`}</span>
+          {!next.affordable && <span className="font-normal">Not enough cash</span>}
+        </button>
+      )}
+      {next.kind === "lifeline" && (
+        <button
+          type="button"
+          data-tour="callDana"
+          onClick={() => dispatch({ type: "useLifeline" })}
+          className={`${button} flex items-center gap-2 self-start bg-white hover:bg-[#EEEEEE]`}
+        >
+          <VictorAvatar size={32} />
+          Use Victor&apos;s lifeline
+        </button>
+      )}
+      {next.kind === "noMore" && (
+        <button
+          type="button"
+          data-tour="callDana"
+          disabled
+          className={`${button} flex items-center gap-2 self-start border-[#8A8A8A] bg-[#DDDAD0] text-[#4A4A4A]`}
+        >
+          <PhoneIcon />
+          No more calls
+        </button>
+      )}
+    </>
   );
 }
 

@@ -12,12 +12,13 @@ What is built, what is next, and the decisions made. Keep this short and current
 - Room clips and stills for all five stages are in public/room/, each cut from one Wan 2.2 take. Every screen box and desk box is measured.
 - Milestone 1: Desktop. A Next.js app with the wallpaper, 12 icons, the taskbar with Start menu, tabs and tray, and windows that open, close, drag and stack. The Stage 1 room plays the walk-in clip, waits for "Tap the screen to sit down", plays the sit-down clip, then the BlipOS loading bar. "Stand up" and "Skip" work. Reduced motion skips the clips. A zoom button in the tray makes the screen fill the window, with a thin strip of the monitor frame showing. Checked at 1440, 1024 and 375 pixels wide.
 - Milestone 2: Engine and Stage 1. The four Stage 1 incidents are copied into `data/challenges.ts`, and the whole play order into `data/playOrder.ts`. The reducer in `game/` runs the new incident flow: alert or email, Investigate, Maya's line, three shuffled cards, penalties, outage dip, the guided answer, stars, users, cash, Next and thank-you emails. Inbox with sender badges, unread dots and balloons. Server alerts. The System Map. Settings has "Reset game". The game saves after every change and survives a refresh. 14 reducer tests pass with `npm test`.
+- Milestone 3: Help. The 8-step tutorial runs inside 1.1 with a spotlight, and can be skipped or replayed from Settings. First-time tips show once each; the alert tip shows on 1.2. Calls to Dana: a "Call Dana" button with the next price, her phone window with every clue so far, "Not enough cash" and "No more calls". All calls in 1.1 are free. Victor's lifeline and the handbook's free call work in the engine, ready for the Shop. The Pattern Book shows each learned pattern with its icon, "Use this when" line, pips and "Tools you will meet". The Recycle Bin lists every wrong pick with why it failed. How to Play already had its exact text. 19 reducer tests pass. Checked in Chromium at 1440, 1024 and 375 pixels wide: two wrong picks lead to the guided answer.
 
 ## Next
 
-- Play Milestone 2: `npm install`, then `npm run dev`, then open http://localhost:3000. Play 1.1 to 1.4, refresh the page part way, and try Settings > Reset game.
+- Play Milestone 3: `npm install`, then `npm run dev`, then open http://localhost:3000. Use Settings > Reset game to see the tutorial from the start, then Settings > Replay tutorial.
 - Check the new on-screen text listed at the end of this file.
-- Milestone 3: Help. See the build order in docs/START_HERE.md.
+- Milestone 4: Shop and money. See the build order in docs/START_HERE.md.
 
 ## Decisions
 
@@ -104,6 +105,17 @@ What is built, what is next, and the decisions made. Keep this short and current
 | 2026-10-03 | Added the zoom button: ROOM.md and UI_THEME.md first, then `components/room/useZoom.ts`, `placePicture.ts`, `RoomFrame.tsx`, the tray and the Start menu |
 | 2026-10-04 | Milestone 2 built: `data/challenges.ts` (Stage 1), `data/playOrder.ts`, `data/emails.ts`, `data/people.ts`, `data/patterns.ts`, `data/systemMap.ts`, `data/upgrades.ts` (must-have features), `game/`, `components/useGame.ts`, the Inbox, Incident, System Map and Settings windows, server alerts and balloons. Hub: code map and `npm test` |
 | 2026-10-04 | `components/useGame.ts`: the game still plays, without saving, when the browser blocks storage. A private test build was published as a claude.ai page for playing on a phone |
+| 2026-10-04 | In the tutorial, step 5 shows the cards with a Next button, and they cannot be tapped until step 6 has taught "Call Dana" | In the docs' order, a right first pick would solve 1.1 and skip the step that teaches the call. The decisions above say the tutorial must teach the button |
+| 2026-10-04 | Every tutorial bubble has "Next" and "Skip tutorial", and steps 1 to 3 and 6 also move on when the player taps the lit-up thing | If the thing to tap is hidden, for example behind a full-screen window on a phone, the player can still move on and never gets stuck |
+| 2026-10-04 | The tutorial catches up when the player goes ahead on their own, for example by opening the Incident window from its icon | The spotlight must never point at a step the player has already done |
+| 2026-10-04 | "Replay tutorial" in Settings is a walk-through of the 8 steps with Next only. It changes nothing in the game | 1.1 is already solved, so its steps cannot be played again for real |
+| 2026-10-04 | A save from Milestone 2 that is past 1.1 gets no tutorial | The tutorial runs inside 1.1 only |
+| 2026-10-04 | A tip goes away when the player taps "OK" or does what it says, and is then never shown again | GAME_LOGIC.md: each tip once. Tapping Investigate on the alert is the tip's own advice |
+| 2026-10-04 | Dana's phone window is a box inside the Incident window, above the "Call Dana" button, and each new clue scrolls into view | It keeps the clues next to the cards they are about, and works the same on a phone |
+| 2026-10-04 | Which Shop item gives a free first call lives in `data/upgrades.ts` as `itemEffects` | Game logic must never name an upgrade. The handbook and Victor's lifeline can only be bought from Milestone 4 |
+| 2026-10-04 | Settings has "Replay tutorial" and "Reset game". Text size, motion, sound and wallpaper are still to come | They are not in Milestone 3's list in START_HERE.md |
+| 2026-10-04 | The Pattern Book's "Also seen as" and "Built in" lines are left out for now | They come from repeats and Builds, which arrive in Milestones 5 and 6 |
+| 2026-10-04 | Milestone 3 built: `data/tutorial.ts`, call prices in `data/stages.ts`, `itemEffects` in `data/upgrades.ts`, tools and everyday patterns in `data/patterns.ts`, Victor's line in `data/people.ts`. Calls, the lifeline, the tutorial and tips in `game/`. `components/desktop/Guide.tsx`, `scrollWithin.ts`, the Pattern Book and Recycle Bin windows, calls in the Incident window, "Replay tutorial" in Settings. Hub: code map |
 
 ## On-screen text to check
 
@@ -128,3 +140,12 @@ New in Milestone 2:
 - Inbox: "Back".
 - Settings: "Reset game", "This clears all progress. Are you sure?", "Yes, reset", "Cancel".
 - Screen reader labels, not shown on screen: "Maya:", "2 of 3 stars", "Incident, waiting", "Inbox, 2 unread", "unread" on an email, "System Map" on the diagram.
+
+New in Milestone 3:
+
+- Tutorial and tip buttons: "Next", "Skip tutorial", "OK".
+- Settings: "Replay tutorial".
+- Pattern Book when empty: "No patterns yet. Fix an incident to learn one."
+- Recycle Bin when empty: "The Recycle Bin is empty."
+- Dana's phone window title: "Dana".
+- Screen reader labels, not shown on screen: "Call with Dana", "Victor:", and "Pips:" with each pip's colour.

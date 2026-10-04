@@ -8,7 +8,8 @@ const SHOW_MS = 3500;
 
 // A speech balloon rises from the tray for each new email, one after another
 // (docs/UI_THEME.md > Desktop, and docs/GAME_DESIGN.md > The order emails arrive in).
-export default function Balloons({ emails, onOpen }: { emails: Email[]; onOpen: () => void }) {
+// While the spotlight shows, balloons stay hidden so they never cover the thing to tap.
+export default function Balloons({ emails, hidden, onOpen }: { emails: Email[]; hidden: boolean; onOpen: () => void }) {
   const [queue, setQueue] = useState<string[]>([]);
   // Emails already there when the desktop appears are not new.
   const seen = useRef(emails.length);
@@ -31,7 +32,7 @@ export default function Balloons({ emails, onOpen }: { emails: Email[]; onOpen: 
   const view = key ? emailView(key) : undefined;
   return (
     <div className="pointer-events-none absolute bottom-2 right-2 z-[950]" aria-live="polite">
-      {view && (
+      {view && !hidden && (
         <button
           key={key}
           type="button"

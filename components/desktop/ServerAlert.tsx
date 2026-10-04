@@ -74,6 +74,7 @@ export default function ServerAlert({ text, area, isPhone, onInvestigate }: Prop
         <button
           type="button"
           autoFocus
+          data-tour="alertInvestigate"
           onClick={onInvestigate}
           className="min-h-12 self-start rounded-md border-2 border-ink bg-[#FFE08A] px-5 text-[18px] font-bold hover:bg-[#FFD35C]"
         >

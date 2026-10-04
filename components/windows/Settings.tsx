@@ -1,22 +1,29 @@
 "use client";
 
 import { useState } from "react";
+import { useDesktop } from "@/components/desktop/DesktopContext";
 import { useGameContext } from "@/components/useGame";
 import { newSeed } from "@/game/rules";
 
 const button = "min-h-12 rounded-md border-2 border-ink px-5 text-[18px] font-bold";
 
-// Milestone 2 builds "Reset game" only. The other settings arrive in Milestone 3
-// (docs/GAME_DESIGN.md > Saving). Reset clears all progress but keeps the settings.
+// "Replay tutorial" (docs/GAME_DESIGN.md > Tutorial) and "Reset game" (docs/GAME_DESIGN.md > Saving).
+// Text size, motion, sound and wallpaper arrive in later milestones. Reset keeps the settings.
 export default function Settings() {
   const { dispatch } = useGameContext();
+  const { startTour } = useDesktop();
   const [confirming, setConfirming] = useState(false);
 
   if (!confirming) {
     return (
-      <button type="button" onClick={() => setConfirming(true)} className={`${button} bg-white hover:bg-[#EEF3FD]`}>
-        Reset game
-      </button>
+      <div className="flex flex-col items-start gap-3">
+        <button type="button" onClick={startTour} className={`${button} bg-white hover:bg-[#EEF3FD]`}>
+          Replay tutorial
+        </button>
+        <button type="button" onClick={() => setConfirming(true)} className={`${button} bg-white hover:bg-[#EEF3FD]`}>
+          Reset game
+        </button>
+      </div>
     );
   }
 

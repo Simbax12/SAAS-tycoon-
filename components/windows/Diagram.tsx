@@ -84,7 +84,7 @@ export default function Diagram({ state }: { state: GameState }) {
           const bad = b.id === failing;
           const fresh = !!justSolved && !!b.shownWhen && "solved" in b.shownWhen && b.shownWhen.solved === justSolved;
           return (
-            <g key={b.id} className={fresh && !reducedMotion ? "part-pop" : undefined}>
+            <g key={b.id} className={fresh && !reducedMotion ? "part-pop" : undefined} data-tour={bad ? "failingPart" : undefined}>
               <rect
                 x={b.x - BOX_W / 2}
                 y={b.y - BOX_H / 2}

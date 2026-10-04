@@ -37,6 +37,9 @@ export const customerNames: Record<string, string> = {
   R10: "Femi",
 };
 
+// Victor's one line, before the guided answer shows (docs/UI_THEME.md > Dana and Victor).
+export const victorLine = "This one. You owe me.";
+
 // The name shown on an email. `about` is the incident or item id the email belongs to.
 export function senderName(from: PersonId, about: string): string {
   if (from === "customer") return customerNames[about] ?? personById(from).name;
