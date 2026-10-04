@@ -6,6 +6,8 @@ import Incident from "./Incident";
 import PatternBook from "./PatternBook";
 import RecycleBin from "./RecycleBin";
 import Settings from "./Settings";
+import Shop from "./Shop";
+import Stats from "./Stats";
 import SystemMap from "./SystemMap";
 
 // Until a later milestone builds a window, it shows its icon and what it will hold
@@ -35,6 +37,10 @@ export default function WindowBody({ id }: { id: AppId }) {
       return <RecycleBin />;
     case "settings":
       return <Settings />;
+    case "shop":
+      return <Shop />;
+    case "stats":
+      return <Stats />;
     default:
       return <Placeholder id={id} />;
   }

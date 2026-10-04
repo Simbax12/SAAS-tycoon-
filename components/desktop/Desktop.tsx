@@ -5,6 +5,8 @@ import type { AppId } from "@/data/desktopApps";
 import WindowBody from "@/components/windows/WindowBody";
 import { useGameContext } from "@/components/useGame";
 import { drawnStyle, osForStage } from "@/data/blipOs";
+import { appById } from "@/data/desktopApps";
+import { itemEffects } from "@/data/upgrades";
 import { currentChallenge, currentStage, incidentOpen, usersOnScreen } from "@/game/rules";
 import { emailView } from "@/game/emails";
 import Balloons from "./Balloons";
@@ -17,6 +19,9 @@ import Taskbar from "./Taskbar";
 import Wallpaper from "./Wallpaper";
 import WindowFrame from "./WindowFrame";
 import type { Area, Windows } from "./useWindows";
+
+// The Second monitor decides whether these two can be open at once (docs/UPGRADES.md > Your setup).
+const PAIR: AppId[] = ["incident", "patternBook"];
 
 type Props = {
   isPhone: boolean;
@@ -57,19 +62,42 @@ export default function Desktop({ isPhone, reducedMotion, windows, onStandUp, st
     if (!begun) dispatch({ type: "begin" });
   }, [begun, dispatch]);
 
+  // Without the Second monitor, opening the Incident window or the Pattern Book closes the other.
+  // With it, both stay open: side by side on a computer, with tabs on a phone.
+  const monitor = state.owned.includes(itemEffects.secondMonitor);
   const openApp = useCallback(
     (id: AppId) => {
       setStartOpen(false);
+      const other = PAIR.includes(id) ? PAIR.find((p) => p !== id)! : null;
+      const otherOpen = other !== null && windows.windows.some((w) => w.id === other);
+      if (otherOpen && !monitor) windows.close(other);
+      if (otherOpen && monitor && !isPhone) {
+        windows.sideBySide(PAIR[0], PAIR[1], area);
+        windows.focus(id);
+        return;
+      }
       windows.open(id, area);
     },
-    [windows, area],
+    [windows, area, monitor, isPhone],
+  );
+  // "Open in Shop" opens the Shop at one item.
+  const [shopFocus, setShopFocus] = useState<{ id: string; n: number } | null>(null);
+  const openShopAt = useCallback(
+    (itemId: string) => {
+      setShopFocus((f) => ({ id: itemId, n: (f?.n ?? 0) + 1 }));
+      openApp("shop");
+    },
+    [openApp],
   );
   const closeStart = useCallback(() => setStartOpen(false), []);
   const startTour = useCallback(() => {
     windows.close("settings");
     setTourStep(1);
   }, [windows]);
-  const tools = useMemo(() => ({ openApp, reducedMotion, startTour }), [openApp, reducedMotion, startTour]);
+  const tools = useMemo(
+    () => ({ openApp, reducedMotion, startTour, openShopAt, shopFocus }),
+    [openApp, reducedMotion, startTour, openShopAt, shopFocus],
+  );
 
   // The Inbox shows its unread count. The Incident icon shows a red badge while one is waiting.
   const unread = state.emails.filter((e) => !e.read && emailView(e.key)).length;
@@ -119,6 +147,9 @@ export default function Desktop({ isPhone, reducedMotion, windows, onStandUp, st
                 onClose={() => windows.close(w.id)}
                 onFocus={() => windows.focus(w.id)}
                 onMove={(x, y) => windows.move(w.id, x, y, area)}
+                tabs={isPhone && monitor && PAIR.includes(w.id) && PAIR.every((p) => open.some((o) => o.id === p)) ? (
+                  <PairTabs current={w.id} onPick={(id) => windows.focus(id)} />
+                ) : undefined}
               >
                 <WindowBody id={w.id} />
               </WindowFrame>
@@ -135,7 +166,13 @@ export default function Desktop({ isPhone, reducedMotion, windows, onStandUp, st
               }}
             />
           )}
-          <Balloons emails={state.emails} hidden={guiding} onOpen={() => openApp("inbox")} />
+          <Balloons
+            emails={state.emails}
+            stage={currentStage(state)}
+            hidden={guiding}
+            onOpen={() => openApp("inbox")}
+            onOpenShop={() => openApp("shop")}
+          />
           {startOpen && (
             <StartMenu
               isPhone={isPhone}
@@ -163,5 +200,28 @@ export default function Desktop({ isPhone, reducedMotion, windows, onStandUp, st
         <Guide root={rootRef} windows={open} isPhone={isPhone} tourStep={tourStep} onTourStep={setTourStep} onActive={setGuiding} />
       </div>
     </DesktopContext.Provider>
+  );
+}
+
+// On a phone with the Second monitor, a tab at the top of the Incident window and the Pattern Book
+// switches between them without closing either (docs/UI_THEME.md > The player's setup).
+function PairTabs({ current, onPick }: { current: AppId; onPick: (id: AppId) => void }) {
+  return (
+    <div role="tablist" className="flex shrink-0 gap-1 border-b-2 border-ink px-2 pt-2">
+      {PAIR.map((id) => (
+        <button
+          key={id}
+          type="button"
+          role="tab"
+          aria-selected={id === current}
+          onClick={() => onPick(id)}
+          className={`min-h-12 flex-1 rounded-t-md border-2 border-b-0 border-ink px-3 text-[18px] ${
+            id === current ? "bg-[var(--os-body)] font-bold" : "bg-[#C9C1A3]"
+          }`}
+        >
+          {appById(id).name}
+        </button>
+      ))}
+    </div>
   );
 }

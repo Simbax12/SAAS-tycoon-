@@ -3,9 +3,9 @@
 
 import { challengeById, type Challenge } from "../data/challenges";
 import { playOrder, playOrderRow, type IncidentKind, type PlayOrderRow } from "../data/playOrder";
-import { callPrices, penalties, REPEAT_PAY_SHARE, stageByNumber, starMultiplier, type StageNumber } from "../data/stages";
+import { callPrices, penalties, progressMarkers, REPEAT_PAY_SHARE, stageByNumber, starMultiplier, type StageNumber } from "../data/stages";
 import { TUTORIAL_INCIDENT } from "../data/tutorial";
-import { itemEffects } from "../data/upgrades";
+import { itemEffects, LIFELINE_TIMES, upgradeById, upgrades, type Upgrade } from "../data/upgrades";
 import { BUILDS_BUILT } from "./built";
 import type { GameState, Run, Stars } from "./types";
 
@@ -27,6 +27,19 @@ export const loseStar = (stars: Stars): Stars => (stars > 1 ? ((stars - 1) as St
 // docs/GAME_DESIGN.md > Solved first try.
 export const solvedFirstTry = (run: Run) =>
   run.tried.length === 0 && run.failedDeploys === 0 && run.calls === 0 && !run.lifelineUsed;
+
+// How full the bar to 1 billion is, from 0 to 1 (docs/GAME_DESIGN.md > Progress bar): five equal
+// segments, each filled in proportion between its two markers. The bar stops at full.
+export function progressShare(users: number): number {
+  const segment = 1 / progressMarkers.length;
+  let low = 0;
+  for (let i = 0; i < progressMarkers.length; i++) {
+    const high = progressMarkers[i];
+    if (users < high) return segment * (i + Math.max(0, users - low) / (high - low));
+    low = high;
+  }
+  return 1;
+}
 
 // --- Calls to Dana (docs/GAME_DESIGN.md > Consultant calls) ---
 
@@ -66,6 +79,33 @@ export function callButton(state: GameState): CallButton {
   }
   return state.lifeline === currentStage(state) ? { kind: "lifeline" } : { kind: "noMore" };
 }
+
+// --- The Shop (docs/GAME_LOGIC.md > Derived values) ---
+
+// Items whose stage is at or below the current stage.
+export const itemsOnShow = (state: GameState): Upgrade[] => upgrades.filter((u) => u.stage <= currentStage(state));
+
+// The current incident's "Needs" feature, if it is not owned.
+export function neededNext(state: GameState): string | undefined {
+  const needs = currentRow(state)?.needs;
+  return needs && !state.owned.includes(needs) ? needs : undefined;
+}
+
+// On show, not owned, and either the cash covers it or it is Needed next.
+export function canBuy(state: GameState, id: string): boolean {
+  const item = upgradeById(id);
+  if (!item || item.stage > currentStage(state) || state.owned.includes(id)) return false;
+  return state.cash >= item.price || neededNext(state) === id;
+}
+
+// docs/UPGRADES.md > Victor's lifeline: 2 x the base cash of the current stage.
+export const lifelinePrice = (state: GameState) => baseCash(currentStage(state)) * LIFELINE_TIMES;
+
+export const canBuyLifeline = (state: GameState) => state.lifeline === null && state.cash >= lifelinePrice(state);
+
+// "Test first": once per incident, with the Test environment owned (docs/UPGRADES.md > Rules when effects combine).
+export const canTestFirst = (state: GameState) =>
+  state.phase === "choosing" && state.owned.includes(itemEffects.testFirst) && !state.run.testUsed;
 
 // --- The play order ---
 

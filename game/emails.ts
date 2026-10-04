@@ -5,6 +5,7 @@ import { challengeById } from "../data/challenges";
 import { openers, startOfStage, thanksText } from "../data/emails";
 import { senderName, type PersonId } from "../data/people";
 import type { StageNumber } from "../data/stages";
+import { requestFor } from "../data/upgrades";
 
 export type EmailView = {
   key: string;
@@ -14,6 +15,8 @@ export type EmailView = {
   text: string;
   // The incident an "Investigate" button opens.
   investigate?: string;
+  // The Shop item an "Open in Shop" button opens.
+  shopItem?: string;
 };
 
 const asStage = (s: string): StageNumber | undefined =>
@@ -31,6 +34,12 @@ export function emailView(key: string): EmailView | undefined {
     if (kind === "arrive") return { key, from: arrives.from, name, text: arrives.text, investigate: id };
     const text = thanksText(arrives.from);
     return text ? { key, from: arrives.from, name, text } : undefined;
+  }
+
+  if (kind === "request") {
+    const request = requestFor(id);
+    if (!request) return undefined;
+    return { key, from: request.from, name: senderName(request.from, id), text: request.text, shopItem: id };
   }
 
   if (kind === "opener") {

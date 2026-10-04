@@ -6,7 +6,8 @@ import type { AppId } from "@/data/desktopApps";
 // Which windows are open and where. This is screen state, not game state:
 // it is never saved (docs/GAME_LOGIC.md > The game state).
 
-export type OpenWindow = { id: AppId; x: number; y: number; z: number };
+// A window has the usual size unless it was placed side by side with another.
+export type OpenWindow = { id: AppId; x: number; y: number; z: number; width?: number; height?: number };
 
 export type Area = { width: number; height: number };
 
@@ -62,9 +63,21 @@ export function useWindows() {
     setWindows((list) => list.map((w) => (w.id === id ? { ...w, ...clampPosition(x, y, area) } : w)));
   }, []);
 
+  // Two windows side by side, each half the desktop wide (docs/UI_THEME.md > The player's setup).
+  // The right one comes to the front.
+  const sideBySide = useCallback((left: AppId, right: AppId, area: Area) => {
+    setWindows((list) => {
+      const z = topZ(list);
+      const width = Math.floor(area.width / 2);
+      const height = area.height;
+      const rest = list.filter((w) => w.id !== left && w.id !== right);
+      return [...rest, { id: left, x: 0, y: 0, z: z + 1, width, height }, { id: right, x: width, y: 0, z: z + 2, width, height }];
+    });
+  }, []);
+
   const front = windows.reduce<OpenWindow | null>((m, w) => (!m || w.z > m.z ? w : m), null);
 
-  return { windows, front, open, close, focus, move };
+  return { windows, front, open, close, focus, move, sideBySide };
 }
 
 export type Windows = ReturnType<typeof useWindows>;

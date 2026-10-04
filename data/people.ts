@@ -45,3 +45,6 @@ export function senderName(from: PersonId, about: string): string {
   if (from === "customer") return customerNames[about] ?? personById(from).name;
   return personById(from).name;
 }
+
+// Maya's line when the investor lends the shortfall (docs/GAME_DESIGN.md > The game must never get stuck).
+export const investorLine = "An investor believes in us.";

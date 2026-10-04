@@ -81,6 +81,11 @@ export type Action =
   // Call Dana for the next clue (docs/GAME_LOGIC.md > Calls).
   | { type: "call" }
   | { type: "useLifeline" }
+  // The Shop (docs/GAME_LOGIC.md > Part 3: Player actions).
+  | { type: "buy"; itemId: string }
+  | { type: "buyLifeline" }
+  // Try one option with no penalty. It changes nothing but `testUsed`.
+  | { type: "testFirst"; optionId: string }
   // Move the tutorial to a step, or skip or finish it (docs/GAME_DESIGN.md > Tutorial).
   | { type: "tutorial"; step: number | "skipped" | "done" }
   // A first-time tip has been shown and put away.

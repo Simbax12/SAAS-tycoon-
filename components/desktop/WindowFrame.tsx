@@ -13,6 +13,8 @@ type Props = {
   onClose: () => void;
   onFocus: () => void;
   onMove: (x: number, y: number) => void;
+  // Shown above the body, for example the tabs that switch between two windows on a phone.
+  tabs?: React.ReactNode;
   children: React.ReactNode;
 };
 
@@ -20,7 +22,7 @@ const KEY_STEP = 24;
 
 // A window: blue title bar with icon, name and close button, and a cream body
 // (docs/UI_THEME.md > Windows). On a computer it can be dragged by the title bar.
-export default function WindowFrame({ win, area, isPhone, isFront, onClose, onFocus, onMove, children }: Props) {
+export default function WindowFrame({ win, area, isPhone, isFront, onClose, onFocus, onMove, tabs, children }: Props) {
   const app = appById(win.id);
   const drag = useRef<{ px: number; py: number; x: number; y: number } | null>(null);
   const titleId = `window-title-${win.id}`;
@@ -55,7 +57,9 @@ export default function WindowFrame({ win, area, isPhone, isFront, onClose, onFo
     onMove(pos.x + m[0], pos.y + m[1]);
   };
 
-  const { width, height } = windowSize(area);
+  const usual = windowSize(area);
+  const width = Math.min(win.width ?? usual.width, area.width);
+  const height = Math.min(win.height ?? usual.height, area.height);
   // The desktop can shrink when the browser is resized, so keep the title bar in reach.
   const pos = clampPosition(win.x, win.y, area);
   const place: React.CSSProperties = isPhone
@@ -97,6 +101,7 @@ export default function WindowFrame({ win, area, isPhone, isFront, onClose, onFo
           <CloseIcon />
         </button>
       </header>
+      {tabs}
       <div className="min-h-0 flex-1 overflow-auto p-4">{children}</div>
     </section>
   );

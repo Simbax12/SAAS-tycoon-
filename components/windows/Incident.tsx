@@ -16,10 +16,11 @@ import {
   WarningIcon,
 } from "@/components/desktop/gameIcons";
 import { fullNumber } from "@/components/desktop/format";
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
+import { ShopIcon } from "@/components/desktop/shopIcons";
 import { scrollWithin } from "@/components/desktop/scrollWithin";
 import { useGameContext } from "@/components/useGame";
-import { callButton, cluesGiven, currentChallenge, currentRow, nextIncident, payFor, shuffled } from "@/game/rules";
+import { callButton, canTestFirst, cluesGiven, currentChallenge, currentRow, nextIncident, payFor, shuffled } from "@/game/rules";
 import type { Stars as StarCount } from "@/game/types";
 import Diagram from "./Diagram";
 
@@ -54,6 +55,9 @@ export default function Incident() {
   const challenge = currentChallenge(state);
   const row = currentRow(state);
   const { phase, run } = state;
+  // "Test first" (docs/UI_THEME.md > Test first): picking the card to test, then its Result.
+  // Screen state only. It belongs to one incident, so a new incident starts without it.
+  const [test, setTest] = useState<{ incident: string; option: string | null } | null>(null);
 
   if (!challenge || !row || phase === "waiting") {
     return <p className="text-[18px]">No incident right now.</p>;
@@ -62,6 +66,9 @@ export default function Incident() {
   const best = challenge.options.find((o) => o.type === "best")!;
   const showing = shuffled(challenge.options, state.seed, challenge.id).filter((o) => !run.removed.includes(o.id));
   const lastTried = challenge.options.find((o) => o.id === run.tried[run.tried.length - 1]);
+  const testHere = test?.incident === challenge.id ? test : null;
+  const choosingTest = testHere !== null && testHere.option === null && canTestFirst(state);
+  const tested = challenge.options.find((o) => o.id === testHere?.option);
 
   return (
     <div className="flex flex-col gap-4">
@@ -97,7 +104,18 @@ export default function Incident() {
         <>
           <MayaSays>{challenge.maya}</MayaSays>
 
-          {lastTried && (
+          {tested && (
+            <div className="flex items-start gap-2 rounded-md border-2 border-[#2A5FD0] bg-[#EEF3FD] px-3 py-2 text-[18px]" role="status">
+              <ShopIcon id="srv-test" size={26} />
+              <p className="flex flex-col gap-1">
+                <span className="font-bold">Test</span>
+                <span>{tested.result}</span>
+                {tested.type === "best" && <span className="font-bold">This would work</span>}
+              </p>
+            </div>
+          )}
+
+          {lastTried && !tested && (
             <p className="flex items-start gap-2 rounded-md border-2 border-alert bg-[#FBE3E3] px-3 py-2 text-[18px]" role="status">
               <CrossIcon />
               <span>
@@ -114,7 +132,15 @@ export default function Incident() {
                   key={o.id}
                   type="button"
                   disabled={tried}
-                  onClick={() => dispatch({ type: "pick", optionId: o.id })}
+                  onClick={() => {
+                    if (choosingTest) {
+                      dispatch({ type: "testFirst", optionId: o.id });
+                      setTest({ incident: challenge.id, option: o.id });
+                    } else {
+                      dispatch({ type: "pick", optionId: o.id });
+                      setTest(null);
+                    }
+                  }}
                   className={`flex flex-col items-start gap-1 rounded-lg border-2 px-4 py-3 text-left ${
                     tried ? "border-[#8A8A8A] bg-[#DDDAD0] text-[#4A4A4A]" : "border-bar bg-white hover:bg-[#EEF3FD]"
                   }`}
@@ -132,7 +158,27 @@ export default function Incident() {
             })}
           </div>
 
-          <Calls />
+          <Calls>
+            {choosingTest ? (
+              <span className="flex flex-wrap items-center gap-2 text-[18px]" role="status">
+                Tap a fix to test it.
+                <button type="button" onClick={() => setTest(null)} className={`${button} bg-white hover:bg-[#EEF3FD]`}>
+                  Cancel
+                </button>
+              </span>
+            ) : (
+              canTestFirst(state) && (
+                <button
+                  type="button"
+                  onClick={() => setTest({ incident: challenge.id, option: null })}
+                  className={`${button} flex items-center gap-2 bg-white hover:bg-[#EEF3FD]`}
+                >
+                  <ShopIcon id="srv-test" size={26} />
+                  Test first
+                </button>
+              )
+            )}
+          </Calls>
         </>
       )}
 
@@ -161,7 +207,8 @@ export default function Incident() {
 
 // Calls to Dana: her phone window with every clue so far, then the button for the next call
 // (docs/UI_THEME.md > Dana and Victor, and docs/GAME_DESIGN.md > Consultant calls).
-function Calls() {
+// `children` sits beside the call button: the "Test first" button (docs/UI_THEME.md > Test first).
+function Calls({ children }: { children?: React.ReactNode }) {
   const { state, dispatch } = useGameContext();
   const clues = cluesGiven(state);
   const next = callButton(state);
@@ -196,44 +243,47 @@ function Calls() {
         </section>
       )}
 
-      {next.kind === "call" && (
-        <button
-          type="button"
-          data-tour="callDana"
-          disabled={!next.affordable}
-          onClick={() => dispatch({ type: "call" })}
-          className={`${button} flex items-center gap-2 self-start ${
-            next.affordable ? "bg-white hover:bg-[#FBEDE6]" : "border-[#8A8A8A] bg-[#DDDAD0] text-[#4A4A4A]"
-          }`}
-        >
-          <PhoneIcon />
-          Call Dana
-          <span className="font-normal">{next.price === 0 ? "Free call" : `£${fullNumber(next.price)}`}</span>
-          {!next.affordable && <span className="font-normal">Not enough cash</span>}
-        </button>
-      )}
-      {next.kind === "lifeline" && (
-        <button
-          type="button"
-          data-tour="callDana"
-          onClick={() => dispatch({ type: "useLifeline" })}
-          className={`${button} flex items-center gap-2 self-start bg-white hover:bg-[#EEEEEE]`}
-        >
-          <VictorAvatar size={32} />
-          Use Victor&apos;s lifeline
-        </button>
-      )}
-      {next.kind === "noMore" && (
-        <button
-          type="button"
-          data-tour="callDana"
-          disabled
-          className={`${button} flex items-center gap-2 self-start border-[#8A8A8A] bg-[#DDDAD0] text-[#4A4A4A]`}
-        >
-          <PhoneIcon />
-          No more calls
-        </button>
-      )}
+      <div className="flex flex-wrap items-center gap-2">
+        {next.kind === "call" && (
+          <button
+            type="button"
+            data-tour="callDana"
+            disabled={!next.affordable}
+            onClick={() => dispatch({ type: "call" })}
+            className={`${button} flex items-center gap-2 ${
+              next.affordable ? "bg-white hover:bg-[#FBEDE6]" : "border-[#8A8A8A] bg-[#DDDAD0] text-[#4A4A4A]"
+            }`}
+          >
+            <PhoneIcon />
+            Call Dana
+            <span className="font-normal">{next.price === 0 ? "Free call" : `£${fullNumber(next.price)}`}</span>
+            {!next.affordable && <span className="font-normal">Not enough cash</span>}
+          </button>
+        )}
+        {next.kind === "lifeline" && (
+          <button
+            type="button"
+            data-tour="callDana"
+            onClick={() => dispatch({ type: "useLifeline" })}
+            className={`${button} flex items-center gap-2 self-start bg-white hover:bg-[#EEEEEE]`}
+          >
+            <VictorAvatar size={32} />
+            Use Victor&apos;s lifeline
+          </button>
+        )}
+        {next.kind === "noMore" && (
+          <button
+            type="button"
+            data-tour="callDana"
+            disabled
+            className={`${button} flex items-center gap-2 self-start border-[#8A8A8A] bg-[#DDDAD0] text-[#4A4A4A]`}
+          >
+            <PhoneIcon />
+            No more calls
+          </button>
+        )}
+        {children}
+      </div>
     </>
   );
 }

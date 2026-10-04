@@ -9,6 +9,7 @@ import LoadingBar from "@/components/desktop/LoadingBar";
 import { StandUpIcon } from "@/components/desktop/icons";
 import type { Windows } from "@/components/desktop/useWindows";
 import type { Screen } from "@/components/useScreen";
+import DeskItems from "./DeskItems";
 import { boxStyle, placePicture } from "./placePicture";
 import { useZoom } from "./useZoom";
 
@@ -164,6 +165,7 @@ export default function RoomFrame({ stage, screen, windows, firstVisit }: Props)
       {onDesktop && !isPhone && !zoomed && (
         <>
           <div className={`absolute left-4 top-4 ${pill}`}>{stageByNumber(stage).name}</div>
+          <DeskItems />
           {phase === "seated" && (
             <button
               type="button"

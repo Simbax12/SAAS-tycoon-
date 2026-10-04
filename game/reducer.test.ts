@@ -6,7 +6,22 @@ import assert from "node:assert/strict";
 import { challenges } from "../data/challenges";
 import { emailView } from "./emails";
 import { freshState, reducer, SAVE_VERSION } from "./reducer";
-import { callButton, callsIn, cluesGiven, nextCallPrice, nextIncident, shuffled, usersOnScreen } from "./rules";
+import {
+  callButton,
+  callsIn,
+  canBuy,
+  canBuyLifeline,
+  canTestFirst,
+  cluesGiven,
+  itemsOnShow,
+  lifelinePrice,
+  neededNext,
+  nextCallPrice,
+  nextIncident,
+  progressShare,
+  shuffled,
+  usersOnScreen,
+} from "./rules";
 import { loadGame, saveGame, saveKey, type Storage } from "./save";
 import type { Action, GameState } from "./types";
 
@@ -35,11 +50,15 @@ test("Example 1: 1.1 solved first try", () => {
   assert.deepEqual(s.results["1.1"], { stars: 3, firstTry: true });
   assert.equal(s.emails.find((e) => e.key === "arrive:1.1")?.read, true);
 
-  // It came from Maya, so there is no thank-you email. 1.2 arrives as a server alert, with no email.
+  // It came from Maya, so there is no thank-you email. Next sends the Test environment request,
+  // then 1.2 arrives as a server alert, with no email.
   const n = reducer(s, { type: "next" });
   assert.equal(n.currentId, "1.2");
   assert.equal(n.phase, "arrived");
-  assert.equal(n.emails.length, s.emails.length);
+  assert.deepEqual(
+    n.emails.slice(s.emails.length).map((e) => e.key),
+    ["request:srv-test"],
+  );
 });
 
 test("a partial pick takes a star and 20% of base cash, and goes to the Recycle Bin", () => {
@@ -91,20 +110,15 @@ test("cash coming in pays the loan first", () => {
   assert.equal(s.cash, 450);
 });
 
-test("until the Shop is built, Payments is owned for free when 1.3 comes up", () => {
-  let s = play(begun(), ...solveBest, { type: "next" }, ...solveBest, { type: "next" });
-  assert.equal(s.currentId, "1.3");
-  assert.equal(s.phase, "arrived");
-  assert.deepEqual(s.owned, ["feat-payments"]);
-  // 200 + 250 + 50 from Payments.
-  assert.equal(s.users, 500);
-  assert.equal(s.emails.at(-1)?.key, "arrive:1.3");
-  assert.equal(emailView("arrive:1.3")?.name, "Priya");
-});
+// Solves the current incident, taps Next, and buys a feature the next incident waits for.
+const solveAndNext = (s: GameState) => {
+  const n = play(s, ...solveBest, { type: "next" });
+  return n.phase === "waiting" ? reducer(n, { type: "buy", itemId: "feat-payments" }) : n;
+};
 
 test("thank-you emails come from the person who sent the incident", () => {
   let s = begun();
-  for (let i = 0; i < 3; i++) s = play(s, ...solveBest, { type: "next" });
+  for (let i = 0; i < 3; i++) s = solveAndNext(s);
   assert.equal(s.currentId, "1.4");
   assert.ok(s.emails.some((e) => e.key === "thanks:1.3"));
   assert.equal(emailView("thanks:1.3")?.text, "It works now. Thank you!");
@@ -114,7 +128,8 @@ test("thank-you emails come from the person who sent the incident", () => {
 
 test("after 1.4, B1 is skipped and play stops before Stage 2", () => {
   let s = begun();
-  for (let i = 0; i < 4; i++) s = play(s, ...solveBest, { type: "next" });
+  for (let i = 0; i < 3; i++) s = solveAndNext(s);
+  s = play(s, ...solveBest, { type: "next" });
   assert.equal(s.currentId, "1.4");
   assert.equal(s.phase, "solved");
   assert.ok(s.emails.some((e) => e.key === "thanks:1.4"));
@@ -124,7 +139,8 @@ test("after 1.4, B1 is skipped and play stops before Stage 2", () => {
   assert.equal(reducer(s, { type: "next" }), s);
   // 200 + 250 + 50 + 200 + 100.
   assert.equal(s.users, 800);
-  assert.equal(s.cash, 3000);
+  // Four incidents at £750, less £300 for Payments.
+  assert.equal(s.cash, 2700);
 });
 
 test("reset keeps the settings and nothing else", () => {
@@ -230,4 +246,132 @@ test("the tutorial ends when the player moves on from its incident, and tips are
   assert.equal(s.tutorial, "done");
   s = play(s, { type: "tipSeen", id: "alert" }, { type: "tipSeen", id: "alert" });
   assert.deepEqual(s.tipsSeen, ["alert"]);
+});
+
+// --- Milestone 4: the Shop and money ---
+
+const buy = (itemId: string): Action => ({ type: "buy", itemId });
+// On 1.3, waiting for Payments, with £1,500 after 1.1 and 1.2.
+const waitingForPayments = () => play(begun(), ...solveBest, { type: "next" }, ...solveBest, { type: "next" });
+
+test("1.3 waits for Payments, which Sam asks for after 1.2", () => {
+  const s = waitingForPayments();
+  assert.equal(s.currentId, "1.3");
+  assert.equal(s.phase, "waiting");
+  assert.equal(neededNext(s), "feat-payments");
+  assert.equal(s.emails.at(-1)?.key, "request:feat-payments");
+  assert.deepEqual(emailView("request:feat-payments"), {
+    key: "request:feat-payments",
+    from: "sam",
+    name: "Sam",
+    text: "People love Blip. Time to earn something. Can we add payments for Blip Plus?",
+    shopItem: "feat-payments",
+  });
+  // Nothing can be picked while it waits.
+  assert.equal(reducer(s, { type: "investigate" }), s);
+});
+
+test("buying Payments unlocks 1.3: it adds its users and the incident arrives", () => {
+  const s = reducer(waitingForPayments(), buy("feat-payments"));
+  assert.equal(s.cash, 1200);
+  assert.deepEqual(s.owned, ["feat-payments"]);
+  // 200 + 250 + 50.
+  assert.equal(s.users, 500);
+  assert.equal(s.phase, "arrived");
+  assert.equal(s.emails.at(-1)?.key, "arrive:1.3");
+  assert.equal(emailView("arrive:1.3")?.name, "Priya");
+  assert.equal(neededNext(s), undefined);
+  assert.equal(s.topUps, 0);
+  // Each item can be bought once.
+  assert.equal(reducer(s, buy("feat-payments")), s);
+});
+
+test("the investor lends exactly the shortfall for the feature Needed next", () => {
+  // As in Example 5, with Stage 1 numbers: cash £100, Payments costs £300.
+  let s = { ...waitingForPayments(), cash: 100 };
+  assert.ok(canBuy(s, "feat-payments"));
+  s = reducer(s, buy("feat-payments"));
+  assert.equal(s.cash, 0);
+  assert.equal(s.loanOwed, 200);
+  assert.equal(s.topUps, 1);
+  assert.equal(s.phase, "arrived");
+  // 1.3 solved with 3 stars pays £750. £200 pays off the loan first.
+  s = play(s, ...solveBest);
+  assert.equal(s.loanOwed, 0);
+  assert.equal(s.cash, 550);
+});
+
+test("optional items need the cash: no loan, and nothing from a later stage", () => {
+  const s = { ...begun(), cash: 150 };
+  assert.ok(canBuy(s, "gear-monitor"));
+  assert.ok(!canBuy(s, "srv-test"));
+  assert.equal(reducer(s, buy("srv-test")), s);
+  // Payments is on show in Stage 1 but is not Needed next while 1.1 is current.
+  assert.ok(!canBuy(s, "feat-payments"));
+  // The Engineering handbook is a Stage 2 item.
+  assert.ok(!canBuy({ ...s, cash: 10_000 }, "gear-handbook"));
+  assert.deepEqual(itemsOnShow(s).map((u) => u.id), ["feat-payments", "srv-test", "gear-monitor"]);
+  const bought = reducer(s, buy("gear-monitor"));
+  assert.equal(bought.cash, 50);
+  assert.equal(bought.users, 0);
+  assert.equal(bought.loanOwed, 0);
+});
+
+test("buying Payments early means 1.3 arrives at once, and Sam's request is not sent", () => {
+  let s = play(begun(), ...solveBest, { type: "next" }); // £750, on 1.2
+  s = reducer(s, buy("feat-payments"));
+  assert.equal(s.cash, 450);
+  assert.equal(s.phase, "arrived");
+  s = play(s, ...solveBest, { type: "next" });
+  assert.equal(s.currentId, "1.3");
+  assert.equal(s.phase, "arrived");
+  assert.ok(!s.emails.some((e) => e.key === "request:feat-payments"));
+});
+
+test("Victor's lifeline costs 2 x base cash, one held at a time", () => {
+  let s = { ...begun(), cash: 2500 };
+  assert.equal(lifelinePrice(s), 1000);
+  s = reducer(s, { type: "buyLifeline" });
+  assert.equal(s.cash, 1500);
+  assert.equal(s.lifeline, 1);
+  assert.equal(reducer(s, { type: "buyLifeline" }), s);
+  assert.ok(!canBuyLifeline({ ...s, lifeline: null, cash: 999 }));
+});
+
+test("Test first shows one option once, with no penalty, and does not spoil first try", () => {
+  let s = play(begun(), ...solveBest, { type: "next" }, { type: "investigate" });
+  // Not owned yet.
+  assert.equal(reducer(s, { type: "testFirst", optionId: "bad" }), s);
+  s = play(s, buy("srv-test"));
+  assert.equal(s.cash, 550);
+  assert.ok(canTestFirst(s));
+  s = reducer(s, { type: "testFirst", optionId: "bad" });
+  assert.equal(s.run.testUsed, true);
+  assert.equal(s.run.stars, 3);
+  assert.equal(s.cash, 550);
+  assert.deepEqual(s.run.tried, []);
+  assert.equal(s.run.dip, 0);
+  assert.equal(s.phase, "choosing");
+  // Once per incident.
+  assert.ok(!canTestFirst(s));
+  assert.equal(reducer(s, { type: "testFirst", optionId: "best" }), s);
+  s = reducer(s, pick("best"));
+  assert.deepEqual(s.results["1.2"], { stars: 3, firstTry: true });
+  // The next incident gets it again.
+  s = reducer(s, { type: "next" });
+  assert.equal(s.run.testUsed, false);
+});
+
+test("a request email is not sent for an item already owned", () => {
+  const s = play({ ...begun(), cash: 200 }, buy("srv-test"), ...solveBest, { type: "next" });
+  assert.ok(!s.emails.some((e) => e.key === "request:srv-test"));
+});
+
+test("the progress bar has five equal segments between its markers", () => {
+  assert.equal(progressShare(0), 0);
+  assert.equal(progressShare(500), 0.1);
+  assert.equal(progressShare(1_000), 0.2);
+  assert.ok(Math.abs(progressShare(50_500) - 0.3) < 1e-9);
+  assert.equal(progressShare(1_000_000_000), 1);
+  assert.equal(progressShare(1_095_505_000), 1);
 });
