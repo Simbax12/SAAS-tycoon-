@@ -12,7 +12,7 @@ The everyday problems come back again and again in new disguises, so what the pl
 
 The work is varied. Some problems are solved by drawing the design in a Blueprint app. Some start with reading logs in a Terminal, or end with tuning a dial in SysDash. Parts carry the names of real tools, such as Redis and Kafka.
 
-The whole game looks like an early 2000s computer desktop. The player opens parts of the game by clicking icons. The computer sits in a low-poly 3D room, shown as short video clips: the player walks to the desk and sits down, and the room grows with Blip.
+The whole game looks like an old computer desktop. Its operating system, BlipOS, upgrades with each stage: from a grey 1995-style desktop in the garage to a modern one at planet scale. The player opens parts of the game by clicking icons. The computer sits in a low-poly 3D room, shown as short video clips: the player walks to the desk and sits down, and the room grows with Blip.
 
 ## Who it is for
 
