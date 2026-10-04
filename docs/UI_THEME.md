@@ -42,6 +42,17 @@ BlipOS upgrades with each stage, so the computer feels older at the start and ne
 - When a new stage starts, BlipOS upgrades. After the room clips, the loading bar shows "Upgrading to BlipOS 2", with the new version's number. Then the desktop appears in its new look (see GAME_LOGIC.md > After the player taps Next).
 - Server alerts keep their red title bar in every version, so an alert always looks like an alert.
 
+### Pop-ups and hint boxes
+
+Every box that pops up over the desktop follows the version too, so the feel stays the same everywhere.
+
+- **BlipOS 1 and 2:** each pop-up is a classic dialog box: a title bar in the version's colours, a grey body with raised 3D edges, and square corners. Its buttons are grey and raised, and press in when tapped. The main button has a dark outline and bold text.
+  - Tutorial steps and first-time tips are small dialog boxes titled "Tutorial" and "Tip".
+  - Server alerts use the dialog frame, with their red title bar.
+  - Dana's phone window uses the dialog frame, with her colour in its title bar.
+  - Email balloons are square pale-yellow notes with a thin dark edge, like the small notes desktops of that era showed.
+- **BlipOS 3 and later:** pop-ups are rounded, as in the early 2000s look. The tutorial and tip boxes have no title bar.
+
 ## Desktop
 
 - **Wallpaper:** set by the version (see "BlipOS versions"). The hill is a rolling green hill under a blue sky with a few soft clouds. Built from CSS gradients and SVG shapes.
