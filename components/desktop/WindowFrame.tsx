@@ -66,14 +66,14 @@ export default function WindowFrame({ win, area, isPhone, isFront, onClose, onFo
     <section
       role="dialog"
       aria-labelledby={titleId}
-      className={`absolute flex flex-col overflow-hidden bg-cream ${
-        isPhone ? "" : "rounded-t-lg border-2 border-bar shadow-[4px_6px_16px_rgba(0,0,0,0.35)]"
-      } ${!isPhone && !isFront ? "opacity-95" : ""}`}
+      className={`os-window absolute flex flex-col overflow-hidden ${isPhone ? "" : "os-framed"} ${
+        !isPhone && !isFront ? "opacity-95" : ""
+      }`}
       style={place}
       onPointerDown={onFocus}
     >
       <header
-        className={`flex h-12 shrink-0 select-none items-center gap-2 bg-bar pl-2 text-white ${
+        className={`os-titlebar flex h-12 shrink-0 select-none items-center gap-2 pl-2 ${
           isPhone ? "" : "cursor-move touch-none"
         }`}
         onPointerDown={onPointerDown}
@@ -92,7 +92,7 @@ export default function WindowFrame({ win, area, isPhone, isFront, onClose, onFo
           type="button"
           onClick={onClose}
           aria-label={`Close ${app.name}`}
-          className="flex h-12 w-12 shrink-0 items-center justify-center bg-[#C83232] hover:bg-[#A82828]"
+          className="os-close flex h-12 w-12 shrink-0 items-center justify-center"
         >
           <CloseIcon />
         </button>

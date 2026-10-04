@@ -173,7 +173,7 @@ export function CashIcon({ size = 22 }: IconProps) {
 export function CloseIcon({ size = 20 }: IconProps) {
   return (
     <svg width={size} height={size} viewBox="0 0 20 20" aria-hidden="true" focusable="false">
-      <path d="M5 5 L15 15 M15 5 L5 15" stroke="#FFFFFF" strokeWidth="2.8" strokeLinecap="round" />
+      <path d="M5 5 L15 15 M15 5 L5 15" stroke="currentColor" strokeWidth="2.8" strokeLinecap="round" />
     </svg>
   );
 }

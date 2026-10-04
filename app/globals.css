@@ -122,3 +122,126 @@ body {
     animation: none;
   }
 }
+
+/* ------------------------------------------------------------------
+   BlipOS versions (docs/UI_THEME.md > BlipOS versions).
+   The desktop root sets data-os-style and the --os-* colours from data/blipOs.ts.
+   Components use the os-* classes below and never name a version.
+   ------------------------------------------------------------------ */
+
+.os-window {
+  background: var(--os-body);
+}
+.os-titlebar {
+  background: linear-gradient(to right, var(--os-title), var(--os-title-end));
+  color: var(--os-title-text);
+}
+.os-taskbar {
+  background: var(--os-bar);
+  color: var(--os-bar-text);
+}
+.os-start {
+  background: var(--os-start);
+  color: var(--os-start-text);
+}
+.os-menu {
+  background: var(--os-body);
+}
+
+/* rounded: the early 2000s look, BlipOS 3. */
+[data-os-style="rounded"] .os-window.os-framed {
+  border: 2px solid var(--os-title);
+  border-top-left-radius: 8px;
+  border-top-right-radius: 8px;
+  box-shadow: 4px 6px 16px rgba(0, 0, 0, 0.35);
+}
+[data-os-style="rounded"] .os-close {
+  background: #c83232;
+  color: #ffffff;
+}
+[data-os-style="rounded"] .os-close:hover {
+  background: #a82828;
+}
+[data-os-style="rounded"] .os-start {
+  border-radius: 6px 16px 16px 6px;
+  box-shadow: inset 0 -3px 0 rgba(0, 0, 0, 0.25);
+}
+[data-os-style="rounded"] .os-start:hover {
+  filter: brightness(1.1);
+}
+[data-os-style="rounded"] .os-tab {
+  border-radius: 6px;
+  background: #3b6fde;
+}
+[data-os-style="rounded"] .os-tab:hover {
+  background: #4a7be6;
+}
+[data-os-style="rounded"] .os-tab[aria-pressed="true"] {
+  background: #1a3f96;
+  box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.4);
+}
+[data-os-style="rounded"] .os-tray {
+  border-radius: 6px;
+  background: #1e4bb0;
+}
+[data-os-style="rounded"] button.os-tray:hover {
+  background: #2a5fd0;
+}
+[data-os-style="rounded"] .os-menu {
+  border: 2px solid var(--os-title);
+  border-top-right-radius: 12px;
+  box-shadow: 4px -4px 16px rgba(0, 0, 0, 0.35);
+}
+
+/* classic: square and grey with raised 3D edges, BlipOS 1 and 2. */
+[data-os-style="classic"] .os-raised,
+[data-os-style="classic"] .os-window.os-framed,
+[data-os-style="classic"] .os-start,
+[data-os-style="classic"] .os-tab,
+[data-os-style="classic"] button.os-tray,
+[data-os-style="classic"] .os-close,
+[data-os-style="classic"] .os-menu {
+  border: 2px solid;
+  border-color: #ffffff #4a4a4a #4a4a4a #ffffff;
+  box-shadow: inset -1px -1px 0 #8a8780, inset 1px 1px 0 #f2f0ea;
+}
+[data-os-style="classic"] .os-window.os-framed {
+  box-shadow: inset -1px -1px 0 #8a8780, inset 1px 1px 0 #f2f0ea, 3px 4px 10px rgba(0, 0, 0, 0.3);
+}
+[data-os-style="classic"] .os-taskbar {
+  border-top: 2px solid #ffffff;
+}
+[data-os-style="classic"] .os-close,
+[data-os-style="classic"] .os-tab {
+  background: var(--os-bar);
+  color: var(--os-bar-text);
+}
+/* The close button keeps a 48px tap target, drawn as a smaller raised square inside it. */
+[data-os-style="classic"] .os-close {
+  margin: 4px;
+  height: 40px;
+  width: 40px;
+}
+[data-os-style="classic"] .os-start:active,
+[data-os-style="classic"] .os-tab[aria-pressed="true"],
+[data-os-style="classic"] .os-tray,
+[data-os-style="classic"] button.os-tray:active,
+[data-os-style="classic"] .os-close:active {
+  border-color: #4a4a4a #ffffff #ffffff #4a4a4a;
+  box-shadow: inset 1px 1px 0 #8a8780;
+}
+[data-os-style="classic"] .os-tab[aria-pressed="true"] {
+  background: #d8d5cd;
+  font-weight: bold;
+}
+[data-os-style="classic"] .os-tray {
+  border: 2px solid;
+  background: var(--os-bar);
+}
+[data-os-style="classic"] button.os-tray {
+  border-color: #ffffff #4a4a4a #4a4a4a #ffffff;
+  box-shadow: inset -1px -1px 0 #8a8780, inset 1px 1px 0 #f2f0ea;
+}
+[data-os-style="classic"] .os-alert {
+  border-radius: 0;
+}

@@ -1,6 +1,7 @@
 "use client";
 
 import { useCallback, useEffect, useRef, useState } from "react";
+import { osForStage } from "@/data/blipOs";
 import { roomByStage, roomFiles } from "@/data/rooms";
 import { stageByNumber, type StageNumber } from "@/data/stages";
 import Desktop from "@/components/desktop/Desktop";
@@ -74,7 +75,7 @@ export default function RoomFrame({ stage, screen, windows, firstVisit }: Props)
 
   const desktop =
     phase === "loading" ? (
-      <LoadingBar onDone={booted_} reducedMotion={reducedMotion} />
+      <LoadingBar version={osForStage(stage).version} onDone={booted_} reducedMotion={reducedMotion} />
     ) : (
       <Desktop
         isPhone={isPhone}

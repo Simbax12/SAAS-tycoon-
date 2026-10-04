@@ -34,13 +34,13 @@ export default function Taskbar({ isPhone, windows, frontId, startOpen, users, c
   const num = isPhone ? shortNumber : fullNumber;
 
   return (
-    <footer className={`relative z-[1000] flex shrink-0 items-center gap-1 bg-bar px-1 text-white ${isPhone ? "h-14" : "h-[52px]"}`}>
+    <footer className={`os-taskbar relative z-[1000] flex shrink-0 items-center gap-1 px-1 ${isPhone ? "h-14" : "h-[52px]"}`}>
       <button
         type="button"
         onClick={onStart}
         aria-expanded={startOpen}
         aria-haspopup="menu"
-        className="flex h-12 shrink-0 items-center gap-2 rounded-r-2xl rounded-l-md bg-start px-3 text-[18px] font-bold shadow-[inset_0_-3px_0_rgba(0,0,0,0.25)] hover:brightness-110"
+        className="os-start flex h-12 shrink-0 items-center gap-2 px-3 text-[18px] font-bold"
       >
         <BlipLogo size={26} />
         Start
@@ -57,9 +57,7 @@ export default function Taskbar({ isPhone, windows, frontId, startOpen, users, c
               onClick={() => onTab(w)}
               aria-label={app.name}
               aria-pressed={active}
-              className={`flex h-12 min-w-12 shrink-0 items-center gap-1.5 rounded-md px-2 text-[18px] ${
-                active ? "bg-[#1A3F96] shadow-[inset_0_2px_4px_rgba(0,0,0,0.4)]" : "bg-[#3B6FDE] hover:bg-[#4A7BE6]"
-              } ${isPhone ? "" : "max-w-[180px]"}`}
+              className={`os-tab flex h-12 min-w-12 shrink-0 items-center gap-1.5 px-2 text-[18px] ${isPhone ? "" : "max-w-[180px]"}`}
             >
               <AppIcon id={w.id} size={26} />
               {!isPhone && <span className="truncate">{app.name}</span>}
@@ -68,7 +66,7 @@ export default function Taskbar({ isPhone, windows, frontId, startOpen, users, c
         })}
       </div>
 
-      <div className="flex h-12 shrink-0 items-center gap-2 rounded-md bg-[#1E4BB0] px-2 text-[18px]" data-tour="trayCounters">
+      <div className="os-tray flex h-12 shrink-0 items-center gap-2 px-2 text-[18px]" data-tour="trayCounters">
         <span className="flex items-center gap-1" aria-label={`Users: ${fullNumber(users)}`}>
           <UsersIcon />
           <span aria-hidden="true">{num(users)}</span>
@@ -88,7 +86,7 @@ export default function Taskbar({ isPhone, windows, frontId, startOpen, users, c
           aria-pressed={zoom.zoomed}
           aria-label={zoom.zoomed ? "Zoom out" : "Zoom in"}
           title={zoom.zoomed ? "Zoom out" : "Zoom in"}
-          className="flex h-12 w-12 shrink-0 items-center justify-center rounded-md bg-[#1E4BB0] hover:bg-[#2A5FD0]"
+          className="os-tray flex h-12 w-12 shrink-0 items-center justify-center"
         >
           <ZoomIcon zoomedIn={zoom.zoomed} />
         </button>

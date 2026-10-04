@@ -1,7 +1,9 @@
-// The BlipOS wallpaper: a rolling green hill under a bright blue sky with a few soft clouds
-// (docs/UI_THEME.md > Desktop). Drawn with a CSS gradient and SVG shapes.
+// The BlipOS wallpaper, set by the version (docs/UI_THEME.md > BlipOS versions).
+// plain: one flat colour, the desktop colour of the version. hill: a rolling green hill under a
+// bright blue sky with a few soft clouds (docs/UI_THEME.md > Desktop), drawn with a CSS gradient and SVG shapes.
 
-export default function Wallpaper() {
+export default function Wallpaper({ kind }: { kind: "plain" | "hill" }) {
+  if (kind === "plain") return <div className="absolute inset-0 bg-[var(--os-desktop)]" aria-hidden="true" />;
   return (
     <div
       className="absolute inset-0 overflow-hidden"

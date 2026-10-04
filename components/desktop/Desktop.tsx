@@ -4,7 +4,8 @@ import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import type { AppId } from "@/data/desktopApps";
 import WindowBody from "@/components/windows/WindowBody";
 import { useGameContext } from "@/components/useGame";
-import { currentChallenge, incidentOpen, usersOnScreen } from "@/game/rules";
+import { drawnStyle, osForStage } from "@/data/blipOs";
+import { currentChallenge, currentStage, incidentOpen, usersOnScreen } from "@/game/rules";
 import { emailView } from "@/game/emails";
 import Balloons from "./Balloons";
 import { DesktopContext } from "./DesktopContext";
@@ -77,14 +78,33 @@ export default function Desktop({ isPhone, reducedMotion, windows, onStandUp, st
   const challenge = currentChallenge(state);
   const alertText = state.phase === "arrived" && challenge?.arrives.by === "alert" ? challenge.arrives.text : null;
 
+  // The desktop shows the BlipOS version for the current stage (docs/UI_THEME.md > The upgrade).
+  const os = osForStage(currentStage(state));
+  const osVars = {
+    "--os-title": os.colours.title,
+    "--os-title-end": os.colours.titleEnd,
+    "--os-title-text": os.colours.titleText,
+    "--os-bar": os.colours.taskbar,
+    "--os-bar-text": os.colours.taskbarText,
+    "--os-start": os.colours.start,
+    "--os-start-text": os.colours.startText,
+    "--os-body": os.colours.windowBody,
+    "--os-desktop": os.colours.desktop,
+  } as React.CSSProperties;
+
   // On a phone only the front window shows, full screen (docs/UI_THEME.md > Windows).
   const shown = isPhone ? (front ? [front] : []) : open;
 
   return (
     <DesktopContext.Provider value={tools}>
-      <div ref={rootRef} className="absolute inset-0 flex flex-col overflow-hidden bg-sky-top text-ink">
+      <div
+        ref={rootRef}
+        data-os-style={drawnStyle(os)}
+        style={osVars}
+        className="absolute inset-0 flex flex-col overflow-hidden bg-[var(--os-desktop)] text-ink"
+      >
         <div ref={areaRef} className="relative min-h-0 flex-1">
-          <Wallpaper />
+          <Wallpaper kind={os.wallpaper} />
           <div className="absolute inset-0">
             <DesktopIcons isPhone={isPhone} badges={badges} onOpen={openApp} />
           </div>

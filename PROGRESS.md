@@ -13,6 +13,7 @@ What is built, what is next, and the decisions made. Keep this short and current
 - Milestone 1: Desktop. A Next.js app with the wallpaper, 12 icons, the taskbar with Start menu, tabs and tray, and windows that open, close, drag and stack. The Stage 1 room plays the walk-in clip, waits for "Tap the screen to sit down", plays the sit-down clip, then the BlipOS loading bar. "Stand up" and "Skip" work. Reduced motion skips the clips. A zoom button in the tray makes the screen fill the window, with a thin strip of the monitor frame showing. Checked at 1440, 1024 and 375 pixels wide.
 - Milestone 2: Engine and Stage 1. The four Stage 1 incidents are copied into `data/challenges.ts`, and the whole play order into `data/playOrder.ts`. The reducer in `game/` runs the new incident flow: alert or email, Investigate, Maya's line, three shuffled cards, penalties, outage dip, the guided answer, stars, users, cash, Next and thank-you emails. Inbox with sender badges, unread dots and balloons. Server alerts. The System Map. Settings has "Reset game". The game saves after every change and survives a refresh. 14 reducer tests pass with `npm test`.
 - Milestone 3: Help. The 8-step tutorial runs inside 1.1 with a spotlight, and can be skipped or replayed from Settings. First-time tips show once each; the alert tip shows on 1.2. Calls to Dana: a "Call Dana" button with the next price, her phone window with every clue so far, "Not enough cash" and "No more calls". All calls in 1.1 are free. Victor's lifeline and the handbook's free call work in the engine, ready for the Shop. The Pattern Book shows each learned pattern with its icon, "Use this when" line, pips and "Tools you will meet". The Recycle Bin lists every wrong pick with why it failed. How to Play already had its exact text. 19 reducer tests pass. Checked in Chromium at 1440, 1024 and 375 pixels wide: two wrong picks lead to the guided answer.
+- BlipOS 1: the desktop now has the grey 1995-style look in the garage. Windows, taskbar, Start menu and server alerts follow the version for the current stage, from `data/blipOs.ts`. The loading bar says "BlipOS 1".
 
 ## Next
 
@@ -116,6 +117,14 @@ What is built, what is next, and the decisions made. Keep this short and current
 | 2026-10-04 | Settings has "Replay tutorial" and "Reset game". Text size, motion, sound and wallpaper are still to come | They are not in Milestone 3's list in START_HERE.md |
 | 2026-10-04 | The Pattern Book's "Also seen as" and "Built in" lines are left out for now | They come from repeats and Builds, which arrive in Milestones 5 and 6 |
 | 2026-10-04 | Milestone 3 built: `data/tutorial.ts`, call prices in `data/stages.ts`, `itemEffects` in `data/upgrades.ts`, tools and everyday patterns in `data/patterns.ts`, Victor's line in `data/people.ts`. Calls, the lifeline, the tutorial and tips in `game/`. `components/desktop/Guide.tsx`, `scrollWithin.ts`, the Pattern Book and Recycle Bin windows, calls in the Incident window, "Replay tutorial" in Settings. Hub: code map |
+| 2026-10-04 | BlipOS upgrades with each stage: five versions, inspired by desktops of 1995, 1998, the early 2000s, 2009 and today | The computer feels old in the garage and new at planet scale, matching the rooms |
+| 2026-10-04 | They are called BlipOS 1 to BlipOS 5 | Plainly our own names. UI_THEME.md bans real product names |
+| 2026-10-04 | BlipOS 1 is built now. The others are built when their stage is. Their colours already drive the desktop, but the glassy 2009 look and the flat look with a centred taskbar are drawn in the early 2000s style until then | Only Stage 1 can be played yet |
+| 2026-10-04 | The 1995-style grey window body is #E0DDD6, a little lighter than the era's grey | The check script found the green OK and amber Warning marks fell below 3 to 1 on the darker grey |
+| 2026-10-04 | BlipOS 1's desktop is plain teal, not the hill. The hill wallpaper arrives with BlipOS 2 | A plain colour is the 1995 feel. The garage clip still shows the hill on the monitor before the player sits down |
+| 2026-10-04 | Server alerts keep a red title bar in every version | An alert must always look like an alert |
+| 2026-10-04 | The classic close button is a 40px raised square inside a 48px tap area | It looks like the era but keeps the 48px tap target rule |
+| 2026-10-04 | BlipOS versions: UI_THEME.md, GAME_LOGIC.md, START_HERE.md and the hub, with a contrast check for every version. Code: `data/blipOs.ts`, version styles in `app/globals.css`, and the window frame, taskbar, Start menu, server alert, wallpaper and loading bar now follow the version |
 
 ## On-screen text to check
 
@@ -149,3 +158,7 @@ New in Milestone 3:
 - Recycle Bin when empty: "The Recycle Bin is empty."
 - Dana's phone window title: "Dana".
 - Screen reader labels, not shown on screen: "Call with Dana", "Victor:", and "Pips:" with each pip's colour.
+
+New with BlipOS versions:
+
+- Loading bar: "BlipOS 1", and from Stage 2 "Upgrading to BlipOS 2" and so on (UI_THEME.md > The upgrade).

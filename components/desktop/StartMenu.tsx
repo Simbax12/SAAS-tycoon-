@@ -32,7 +32,7 @@ export default function StartMenu({ isPhone, showStandUp, onOpen, onStandUp, onC
       <div
         role="menu"
         aria-label="Start"
-        className={`absolute bottom-0 left-0 z-[1002] flex max-h-full flex-col overflow-y-auto rounded-tr-xl border-2 border-bar bg-cream p-2 shadow-[4px_-4px_16px_rgba(0,0,0,0.35)] ${
+        className={`absolute bottom-0 left-0 z-[1002] flex max-h-full flex-col overflow-y-auto os-menu p-2 ${
           isPhone ? "w-[min(300px,100%)]" : "w-[280px]"
         }`}
       >

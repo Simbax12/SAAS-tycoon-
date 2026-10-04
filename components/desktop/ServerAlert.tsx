@@ -48,7 +48,7 @@ export default function ServerAlert({ text, area, isPhone, onInvestigate }: Prop
       role="alertdialog"
       aria-labelledby="server-alert-title"
       aria-describedby="server-alert-text"
-      className={`absolute z-[900] flex flex-col overflow-hidden bg-cream ${
+      className={`os-window os-alert absolute z-[900] flex flex-col overflow-hidden ${
         isPhone ? "" : "rounded-t-lg border-2 border-alert shadow-[4px_6px_16px_rgba(0,0,0,0.45)]"
       }`}
       style={style}
