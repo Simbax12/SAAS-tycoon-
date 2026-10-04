@@ -451,15 +451,39 @@ const lum = (hex) => {
 };
 const contrast = (a, b) => { const [x, y] = [lum(a), lum(b)].sort((p, q) => q - p); return (x + 0.05) / (y + 0.05); };
 const colour = (label) => one(UI, new RegExp(`^\\| ${label} \\| (#[0-9A-Fa-f]{6})`, "m"), `colour "${label}" in UI_THEME.md`);
-const cream = colour("Window body");
 const whiteTextOn = [
-  ...["Taskbar and title bars", "Server alert title bar", "Start button"].map((l) => [l, colour(l)]),
+  ["Server alert title bar", colour("Server alert title bar")],
   ...all(UI, /^\| ([^|]+) \| (#[0-9A-Fa-f]{6}) \| [^|]+ \| [^|]+ \|$/gm).map((m) => [`${m[1]} badge`, m[2]]),
 ];
 for (const [label, hex] of whiteTextOn) if (contrast("#FFFFFF", hex) < 4.5) problem(`UI_THEME.md: white text on ${label} (${hex}) is below 4.5 to 1`);
-if (contrast(colour("Main text"), cream) < 4.5) problem("UI_THEME.md: main text on the window body is below 4.5 to 1");
 if (contrast(colour("Terminal text"), colour("Terminal background")) < 4.5) problem("UI_THEME.md: Terminal text on its background is below 4.5 to 1");
-for (const label of ["OK", "Warning", "Critical"]) if (contrast(colour(label), cream) < 3) problem(`UI_THEME.md: the ${label} colour on the window body is below 3 to 1`);
+
+// Each BlipOS version has its own colours (UI_THEME.md > Version colours). Every one must pass the
+// same contrast rules, and there must be exactly one version for each stage.
+const versionRows = all(cut(UI, "### Version colours", "### The upgrade"), /^\| BlipOS (\d) \| (.+) \|$/gm).map((m) => ({
+  n: m[1],
+  c: m[2].split("|").map((x) => x.trim()),
+}));
+const versionStages = all(cut(UI, "## BlipOS versions", "### Version colours"), /^\| BlipOS (\d) \| (\d) \|/gm).map((m) => [m[1], m[2]]);
+for (const st of Object.keys(baseCash)) {
+  if (!versionStages.some(([, s]) => s === st)) problem(`UI_THEME.md: Stage ${st} has no BlipOS version`);
+  if (!versionRows.some((v) => v.n === st)) problem(`UI_THEME.md: BlipOS ${st} has no row in Version colours`);
+}
+for (const [v, st] of versionStages) if (v !== st) problem(`UI_THEME.md: BlipOS ${v} should belong to Stage ${v}, not Stage ${st}`);
+const mainText = colour("Main text");
+for (const { n, c } of versionRows) {
+  if (c.length !== 9 || c.some((x) => !/^#[0-9A-Fa-f]{6}$/.test(x))) { problem(`UI_THEME.md: BlipOS ${n} needs 9 colours in Version colours`); continue; }
+  const [title, titleEnd, titleText, bar, barText, start, startText, body] = c;
+  const pairs = [
+    ["title text", titleText, "title bar", title],
+    ["title text", titleText, "title bar end", titleEnd],
+    ["taskbar text", barText, "taskbar", bar],
+    ["Start text", startText, "Start button", start],
+    ["main text", mainText, "window body", body],
+  ];
+  for (const [what, fg, on, bg] of pairs) if (contrast(fg, bg) < 4.5) problem(`UI_THEME.md: BlipOS ${n} ${what} on its ${on} is below 4.5 to 1`);
+  for (const label of ["OK", "Warning", "Critical"]) if (contrast(colour(label), body) < 3) problem(`UI_THEME.md: BlipOS ${n}: the ${label} colour on the window body is below 3 to 1`);
+}
 
 // ---------------------------------------------------------------- pointers between docs
 // A pointer is written "(see FILE.md > Heading)". The heading must exist in that file.

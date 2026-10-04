@@ -1,6 +1,6 @@
 # Zero to a Billion
 
-A browser game that teaches real system design. The player is the first engineer at Blip, a made-up app, and grows it from 0 to 1 billion users by fixing incidents. The whole game looks like an early 2000s computer desktop.
+A browser game that teaches real system design. The player is the first engineer at Blip, a made-up app, and grows it from 0 to 1 billion users by fixing incidents. The whole game looks like an old computer desktop whose operating system upgrades as Blip grows.
 
 This file is the hub. It holds no game content of its own. It says where every fact lives, how the files depend on each other, and what to update when something changes. Read it first, every session.
 
@@ -68,6 +68,7 @@ flowchart TD
   GL -->|section pointers| BP
   GL -->|section pointers| RM
   RM -->|stage names| GD
+  UI -->|BlipOS version per stage| GD
   RM -->|setup items| UP
   UI -->|section pointers| RM
 ```
@@ -88,6 +89,7 @@ The links, in words:
 - **Users.** "Users gained" across all incidents and must-have features must add up to exactly 1 billion. The optional totals written in GAME_DESIGN.md must match UPGRADES.md.
 - **Request emails.** Each "Arrives" in UPGRADES.md names a point in the play order.
 - **Pointers.** A doc can point to a section of another doc by writing (see FILE.md > Heading). The heading must exist. GAME_LOGIC.md uses these instead of copying rules.
+- **BlipOS versions.** UI_THEME.md has one BlipOS version per stage, and every version's colours pass the contrast rule.
 - **Rooms.** ROOM.md has one room per stage, with the same stage names as the stages table in GAME_DESIGN.md. Its desk table covers every "Your setup" item in UPGRADES.md, by id.
 - **Open questions.** Every question number mentioned in GAME_LOGIC.md must be in its open questions table.
 
@@ -131,7 +133,7 @@ If you need a fact and cannot find its home, ask. Do not write it in a second pl
 | Add or reprice a Shop item | Price from the price rule. A request email row, unless it is "Your setup". The item count in UPGRADES.md and START_HERE.md. The optional user totals in GAME_DESIGN.md if it brings users |
 | Change base cash, star multipliers or price points | Every price in UPGRADES.md. The money examples in GAME_DESIGN.md |
 | Add an incident or request email sent by a customer | A row in the customer names table in GAME_DESIGN.md, with a name not used before |
-| Add a stage, or a "Your setup" item | A room or a desk row in ROOM.md |
+| Add a stage, or a "Your setup" item | A room or a desk row in ROOM.md. For a stage, also a BlipOS version and its colours in UI_THEME.md |
 | Add a person who sends things | The cast table in GAME_DESIGN.md. A sender badge in UI_THEME.md |
 | Change a rule in GAME_DESIGN.md, or rename a heading | GAME_LOGIC.md, if it points to that rule or heading. Its worked examples, if the numbers change |
 | Change what the game saves | A migration for old saves, as GAME_LOGIC.md describes. Never wipe a player's progress |

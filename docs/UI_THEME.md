@@ -1,22 +1,53 @@
 # UI theme: the retro desktop
 
-The whole game is a computer desktop in the style of the early 2000s. The player opens each part of the game by clicking an icon, and each part opens in its own window.
+The whole game is an old computer desktop, BlipOS, that upgrades as Blip grows: a grey 1995-style desktop in the garage, up to a modern one at planet scale. The player opens each part of the game by clicking an icon, and each part opens in its own window.
 
 ## Original artwork only
 
-The look is inspired by desktops of that era. It must not copy one.
+Each version of BlipOS is inspired by desktops of its era. It must not copy one.
 
 - Do not use Microsoft or Windows names, logos, icons, sounds or the original wallpaper photo.
 - Draw the desktop with CSS and inline SVG. The room around the computer is the only exception: it is video clips and pictures (see ROOM.md > The room: the world around the computer).
 - The computer in the game is called "BlipOS".
 - Real tool names such as Redis or Kafka appear as plain text only, so the player learns the names used at work. Never use a product's logo or brand colours. Every icon is an original drawing.
 
+## BlipOS versions
+
+BlipOS upgrades with each stage, so the computer feels older at the start and newer as Blip grows. Every version keeps the same layout, the same icons and the same readability rules. Only the look changes.
+
+| Version | Stage | Inspired by | The look |
+|---|---|---|---|
+| BlipOS 1 | 1 | Desktops of 1995 | Square grey windows with raised 3D edges. Solid navy title bars. A plain teal desktop. A grey taskbar with a raised "Start" button and a sunken tray |
+| BlipOS 2 | 2 | Desktops of 1998 | As BlipOS 1, but title bars fade from navy to blue, and the wallpaper is the hill drawn in flat colours |
+| BlipOS 3 | 3 | Desktops of the early 2000s | Rounded blue title bars, a green rounded "Start" button, the hill wallpaper with soft clouds, and a cream window body |
+| BlipOS 4 | 4 | Desktops of 2009 | A dark see-through taskbar and title bars, a round "Start" button, and the hill at night |
+| BlipOS 5 | 5 | Desktops of today | Flat and light, with gently rounded corners. The taskbar's buttons sit in the middle. A soft gradient wallpaper |
+
+### Version colours
+
+| Version | Title bar | Title bar end | Title text | Taskbar | Taskbar text | Start button | Start text | Window body | Desktop |
+|---|---|---|---|---|---|---|---|---|---|
+| BlipOS 1 | #1B2A80 | #1B2A80 | #FFFFFF | #C3C0B6 | #1E1E1E | #C3C0B6 | #1E1E1E | #E0DDD6 | #2B7F7A |
+| BlipOS 2 | #1B2A80 | #3A6EA5 | #FFFFFF | #C3C0B6 | #1E1E1E | #C3C0B6 | #1E1E1E | #E0DDD6 | #4A9DE0 |
+| BlipOS 3 | #2A5FD0 | #2A5FD0 | #FFFFFF | #2A5FD0 | #FFFFFF | #2E7D32 | #FFFFFF | #F4F0E0 | #4A9DE0 |
+| BlipOS 4 | #1F2A38 | #2C3E55 | #FFFFFF | #18212C | #FFFFFF | #2A5FD0 | #FFFFFF | #F4F0E0 | #13294B |
+| BlipOS 5 | #E4E1D8 | #E4E1D8 | #1E1E1E | #EDEAE2 | #1E1E1E | #2A5FD0 | #FFFFFF | #F4F0E0 | #9EC5E8 |
+
+"Title bar end" is where the title bar's colour fades to. When it is the same as "Title bar", the bar is one flat colour.
+
+### The upgrade
+
+- The desktop shows the version for the current stage. Stage 1 is BlipOS 1.
+- At the very start, the loading bar shows "BlipOS 1".
+- When a new stage starts, BlipOS upgrades. After the room clips, the loading bar shows "Upgrading to BlipOS 2", with the new version's number. Then the desktop appears in its new look (see GAME_LOGIC.md > After the player taps Next).
+- Server alerts keep their red title bar in every version, so an alert always looks like an alert.
+
 ## Desktop
 
-- **Wallpaper:** a rolling green hill under a bright blue sky with a few soft clouds. Built from CSS gradients and SVG shapes.
+- **Wallpaper:** set by the version (see "BlipOS versions"). The hill is a rolling green hill under a blue sky with a few soft clouds. Built from CSS gradients and SVG shapes.
 - **Icons:** a grid on the left side. Each icon is a simple drawing with its name underneath.
-- **Taskbar:** a blue bar along the bottom.
-  - Left: a green rounded "Start" button. It opens a menu listing the same items as the desktop icons.
+- **Taskbar:** a bar along the bottom, in the version's colours.
+  - Left: a "Start" button. It opens a menu listing the same items as the desktop icons.
   - Middle: a tab for each open window.
   - Right: the tray. It shows users, cash and a clock. On the computer layout it also has a zoom button: a magnifying glass with a plus to zoom in, or a minus to zoom out (see ROOM.md > During play).
 - **Balloons:** small speech balloons rise from the tray, for example "New email from Sam" or "New in the Shop".
@@ -45,8 +76,8 @@ Icons that have something new show a small red dot. The Inbox icon shows the num
 
 ## Windows
 
-- A blue title bar with the window's icon and name on the left and a close button on the right.
-- A cream body, not white.
+- A title bar in the version's colours, with the window's icon and name on the left and a close button on the right.
+- A body in the version's window body colour, never pure white.
 - On a computer: windows can be dragged by the title bar and overlap. Clicking a window brings it to the front.
 - On a phone: one window at a time, full screen, with the taskbar still visible. No dragging.
 - Closing a window never loses progress.
@@ -203,10 +234,7 @@ Items bought from "Your setup" should be visible, so spending feels real.
 |---|---|
 | Sky | #4A9DE0 fading to #BFE3FF |
 | Hill | #5DAA3C fading to #3F8A2B |
-| Taskbar and title bars | #2A5FD0 |
 | Server alert title bar | #C83232 |
-| Start button | #2E7D32 |
-| Window body | #F4F0E0 (cream) |
 | Main text | #1E1E1E |
 | Terminal background | #1E1E1E |
 | Terminal text | #F4F0E0 |
@@ -216,7 +244,7 @@ Items bought from "Your setup" should be visible, so spending feels real.
 
 The OK, Warning and Critical colours are for box edges, icons and fills only. Write the status words themselves in the main text colour.
 
-Taskbar, title bar, Start button and sender badge text is white.
+Sender badge text is white. Each BlipOS version sets its own title, taskbar and Start text colours (see "Version colours").
 
 Check that all text passes a contrast ratio of 4.5 to 1 against its background, and that edges and icons pass 3 to 1.
 
@@ -227,7 +255,7 @@ These matter more than the retro look. If the two clash, readability wins.
 - Font: Verdana, then Tahoma, then any sans-serif. No pixel fonts for anything the player must read.
 - Body text 18px or larger. Line height 1.5. Left aligned.
 - No italics. No sentences in capitals. No underlines except on links.
-- Never pure white behind text. Use the cream window colour.
+- Never pure white behind text. Use the version's window body colour.
 - 25 words at most in any one bubble, email, card or button.
 - One idea per screen. Use icons and animation before words.
 - Every colour signal also has an icon and a word.

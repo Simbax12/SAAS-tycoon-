@@ -304,7 +304,7 @@ Run these in order. Each email shows its own balloon, one after another (see GAM
 2. **Refresher emails** that are now due.
 3. **Request emails** whose "Arrives" names the incident just solved (see UPGRADES.md > Request emails). Skip any for items already owned (see UPGRADES.md > Request emails).
 4. Set `currentId` to the next id in the play order.
-5. **If the stage has changed:** drop an unused lifeline from an earlier stage. The new stage's room clips play first (see ROOM.md > When a new stage starts). Then Maya's stage opening email. Then request emails that arrive at the start of this stage. Then any other email for the start of this stage. Then the "New in the Shop" balloon.
+5. **If the stage has changed:** drop an unused lifeline from an earlier stage. The new stage's room clips play first (see ROOM.md > When a new stage starts). Then BlipOS upgrades to the new stage's version (see UI_THEME.md > The upgrade). Then Maya's stage opening email. Then request emails that arrive at the start of this stage. Then any other email for the start of this stage. Then the "New in the Shop" balloon.
 6. **Start the next incident** (see "When the run starts").
 
 ## The start of the game
