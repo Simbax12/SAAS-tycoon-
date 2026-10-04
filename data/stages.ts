@@ -17,3 +17,18 @@ export const stages: Stage[] = [
 ];
 
 export const stageByNumber = (n: StageNumber): Stage => stages.find((s) => s.stage === n)!;
+
+// Copied from docs/GAME_DESIGN.md > Money and > Option types in new incidents.
+
+// Cash paid when an incident is solved is base cash x this, by the run's final stars.
+export const starMultiplier: Record<1 | 2 | 3, number> = { 3: 1.5, 2: 1, 1: 0.5 };
+
+// A repeat pays half the base cash for the stage.
+export const REPEAT_PAY_SHARE = 0.5;
+
+// Penalties in new incidents, as shares of the stage's base cash or of the users on screen.
+export const penalties = {
+  partialCash: 0.2,
+  badCash: 0.1,
+  badDip: 0.1,
+};

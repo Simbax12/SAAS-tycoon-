@@ -78,6 +78,7 @@ export default function RoomFrame({ stage, screen, windows, firstVisit }: Props)
     ) : (
       <Desktop
         isPhone={isPhone}
+        reducedMotion={reducedMotion}
         windows={windows}
         onStandUp={() => setPhase("desk")}
         standUpInMenu={isPhone || zoomed}

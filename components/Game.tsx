@@ -2,13 +2,20 @@
 
 import RoomFrame from "@/components/room/RoomFrame";
 import { useWindows } from "@/components/desktop/useWindows";
+import { GameContext, useGame } from "@/components/useGame";
 import { useScreen } from "@/components/useScreen";
+import { currentStage } from "@/game/rules";
 
-// The single page. Milestone 1 has no game state yet: the player is always in Stage 1,
-// and every visit counts as the first one, so the intro plays (docs/ROOM.md > The first time the game is opened).
+// The single page. The walk-in clip plays only when there is no save yet
+// (docs/ROOM.md > The first time the game is opened, and > Every later visit).
 export default function Game() {
   const screen = useScreen();
   const windows = useWindows();
-  if (!screen) return null;
-  return <RoomFrame stage={1} screen={screen} windows={windows} firstVisit />;
+  const { state, dispatch, hadSave } = useGame();
+  if (!screen || hadSave === null) return null;
+  return (
+    <GameContext.Provider value={{ state, dispatch }}>
+      <RoomFrame stage={currentStage(state)} screen={screen} windows={windows} firstVisit={!hadSave} />
+    </GameContext.Provider>
+  );
 }

@@ -175,18 +175,17 @@ This links each doc to the code that copies from it. Change "Planned" to "Built"
 
 | Doc | Code that copies from it | Status |
 |---|---|---|
-| docs/CHALLENGES.md | `data/challenges.ts` | Planned |
+| docs/CHALLENGES.md | `data/challenges.ts`, `data/patterns.ts` | Built |
 | docs/REPEATS.md | `data/repeats.ts` | Planned |
 | docs/BLUEPRINTS.md | `data/blueprints.ts` | Planned |
 | docs/EXTRA_STEPS.md | `data/extraSteps.ts` | Planned |
-| docs/UPGRADES.md | `data/upgrades.ts`, `data/emails.ts` | Planned |
-| docs/GAME_DESIGN.md | `data/stages.ts`, `data/howToPlay.ts` | Built |
-| docs/GAME_DESIGN.md | `data/playOrder.ts`, `game/reducer.ts` | Planned |
-| docs/GAME_LOGIC.md | `game/reducer.ts`, `game/types.ts` | Planned |
-| docs/UI_THEME.md | `data/desktopApps.ts`, `components/desktop`, `components/windows`, `app/globals.css` | Built |
+| docs/UPGRADES.md | `data/upgrades.ts` | Built |
+| docs/GAME_DESIGN.md | `data/stages.ts`, `data/howToPlay.ts`, `data/playOrder.ts`, `data/people.ts`, `data/emails.ts`, `game/rules.ts` | Built |
+| docs/GAME_LOGIC.md | `game/reducer.ts`, `game/types.ts`, `game/save.ts`, `game/emails.ts`, `game/reducer.test.ts` | Built |
+| docs/UI_THEME.md | `data/desktopApps.ts`, `data/patterns.ts`, `components/desktop`, `components/windows`, `app/globals.css` | Built |
 | docs/ROOM.md | `data/rooms.ts`, `components/room`, `public/room` | Built |
 
-Other code: `app/page.tsx` and `app/layout.tsx` are the single page. `components/Game.tsx` holds the page together. `components/useScreen.ts` picks the phone or computer layout.
+Other code: `app/page.tsx` and `app/layout.tsx` are the single page. `components/Game.tsx` holds the page together. `components/useScreen.ts` picks the phone or computer layout. `components/useGame.ts` holds the game state and saves it. `game/built.ts` lists what later milestones have not built yet. `data/systemMap.ts` holds the System Map layout agreed in Milestone 2 (see PROGRESS.md). So far `data/challenges.ts` holds Stage 1 only, `data/upgrades.ts` the must-have features only, and the request emails from UPGRADES.md are not yet in `data/emails.ts`.
 
 ## Commands
 
@@ -197,3 +196,4 @@ Other code: `app/page.tsx` and `app/layout.tsx` are the single page. `components
 | `npm run dev` | Runs the game at http://localhost:3000 while you work |
 | `npm run build` | Builds the game and checks the types. Must pass before you commit code |
 | `npm run typecheck` | Checks the types only, faster than a build |
+| `npm test` | Runs the reducer tests. Must pass before you commit code |

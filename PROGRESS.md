@@ -11,12 +11,13 @@ What is built, what is next, and the decisions made. Keep this short and current
 - docs/ROOM.md: the low-poly room around the computer, shown as video clips.
 - Room clips and stills for all five stages are in public/room/, each cut from one Wan 2.2 take. Every screen box and desk box is measured.
 - Milestone 1: Desktop. A Next.js app with the wallpaper, 12 icons, the taskbar with Start menu, tabs and tray, and windows that open, close, drag and stack. The Stage 1 room plays the walk-in clip, waits for "Tap the screen to sit down", plays the sit-down clip, then the BlipOS loading bar. "Stand up" and "Skip" work. Reduced motion skips the clips. A zoom button in the tray makes the screen fill the window, with a thin strip of the monitor frame showing. Checked at 1440, 1024 and 375 pixels wide.
+- Milestone 2: Engine and Stage 1. The four Stage 1 incidents are copied into `data/challenges.ts`, and the whole play order into `data/playOrder.ts`. The reducer in `game/` runs the new incident flow: alert or email, Investigate, Maya's line, three shuffled cards, penalties, outage dip, the guided answer, stars, users, cash, Next and thank-you emails. Inbox with sender badges, unread dots and balloons. Server alerts. The System Map. Settings has "Reset game". The game saves after every change and survives a refresh. 14 reducer tests pass with `npm test`.
 
 ## Next
 
-- Play Milestone 1: `npm install`, then `npm run dev`, then open http://localhost:3000. Try it on a phone width too.
-- Check the new clue text and on-screen text listed at the end of this file.
-- Milestone 2: Engine and Stage 1. See the build order in docs/START_HERE.md.
+- Play Milestone 2: `npm install`, then `npm run dev`, then open http://localhost:3000. Play 1.1 to 1.4, refresh the page part way, and try Settings > Reset game.
+- Check the new on-screen text listed at the end of this file.
+- Milestone 3: Help. See the build order in docs/START_HERE.md.
 
 ## Decisions
 
@@ -69,6 +70,19 @@ What is built, what is next, and the decisions made. Keep this short and current
 | 2026-10-03 | Arrow keys move a window when its title bar has focus | Every action should work with the keyboard alone |
 | 2026-10-03 | Until saving arrives in Milestone 2, every visit counts as the first, so the walk-in clip always plays. The loading bar shows on the first sit-down of each visit | There is no save to say the player has been here before |
 | 2026-10-03 | TypeScript is pinned to version 5 | Next.js 16 is not yet tested with TypeScript 7 |
+| 2026-10-03 | The zoom button sits in the taskbar tray, and zoomed in, "Stand up" moves to the Start menu | Every 48px button outside the screen would cover the desktop when it fills the window. The tray is reachable in both views |
+| 2026-10-03 | The zoom choice is kept in the browser, not in the game's save | It is a view preference for this device, like window positions, not progress |
+| 2026-10-04 | Until the Shop is built, Payments is owned for free when 1.3 comes up, with its 50 users and no request email | Milestone 2 must play all four Stage 1 incidents, but the Shop arrives in Milestone 4. The switch is `SHOP_BUILT` in `game/built.ts` |
+| 2026-10-04 | After 1.4, B1 is skipped and play stops: Next sends Lena's thank-you, then the Incident window says "Stage 2 is coming soon" | Stage 2 is not built yet. The save stays on 1.4, so once Stage 2 is added, Next carries on from there with the stage opener |
+| 2026-10-04 | The Stage 1 System Map is Users, Server and Database in a row. Payments sits below Server once owned, Secrets above it once 1.4 is solved | The docs give each Map change but not where boxes sit. The layout lives in `data/systemMap.ts` |
+| 2026-10-04 | The failing box is Server in 1.1 and 1.4, Database in 1.2 and Payments in 1.3. For now "Sees" is red traffic dots running to the failing box | The full "Sees" animations come in Milestone 8 |
+| 2026-10-04 | A Map change is drawn as the pattern's icon on its box or arrow | UI_THEME.md says the same icon is used on the System Map |
+| 2026-10-04 | An option's id is its type: best, partial or bad | Every new incident has exactly one of each, so saves stay valid if the wording changes |
+| 2026-10-04 | Each email key is sent once | Tapping Next again at the end of Stage 1 must not send a second thank-you |
+| 2026-10-04 | The save key is `zero-to-a-billion:save:v1`, and the version number goes up with each format change. Nothing is saved until Maya's first email arrives | A versioned key never overwrites an older save. A visit that ends before sitting down still counts as the first, so the walk-in plays next time |
+| 2026-10-04 | The diagram keeps a 480px minimum width and scrolls sideways on a phone | Shrinking it to 375px would make its words smaller than 18px. To check again in Milestone 8 |
+| 2026-10-04 | Settings has only "Reset game" for now. Calls to Dana, the tutorial and tips stay off until Milestone 3 | Reset is needed to test saving. The rest is Milestone 3 work |
+| 2026-10-04 | Reducer tests run with `npm test`: TypeScript compiles `game/` and `data/`, then Node's own test runner runs them | No extra library is needed |
 
 ## Change log
 
@@ -87,8 +101,8 @@ What is built, what is next, and the decisions made. Keep this short and current
 | 2026-10-03 | Added the Stage 5 room clips and stills. Recorded its screen box. All five rooms are done. ROOM.md: how to measure a curved screen. START_HERE.md: Milestone 1 uses the real Stage 1 room |
 | 2026-10-03 | Answered all open questions in GAME_LOGIC.md. Replaced hints with paid calls to Dana and Victor's lifeline in GAME_DESIGN.md, GAME_LOGIC.md, UPGRADES.md, UI_THEME.md, BLUEPRINTS.md, START_HERE.md and the hub. Added Clue 2 and Clue 3 lines to CHALLENGES.md and REPEATS.md. Added Dana and Victor to the cast with sender badges |
 | 2026-10-03 | Milestone 1 built: Next.js app, data/stages.ts, data/rooms.ts, data/desktopApps.ts, data/howToPlay.ts, components/desktop, components/windows and components/room. Added desk boxes to ROOM.md with a check for them. Hub: code map and commands |
-| 2026-10-03 | The zoom button sits in the taskbar tray, and zoomed in, "Stand up" moves to the Start menu | Every 48px button outside the screen would cover the desktop when it fills the window. The tray is reachable in both views |
-| 2026-10-03 | The zoom choice is kept in the browser, not in the game's save | It is a view preference for this device, like window positions, not progress |
+| 2026-10-03 | Added the zoom button: ROOM.md and UI_THEME.md first, then `components/room/useZoom.ts`, `placePicture.ts`, `RoomFrame.tsx`, the tray and the Start menu |
+| 2026-10-04 | Milestone 2 built: `data/challenges.ts` (Stage 1), `data/playOrder.ts`, `data/emails.ts`, `data/people.ts`, `data/patterns.ts`, `data/systemMap.ts`, `data/upgrades.ts` (must-have features), `game/`, `components/useGame.ts`, the Inbox, Incident, System Map and Settings windows, server alerts and balloons. Hub: code map and `npm test` |
 
 ## On-screen text to check
 
@@ -104,4 +118,12 @@ What is built, what is next, and the decisions made. Keep this short and current
 - How to Play line 5: "Wrong fix: try again. Stuck? Call Dana, but calls cost cash."
 - Buttons and labels: "Call Dana", "Free call", "No more calls", "Use Victor's lifeline", "Held".
 - Victor's line: "This one. You owe me."
-| 2026-10-03 | Added the zoom button: ROOM.md and UI_THEME.md first, then `components/room/useZoom.ts`, `placePicture.ts`, `RoomFrame.tsx`, the tray and the Start menu |
+
+New in Milestone 2:
+
+- Balloon: "New email from" and the sender's name.
+- Incident window: "No incident right now.", "Try again." after a wrong fix's Result, "Tried" on a greyed card, "Outage: 20 users lost until fixed.", "Apply this fix", "Pattern learned:" and the pattern name, "+200 users", "+£750", "Next".
+- End of Stage 1: "Stage 2 is coming soon. Thanks for playing!"
+- Inbox: "Back".
+- Settings: "Reset game", "This clears all progress. Are you sure?", "Yes, reset", "Cancel".
+- Screen reader labels, not shown on screen: "Maya:", "2 of 3 stars", "Incident, waiting", "Inbox, 2 unread", "unread" on an email, "System Map" on the diagram.

@@ -65,3 +65,60 @@ body {
     box-shadow: 0 0 0 5px rgba(255, 212, 71, 1);
   }
 }
+
+/* A balloon rising from the tray (docs/UI_THEME.md > Desktop). */
+@keyframes balloon-rise {
+  from {
+    transform: translateY(24px);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+.balloon-rise {
+  animation: balloon-rise 300ms ease-out;
+}
+
+/* A failing box pulses gently (docs/UI_THEME.md > The System Map and incident diagram). */
+@keyframes box-pulse {
+  0%,
+  100% {
+    stroke-width: 4;
+  }
+  50% {
+    stroke-width: 7;
+  }
+}
+
+.box-pulse {
+  animation: box-pulse 1.2s ease-in-out infinite;
+}
+
+/* A new part slides into the diagram when an incident is fixed. */
+@keyframes part-pop {
+  from {
+    transform: scale(0.3);
+    opacity: 0;
+  }
+  to {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+
+.part-pop {
+  transform-box: fill-box;
+  transform-origin: center;
+  animation: part-pop 500ms ease-out;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .balloon-rise,
+  .box-pulse,
+  .part-pop {
+    animation: none;
+  }
+}

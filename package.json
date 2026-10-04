@@ -7,7 +7,8 @@
     "build": "next build",
     "start": "next start",
     "typecheck": "tsc --noEmit",
-    "check-docs": "node scripts/check-docs.mjs"
+    "check-docs": "node scripts/check-docs.mjs",
+    "test": "tsc -p tsconfig.test.json && node --test .test-build/game/*.test.js"
   },
   "dependencies": {
     "next": "^16.3.8",
