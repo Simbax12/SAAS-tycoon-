@@ -48,7 +48,7 @@ export default function ServerAlert({ text, area, isPhone, onInvestigate }: Prop
       role="alertdialog"
       aria-labelledby="server-alert-title"
       aria-describedby="server-alert-text"
-      className={`os-window os-alert absolute z-[900] flex flex-col overflow-hidden ${
+      className={`os-window os-alert ${isPhone ? "" : "os-dialog"} absolute z-[900] flex flex-col overflow-hidden ${
         isPhone ? "" : "rounded-t-lg border-2 border-alert shadow-[4px_6px_16px_rgba(0,0,0,0.45)]"
       }`}
       style={style}
@@ -76,7 +76,7 @@ export default function ServerAlert({ text, area, isPhone, onInvestigate }: Prop
           autoFocus
           data-tour="alertInvestigate"
           onClick={onInvestigate}
-          className="min-h-12 self-start rounded-md border-2 border-ink bg-[#FFE08A] px-5 text-[18px] font-bold hover:bg-[#FFD35C]"
+          className="os-button os-button-default min-h-12 self-start rounded-md border-2 border-ink bg-[#FFE08A] px-5 text-[18px] font-bold hover:bg-[#FFD35C]"
         >
           Investigate
         </button>

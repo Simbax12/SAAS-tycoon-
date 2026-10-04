@@ -172,7 +172,7 @@ function Calls() {
   return (
     <>
       {clues.length > 0 && (
-        <section aria-label="Call with Dana" className="overflow-hidden rounded-lg border-2 border-[#A8431C] bg-white">
+        <section aria-label="Call with Dana" className="os-dialog overflow-hidden rounded-lg border-2 border-[#A8431C] bg-white">
           <header className="flex items-center gap-2 bg-[#A8431C] px-3 py-1.5 text-white">
             <PhoneIcon size={22} />
             <span className="text-[18px] font-bold">Dana</span>

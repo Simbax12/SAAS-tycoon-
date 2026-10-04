@@ -27,6 +27,8 @@ type Props = {
 
 type Shown = {
   key: string;
+  // The dialog box's title in the classic BlipOS look (docs/UI_THEME.md > Pop-ups and hint boxes).
+  title: "Tutorial" | "Tip";
   text: string;
   target: TourTarget;
   // Whether the player can tap the lit-up thing itself. If not, the light is only for looking.
@@ -129,6 +131,7 @@ export default function Guide({ root, windows, isPhone, tourStep, onTourStep, on
     const s = tutorialSteps[tourStep - 1];
     shown = {
       key: `tour-${s.step}`,
+      title: "Tutorial",
       text: s.text,
       target: s.target,
       tappable: false,
@@ -144,6 +147,7 @@ export default function Guide({ root, windows, isPhone, tourStep, onTourStep, on
     if (ready) {
       shown = {
         key: `tutorial-${s.step}`,
+        title: "Tutorial",
         text: s.text,
         target: s.target,
         // The failing part, the cards and the counters are for looking. Step 5 shows the cards
@@ -158,6 +162,7 @@ export default function Guide({ root, windows, isPhone, tourStep, onTourStep, on
   if (!shown && tipNow && live === null) {
     shown = {
       key: `tip-${tipNow.id}`,
+      title: "Tip",
       text: tipNow.text,
       target: tipNow.target,
       tappable: true,
@@ -220,7 +225,7 @@ export default function Guide({ root, windows, isPhone, tourStep, onTourStep, on
   // light up (it is hidden or not built yet), the whole desktop dims and the bubble floats at the top.
   // Its buttons always work, so the player can never get stuck behind the spotlight.
   const bubbleWidth = Math.min(isPhone ? 340 : 380, w - 16);
-  const bubbleHeight = 150;
+  const bubbleHeight = 190;
   let bubble: React.CSSProperties = { left: (w - bubbleWidth) / 2, top: 12, width: bubbleWidth };
   if (lit) {
     const left = Math.min(Math.max(8, (lit.left + lit.right) / 2 - bubbleWidth / 2), w - bubbleWidth - 8);
@@ -251,23 +256,26 @@ export default function Guide({ root, windows, isPhone, tourStep, onTourStep, on
         role="dialog"
         aria-live="polite"
         aria-label={shown.text}
-        className="pointer-events-auto absolute flex flex-col gap-3 rounded-xl border-2 border-ink bg-cream p-4 shadow-[4px_6px_16px_rgba(0,0,0,0.45)]"
+        className="os-dialog pointer-events-auto absolute flex flex-col overflow-hidden rounded-xl border-2 border-ink bg-cream shadow-[4px_6px_16px_rgba(0,0,0,0.45)]"
         style={bubble}
       >
-        <p className="text-[20px] font-bold leading-normal">{shown.text}</p>
-        <div className="flex flex-wrap gap-2">
-          {shown.buttons.map((b, i) => (
-            <button
-              key={b.label}
-              type="button"
-              onClick={b.onClick}
-              className={`min-h-12 rounded-md border-2 border-ink px-4 text-[18px] ${
-                i === 0 ? "bg-[#FFE08A] font-bold hover:bg-[#FFD35C]" : "bg-white hover:bg-[#EEF3FD]"
-              }`}
-            >
-              {b.label}
-            </button>
-          ))}
+        <p className="os-dialog-title px-3 py-1.5 text-[18px] font-bold">{shown.title}</p>
+        <div className="flex flex-col gap-3 p-4">
+          <p className="text-[20px] font-bold leading-normal">{shown.text}</p>
+          <div className="flex flex-wrap gap-2">
+            {shown.buttons.map((b, i) => (
+              <button
+                key={b.label}
+                type="button"
+                onClick={b.onClick}
+                className={`os-button ${i === 0 ? "os-button-default" : ""} min-h-12 rounded-md border-2 border-ink px-4 text-[18px] ${
+                  i === 0 ? "bg-[#FFE08A] font-bold hover:bg-[#FFD35C]" : "bg-white hover:bg-[#EEF3FD]"
+                }`}
+              >
+                {b.label}
+              </button>
+            ))}
+          </div>
         </div>
       </div>
     </div>

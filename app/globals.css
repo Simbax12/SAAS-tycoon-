@@ -245,3 +245,59 @@ body {
 [data-os-style="classic"] .os-alert {
   border-radius: 0;
 }
+
+/* ------------------------------------------------------------------
+   Pop-ups and hint boxes (docs/UI_THEME.md > Pop-ups and hint boxes).
+   In the classic style they become dialog boxes. In the rounded style the
+   components' own classes draw them, and the dialog title bar is hidden.
+   ------------------------------------------------------------------ */
+
+[data-os-style="rounded"] .os-dialog-title {
+  display: none;
+}
+.os-dialog-title {
+  background: linear-gradient(to right, var(--os-title), var(--os-title-end));
+  color: var(--os-title-text);
+}
+
+[data-os-style="classic"] .os-dialog {
+  background: var(--os-body);
+  border: 2px solid;
+  border-color: #ffffff #4a4a4a #4a4a4a #ffffff;
+  border-radius: 0;
+  box-shadow: inset -1px -1px 0 #8a8780, inset 1px 1px 0 #f2f0ea, 3px 4px 10px rgba(0, 0, 0, 0.35);
+}
+
+[data-os-style="classic"] .os-button {
+  background: var(--os-bar);
+  color: var(--os-bar-text);
+  border: 2px solid;
+  border-color: #ffffff #4a4a4a #4a4a4a #ffffff;
+  border-radius: 0;
+  box-shadow: inset -1px -1px 0 #8a8780, inset 1px 1px 0 #f2f0ea;
+  font-weight: normal;
+}
+[data-os-style="classic"] .os-button:hover {
+  background: #d0cdc4;
+}
+[data-os-style="classic"] .os-button:active {
+  border-color: #4a4a4a #ffffff #ffffff #4a4a4a;
+  box-shadow: inset 1px 1px 0 #8a8780;
+}
+/* The main button: a dark outline and bold text. */
+[data-os-style="classic"] .os-button-default {
+  outline: 2px solid #1e1e1e;
+  outline-offset: 0;
+  font-weight: bold;
+}
+
+/* Email balloons become square pale-yellow notes with a thin dark edge. */
+[data-os-style="classic"] .os-note {
+  background: #fff8d6;
+  border: 1px solid #1e1e1e;
+  border-radius: 0;
+  box-shadow: 2px 2px 0 rgba(0, 0, 0, 0.35);
+}
+[data-os-style="classic"] .os-note-tail {
+  display: none;
+}

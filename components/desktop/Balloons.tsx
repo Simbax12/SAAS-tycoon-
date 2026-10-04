@@ -40,10 +40,10 @@ export default function Balloons({ emails, hidden, onOpen }: { emails: Email[]; 
             setQueue([]);
             onOpen();
           }}
-          className="balloon-rise pointer-events-auto relative min-h-12 rounded-2xl border-2 border-ink bg-[#FFF8D6] px-4 py-2 text-left text-[18px] shadow-[2px_4px_10px_rgba(0,0,0,0.35)]"
+          className="os-note balloon-rise pointer-events-auto relative min-h-12 rounded-2xl border-2 border-ink bg-[#FFF8D6] px-4 py-2 text-left text-[18px] shadow-[2px_4px_10px_rgba(0,0,0,0.35)]"
         >
           New email from {view.name}
-          <span className="absolute -bottom-[10px] right-8 h-4 w-4 rotate-45 border-b-2 border-r-2 border-ink bg-[#FFF8D6]" aria-hidden="true" />
+          <span className="os-note-tail absolute -bottom-[10px] right-8 h-4 w-4 rotate-45 border-b-2 border-r-2 border-ink bg-[#FFF8D6]" aria-hidden="true" />
         </button>
       )}
     </div>
