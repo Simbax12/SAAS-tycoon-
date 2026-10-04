@@ -133,9 +133,11 @@ What is built, what is next, and the decisions made. Keep this short and current
 | 2026-10-04 | The classic close button is a 40px raised square inside a 48px tap area | It looks like the era but keeps the 48px tap target rule |
 | 2026-10-04 | BlipOS versions: UI_THEME.md, GAME_LOGIC.md, START_HERE.md and the hub, with a contrast check for every version. Code: `data/blipOs.ts`, version styles in `app/globals.css`, and the window frame, taskbar, Start menu, server alert, wallpaper and loading bar now follow the version |
 | 2026-10-04 | In BlipOS 1 and 2, pop-ups and hint boxes are classic dialog boxes: the tutorial and tip boxes, server alerts, Dana's phone window and email balloons | Keeps the 1995 feel everywhere, not just in windows. Buttons inside windows, such as the option cards and "Call Dana", keep their current look |
+| 2026-10-04 | `next.config.ts` sets `agentRules: false` | Next.js 16's `npm run dev` adds its own rules block to CLAUDE.md. That would clutter the hub, and its em dash fails the docs check |
 | 2026-10-04 | Pop-ups follow the version: UI_THEME.md first, then dialog, button and note styles in `app/globals.css`, and the tutorial and tip box, balloons, server alert and Dana's box |
 | 2026-10-04 | Saved unfinished Milestone 4 work left uncommitted by an earlier session: the Shop and Stats windows, desk items, Shop icons and engine changes. It builds and its 27 tests pass, but it has not been reviewed or played. Milestone 4 is not finished |
 | 2026-10-04 | Milestone 4 finished: reviewed and played. GAME_LOGIC.md > Cash going out: an item bought mid-incident waits for the next incident. `game/reducer.ts` and a new test. The Test result scrolls into view. Diagram chips show features only. Windows behind are opaque. Hub: code map |
+| 2026-10-04 | `next.config.ts`: turned off the Next.js agent rules block, which `npm run dev` was adding to CLAUDE.md |
 
 ## On-screen text to check
 
