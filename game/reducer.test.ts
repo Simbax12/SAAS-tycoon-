@@ -339,10 +339,10 @@ test("Victor's lifeline costs 2 x base cash, one held at a time", () => {
 });
 
 test("Test first shows one option once, with no penalty, and does not spoil first try", () => {
-  let s = play(begun(), ...solveBest, { type: "next" }, { type: "investigate" });
-  // Not owned yet.
-  assert.equal(reducer(s, { type: "testFirst", optionId: "bad" }), s);
-  s = play(s, buy("srv-test"));
+  const notOwned = play(begun(), ...solveBest, { type: "next" }, { type: "investigate" });
+  assert.equal(reducer(notOwned, { type: "testFirst", optionId: "bad" }), notOwned);
+  // Bought between incidents, so it works in the next one.
+  let s = play(begun(), ...solveBest, buy("srv-test"), { type: "next" }, { type: "investigate" });
   assert.equal(s.cash, 550);
   assert.ok(canTestFirst(s));
   s = reducer(s, { type: "testFirst", optionId: "bad" });
@@ -359,6 +359,15 @@ test("Test first shows one option once, with no penalty, and does not spoil firs
   assert.deepEqual(s.results["1.2"], { stars: 3, firstTry: true });
   // The next incident gets it again.
   s = reducer(s, { type: "next" });
+  assert.equal(s.run.testUsed, false);
+});
+
+test("an item bought during an incident only changes the incidents after it", () => {
+  let s = play(begun(), ...solveBest, { type: "next" }, { type: "investigate" }, buy("srv-test"));
+  assert.ok(s.owned.includes("srv-test"));
+  assert.ok(!canTestFirst(s));
+  assert.equal(reducer(s, { type: "testFirst", optionId: "bad" }), s);
+  s = play(s, pick("best"), { type: "next" });
   assert.equal(s.run.testUsed, false);
 });
 

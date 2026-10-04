@@ -58,6 +58,9 @@ export default function Incident() {
   // "Test first" (docs/UI_THEME.md > Test first): picking the card to test, then its Result.
   // Screen state only. It belongs to one incident, so a new incident starts without it.
   const [test, setTest] = useState<{ incident: string; option: string | null } | null>(null);
+  // The tested card's Result sits above the cards, so bring it into view.
+  const testBox = useRef<HTMLDivElement>(null);
+  useEffect(() => scrollWithin(testBox.current), [test?.option]);
 
   if (!challenge || !row || phase === "waiting") {
     return <p className="text-[18px]">No incident right now.</p>;
@@ -105,7 +108,7 @@ export default function Incident() {
           <MayaSays>{challenge.maya}</MayaSays>
 
           {tested && (
-            <div className="flex items-start gap-2 rounded-md border-2 border-[#2A5FD0] bg-[#EEF3FD] px-3 py-2 text-[18px]" role="status">
+            <div ref={testBox} className="flex items-start gap-2 rounded-md border-2 border-[#2A5FD0] bg-[#EEF3FD] px-3 py-2 text-[18px]" role="status">
               <ShopIcon id="srv-test" size={26} />
               <p className="flex flex-col gap-1">
                 <span className="font-bold">Test</span>

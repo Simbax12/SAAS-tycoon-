@@ -9,7 +9,6 @@ type Props = {
   win: OpenWindow;
   area: Area;
   isPhone: boolean;
-  isFront: boolean;
   onClose: () => void;
   onFocus: () => void;
   onMove: (x: number, y: number) => void;
@@ -22,7 +21,7 @@ const KEY_STEP = 24;
 
 // A window: blue title bar with icon, name and close button, and a cream body
 // (docs/UI_THEME.md > Windows). On a computer it can be dragged by the title bar.
-export default function WindowFrame({ win, area, isPhone, isFront, onClose, onFocus, onMove, tabs, children }: Props) {
+export default function WindowFrame({ win, area, isPhone, onClose, onFocus, onMove, tabs, children }: Props) {
   const app = appById(win.id);
   const drag = useRef<{ px: number; py: number; x: number; y: number } | null>(null);
   const titleId = `window-title-${win.id}`;
@@ -70,9 +69,7 @@ export default function WindowFrame({ win, area, isPhone, isFront, onClose, onFo
     <section
       role="dialog"
       aria-labelledby={titleId}
-      className={`os-window absolute flex flex-col overflow-hidden ${isPhone ? "" : "os-framed"} ${
-        !isPhone && !isFront ? "opacity-95" : ""
-      }`}
+      className={`os-window absolute flex flex-col overflow-hidden ${isPhone ? "" : "os-framed"}`}
       style={place}
       onPointerDown={onFocus}
     >

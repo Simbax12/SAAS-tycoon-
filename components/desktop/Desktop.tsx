@@ -143,7 +143,6 @@ export default function Desktop({ isPhone, reducedMotion, windows, onStandUp, st
                 win={w}
                 area={area}
                 isPhone={isPhone}
-                isFront={w.id === front?.id}
                 onClose={() => windows.close(w.id)}
                 onFocus={() => windows.focus(w.id)}
                 onMove={(x, y) => windows.move(w.id, x, y, area)}

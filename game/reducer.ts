@@ -16,6 +16,7 @@ import {
   currentChallenge,
   currentRow,
   currentStage,
+  incidentOpen,
   lifelinePrice,
   loseStar,
   nextIncident,
@@ -133,6 +134,12 @@ function buy(state: GameState, id: string): GameState {
     s = { ...s, loanOwed: s.loanOwed + item.price - s.cash, topUps: s.topUps + 1, cash: item.price };
   }
   s = { ...s, cash: s.cash - item.price, owned: [...s.owned, id], users: s.users + item.usersGained };
+  // An item bought during an incident does not change that incident: its once-per-incident help
+  // counts as used until the next one starts.
+  if (incidentOpen(s)) {
+    if (id === itemEffects.testFirst) s = { ...s, run: { ...s.run, testUsed: true } };
+    if (id === itemEffects.freeFirstCall) s = { ...s, run: { ...s.run, handbookUsed: true } };
+  }
   // Buying the feature the current incident waits for lets that incident arrive.
   if (s.phase === "waiting" && s.emails.length > 0 && currentRow(s)?.needs === id) s = arrive(s);
   return s;

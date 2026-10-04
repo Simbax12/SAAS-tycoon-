@@ -3,7 +3,7 @@
 import { challengeById } from "@/data/challenges";
 import { patternIcons } from "@/data/patterns";
 import { incidentsOnMap, mapArrows, mapBoxes, type MapBox } from "@/data/systemMap";
-import { upgradeById } from "@/data/upgrades";
+import { upgradeById, type Upgrade } from "@/data/upgrades";
 import { BoxIcon, PatternIcon } from "@/components/desktop/gameIcons";
 import { useDesktop } from "@/components/desktop/DesktopContext";
 import { incidentOpen } from "@/game/rules";
@@ -47,7 +47,10 @@ export default function Diagram({ state }: { state: GameState }) {
   // Traffic dots run from Users along the arrows to the failing box: the "Sees" loop.
   const trafficPath = failing ? pathTo(failing, arrows) : [];
   const users = at("users");
-  const features = state.owned.map((id) => upgradeById(id)).filter((u) => u !== undefined);
+  // Only features get a chip, not servers or the player's own gear.
+  const features = state.owned
+    .map((id) => upgradeById(id))
+    .filter((u): u is Upgrade => u !== undefined && (u.group === "must" || u.group === "nice"));
 
   // Crop the drawing to the boxes that show, with room for badges above and feature chips below.
   const chipsBottom = users ? users.y + BOX_H / 2 + 12 + features.length * 34 : 0;

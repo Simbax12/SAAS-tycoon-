@@ -14,12 +14,14 @@ What is built, what is next, and the decisions made. Keep this short and current
 - Milestone 2: Engine and Stage 1. The four Stage 1 incidents are copied into `data/challenges.ts`, and the whole play order into `data/playOrder.ts`. The reducer in `game/` runs the new incident flow: alert or email, Investigate, Maya's line, three shuffled cards, penalties, outage dip, the guided answer, stars, users, cash, Next and thank-you emails. Inbox with sender badges, unread dots and balloons. Server alerts. The System Map. Settings has "Reset game". The game saves after every change and survives a refresh. 14 reducer tests pass with `npm test`.
 - Milestone 3: Help. The 8-step tutorial runs inside 1.1 with a spotlight, and can be skipped or replayed from Settings. First-time tips show once each; the alert tip shows on 1.2. Calls to Dana: a "Call Dana" button with the next price, her phone window with every clue so far, "Not enough cash" and "No more calls". All calls in 1.1 are free. Victor's lifeline and the handbook's free call work in the engine, ready for the Shop. The Pattern Book shows each learned pattern with its icon, "Use this when" line, pips and "Tools you will meet". The Recycle Bin lists every wrong pick with why it failed. How to Play already had its exact text. 19 reducer tests pass. Checked in Chromium at 1440, 1024 and 375 pixels wide: two wrong picks lead to the guided answer.
 - BlipOS 1: the desktop now has the grey 1995-style look in the garage. Windows, taskbar, Start menu and server alerts follow the version for the current stage, from `data/blipOs.ts`. The loading bar says "BlipOS 1".
+- Milestone 4: Shop and money. The Shop has three tabs, cards with icons, price dots, "Needed next", "Not enough cash" and "Owned". Every Shop item is in `data/upgrades.ts`. Maya asks for the Test environment after 1.1 and Sam for Payments after 1.2, each with "Open in Shop". 1.3 waits until Payments is bought. The investor lends the shortfall for the feature Needed next, and Maya says so. Test first works in every incident. The Second monitor puts the Incident window and the Pattern Book side by side, or gives them tabs on a phone, and shows on the desk. Victor's lifeline can be bought and held, one at a time. The Stats window shows users, the bar to 1 billion, the stage, stars, top-ups and the loan. 28 reducer tests pass. Played in Chromium at 1440 and 375 pixels wide: buying Payments unlocks 1.3, and with too little cash the investor pays the rest.
 
 ## Next
 
-- Play Milestone 3: `npm install`, then `npm run dev`, then open http://localhost:3000. Use Settings > Reset game to see the tutorial from the start, then Settings > Replay tutorial.
+- Play Milestone 4: `npm install`, then `npm run dev`, then open http://localhost:3000. Use Settings > Reset game for a fresh start. To see the investor, spend cash on optional items before buying Payments.
 - Check the new on-screen text listed at the end of this file.
-- Milestone 4: Shop and money. See the build order in docs/START_HERE.md.
+- Milestone 5: Repeats and Stage 2. See the build order in docs/START_HERE.md.
+- With Stage 3: the Faster PC must only pay more in incidents that start after it is bought. The run does not yet remember that.
 
 ## Decisions
 
@@ -84,6 +86,11 @@ What is built, what is next, and the decisions made. Keep this short and current
 | 2026-10-04 | The save key is `zero-to-a-billion:save:v1`, and the version number goes up with each format change. Nothing is saved until Maya's first email arrives | A versioned key never overwrites an older save. A visit that ends before sitting down still counts as the first, so the walk-in plays next time |
 | 2026-10-04 | The diagram keeps a 480px minimum width and scrolls sideways on a phone | Shrinking it to 375px would make its words smaller than 18px. To check again in Milestone 8 |
 | 2026-10-04 | Settings has only "Reset game" for now. Calls to Dana, the tutorial and tips stay off until Milestone 3 | Reset is needed to test saving. The rest is Milestone 3 work |
+| 2026-10-04 | An item bought during an incident only changes the incidents after it. Buying the Test environment or the Engineering handbook mid-incident marks its once-per-incident help as used for that incident | GAME_DESIGN.md > The Shop in brief says so. This needs no new field in the save. Written in GAME_LOGIC.md > Cash going out |
+| 2026-10-04 | Windows behind the front one are no longer slightly see-through | With the Second monitor, the window behind is read side by side, and the Shop's text showed through it |
+| 2026-10-04 | The diagram's chips beside Users show features only, not servers or "Your setup" items | UI_THEME.md says "Each feature bought". A second monitor is not part of Blip |
+| 2026-10-04 | There is no "New in the Shop" balloon when the game starts, only when Stage 2 and later stages start | Tutorial step 8 already points at the Shop, and balloons stay hidden while the spotlight shows |
+| 2026-10-04 | While an incident waits for its feature, the Incident window says "No incident right now." | Nothing has arrived yet (GAME_LOGIC.md > Phases). Sam's request email, its tip and the "Needed next" badge point to the Shop |
 | 2026-10-04 | Reducer tests run with `npm test`: TypeScript compiles `game/` and `data/`, then Node's own test runner runs them | No extra library is needed |
 
 ## Change log
@@ -128,6 +135,7 @@ What is built, what is next, and the decisions made. Keep this short and current
 | 2026-10-04 | In BlipOS 1 and 2, pop-ups and hint boxes are classic dialog boxes: the tutorial and tip boxes, server alerts, Dana's phone window and email balloons | Keeps the 1995 feel everywhere, not just in windows. Buttons inside windows, such as the option cards and "Call Dana", keep their current look |
 | 2026-10-04 | Pop-ups follow the version: UI_THEME.md first, then dialog, button and note styles in `app/globals.css`, and the tutorial and tip box, balloons, server alert and Dana's box |
 | 2026-10-04 | Saved unfinished Milestone 4 work left uncommitted by an earlier session: the Shop and Stats windows, desk items, Shop icons and engine changes. It builds and its 27 tests pass, but it has not been reviewed or played. Milestone 4 is not finished |
+| 2026-10-04 | Milestone 4 finished: reviewed and played. GAME_LOGIC.md > Cash going out: an item bought mid-incident waits for the next incident. `game/reducer.ts` and a new test. The Test result scrolls into view. Diagram chips show features only. Windows behind are opaque. Hub: code map |
 
 ## On-screen text to check
 
@@ -166,3 +174,11 @@ New with BlipOS versions:
 
 - Dialog titles in BlipOS 1 and 2: "Tutorial" and "Tip".
 - Loading bar: "BlipOS 1", and from Stage 2 "Upgrading to BlipOS 2" and so on (UI_THEME.md > The upgrade).
+
+New in Milestone 4:
+
+- Shop: the tab names "Features", "Servers" and "Your setup", "Buy", "Needed next", "Not enough cash", "Owned", "Held", "No new users", "+50 users", "Unlocks: The Double Charge", and the words beside the dots: "Change" and "Users".
+- Inbox: "Open in Shop". Balloon: "New in the Shop".
+- Incident window: "Test first", "Tap a fix to test it.", "Cancel", "Test" and "This would work".
+- Stats: "Users: 500", "Stage 1: Garage", "6 of 6 stars", "Investor top-ups: 1", "Loan owed: £100", and the bar's labels "1K", "100K", "10M", "100M" and "1B".
+- Screen reader labels, not shown on screen: "Users, out of 1 billion" on the bar, and each desk item's name.
