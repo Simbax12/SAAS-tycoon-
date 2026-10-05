@@ -173,24 +173,31 @@ It must print "0 problems" before you commit. If it reports a problem, fix the d
 
 ## Code map
 
-This links each doc to the code that copies from it. None of the code exists yet. Change "Planned" to "Built" when a file is created, and keep the paths current.
+This links each doc to the code that copies from it. Change "Planned" to "Built" when a file is created, and keep the paths current.
 
 | Doc | Code that copies from it | Status |
 |---|---|---|
-| docs/CHALLENGES.md | `data/challenges.ts` | Planned |
+| docs/CHALLENGES.md | `data/challenges.ts`, `data/patterns.ts` | Built |
 | docs/REPEATS.md | `data/repeats.ts` | Planned |
+| docs/REPEATS.md | `data/patterns.ts` | Built |
 | docs/BLUEPRINTS.md | `data/blueprints.ts` | Planned |
+| docs/BLUEPRINTS.md | `data/patterns.ts` | Built |
 | docs/EXTRA_STEPS.md | `data/extraSteps.ts` | Planned |
-| docs/UPGRADES.md | `data/upgrades.ts`, `data/emails.ts` | Planned |
-| docs/GAME_DESIGN.md | `data/stages.ts`, `data/playOrder.ts`, `game/reducer.ts` | Planned |
-| docs/GAME_LOGIC.md | `game/reducer.ts`, `game/types.ts` | Planned |
-| docs/UI_THEME.md | `components/desktop`, `components/windows` | Planned |
-| docs/ROOM.md | `components/room`, `public/room` | Planned |
+| docs/UPGRADES.md | `data/upgrades.ts` | Built |
+| docs/GAME_DESIGN.md | `data/stages.ts`, `data/howToPlay.ts`, `data/playOrder.ts`, `data/people.ts`, `data/emails.ts`, `data/tutorial.ts`, `game/rules.ts` | Built |
+| docs/GAME_LOGIC.md | `game/reducer.ts`, `game/types.ts`, `game/save.ts`, `game/emails.ts`, `game/reducer.test.ts` | Built |
+| docs/UI_THEME.md | `data/desktopApps.ts`, `data/blipOs.ts`, `data/patterns.ts`, `components/desktop`, `components/windows`, `app/globals.css` | Built |
+| docs/ROOM.md | `data/rooms.ts`, `components/room`, `public/room` | Built |
+
+Other code: `app/page.tsx` and `app/layout.tsx` are the single page. `components/Game.tsx` holds the page together. `components/useScreen.ts` picks the phone or computer layout. `components/useGame.ts` holds the game state and saves it. `components/desktop/Guide.tsx` draws the spotlight for the tutorial, its replay and the first-time tips. `components/desktop/scrollWithin.ts` scrolls inside a window without moving the room. `data/patterns.ts` copies from three docs: pattern icons from UI_THEME.md, the familiar tools from the toolbox in BLUEPRINTS.md, and the five everyday patterns from REPEATS.md. `game/built.ts` lists what later milestones have not built yet. `data/systemMap.ts` holds the System Map layout agreed in Milestone 2 (see PROGRESS.md). `data/upgrades.ts` holds every Shop item and the request emails, and `itemEffects` says which item gives which effect. Only the Stage 1 effects are built so far. `components/desktop/shopIcons.tsx` draws the Shop item icons from UI_THEME.md. `components/room/DeskItems.tsx` draws the "Your setup" items on the desk from ROOM.md. So far `data/challenges.ts` holds Stage 1 only.
 
 ## Commands
 
 | Command | What it does |
 |---|---|
 | `node scripts/check-docs.mjs` | Checks the docs agree with each other. Needs only Node, no install |
-
-Commands to run, build and test the game are added here at Milestone 1.
+| `npm install` | Installs the game's packages. Run once |
+| `npm run dev` | Runs the game at http://localhost:3000 while you work |
+| `npm run build` | Builds the game and checks the types. Must pass before you commit code |
+| `npm run typecheck` | Checks the types only, faster than a build |
+| `npm test` | Runs the reducer tests. Must pass before you commit code |

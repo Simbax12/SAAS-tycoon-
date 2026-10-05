@@ -268,7 +268,7 @@ All cash coming in pays the loan first: the smaller of the pay and `loanOwed` co
 
 - **Penalties:** taken from `cash`, rounded to whole pounds. `cash` stops at £0. Penalties never add to the loan.
 - **Calls and lifelines:** taken from `cash`. They can only be bought when `cash` covers them, so they never add to the loan.
-- **Buying:** the price comes off `cash`. The item goes into `owned`. Its "Users gained" are added to `users` at once (see UPGRADES.md > Upgrades: the Shop). If it is the feature the current incident is waiting for, move that incident to `arrived`.
+- **Buying:** the price comes off `cash`. The item goes into `owned`. Its "Users gained" are added to `users` at once (see UPGRADES.md > Upgrades: the Shop). If it is the feature the current incident is waiting for, move that incident to `arrived`. If an incident is open, from `arrived` to `tune`, the item does not change it (see GAME_DESIGN.md > The Shop in brief): buying the Test environment sets `testUsed` to true, and buying the Engineering handbook sets `handbookUsed` to true, so each one starts working with the next incident.
 
 ## The investor top-up
 

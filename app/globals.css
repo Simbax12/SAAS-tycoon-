@@ -1,0 +1,303 @@
+@import "tailwindcss";
+
+/* Colours and fonts copied from docs/UI_THEME.md > Colours and > Readability rules. */
+@theme {
+  --font-sans: Verdana, Tahoma, sans-serif;
+  --color-sky-top: #4a9de0;
+  --color-sky-bottom: #bfe3ff;
+  --color-hill-top: #5daa3c;
+  --color-hill-bottom: #3f8a2b;
+  --color-bar: #2a5fd0;
+  --color-alert: #c83232;
+  --color-start: #2e7d32;
+  --color-cream: #f4f0e0;
+  --color-ink: #1e1e1e;
+  --color-ok: #2e8b3d;
+  --color-warning: #a86f00;
+  --color-critical: #c83232;
+}
+
+html,
+body {
+  height: 100%;
+  margin: 0;
+  overflow: hidden;
+  background: #111111;
+  color: var(--color-ink);
+  font-family: var(--font-sans);
+  font-size: 18px;
+  line-height: 1.5;
+  -webkit-tap-highlight-color: transparent;
+}
+
+/* Visible focus for keyboard players. */
+:focus-visible {
+  outline: 3px solid #ffd447;
+  outline-offset: 2px;
+}
+
+@keyframes monitor-pulse {
+  0%,
+  100% {
+    box-shadow: 0 0 0 3px rgba(255, 212, 71, 0.9), 0 0 12px 4px rgba(255, 212, 71, 0.5);
+  }
+  50% {
+    box-shadow: 0 0 0 6px rgba(255, 212, 71, 1), 0 0 24px 10px rgba(255, 212, 71, 0.7);
+  }
+}
+
+.monitor-pulse {
+  animation: monitor-pulse 1.2s ease-in-out infinite;
+}
+
+@keyframes loading-fill {
+  from {
+    width: 0%;
+  }
+  to {
+    width: 100%;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .monitor-pulse {
+    animation: none;
+    box-shadow: 0 0 0 5px rgba(255, 212, 71, 1);
+  }
+}
+
+/* A balloon rising from the tray (docs/UI_THEME.md > Desktop). */
+@keyframes balloon-rise {
+  from {
+    transform: translateY(24px);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+.balloon-rise {
+  animation: balloon-rise 300ms ease-out;
+}
+
+/* A failing box pulses gently (docs/UI_THEME.md > The System Map and incident diagram). */
+@keyframes box-pulse {
+  0%,
+  100% {
+    stroke-width: 4;
+  }
+  50% {
+    stroke-width: 7;
+  }
+}
+
+.box-pulse {
+  animation: box-pulse 1.2s ease-in-out infinite;
+}
+
+/* A new part slides into the diagram when an incident is fixed. */
+@keyframes part-pop {
+  from {
+    transform: scale(0.3);
+    opacity: 0;
+  }
+  to {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+
+.part-pop {
+  transform-box: fill-box;
+  transform-origin: center;
+  animation: part-pop 500ms ease-out;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .balloon-rise,
+  .box-pulse,
+  .part-pop {
+    animation: none;
+  }
+}
+
+/* ------------------------------------------------------------------
+   BlipOS versions (docs/UI_THEME.md > BlipOS versions).
+   The desktop root sets data-os-style and the --os-* colours from data/blipOs.ts.
+   Components use the os-* classes below and never name a version.
+   ------------------------------------------------------------------ */
+
+.os-window {
+  background: var(--os-body);
+}
+.os-titlebar {
+  background: linear-gradient(to right, var(--os-title), var(--os-title-end));
+  color: var(--os-title-text);
+}
+.os-taskbar {
+  background: var(--os-bar);
+  color: var(--os-bar-text);
+}
+.os-start {
+  background: var(--os-start);
+  color: var(--os-start-text);
+}
+.os-menu {
+  background: var(--os-body);
+}
+
+/* rounded: the early 2000s look, BlipOS 3. */
+[data-os-style="rounded"] .os-window.os-framed {
+  border: 2px solid var(--os-title);
+  border-top-left-radius: 8px;
+  border-top-right-radius: 8px;
+  box-shadow: 4px 6px 16px rgba(0, 0, 0, 0.35);
+}
+[data-os-style="rounded"] .os-close {
+  background: #c83232;
+  color: #ffffff;
+}
+[data-os-style="rounded"] .os-close:hover {
+  background: #a82828;
+}
+[data-os-style="rounded"] .os-start {
+  border-radius: 6px 16px 16px 6px;
+  box-shadow: inset 0 -3px 0 rgba(0, 0, 0, 0.25);
+}
+[data-os-style="rounded"] .os-start:hover {
+  filter: brightness(1.1);
+}
+[data-os-style="rounded"] .os-tab {
+  border-radius: 6px;
+  background: #3b6fde;
+}
+[data-os-style="rounded"] .os-tab:hover {
+  background: #4a7be6;
+}
+[data-os-style="rounded"] .os-tab[aria-pressed="true"] {
+  background: #1a3f96;
+  box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.4);
+}
+[data-os-style="rounded"] .os-tray {
+  border-radius: 6px;
+  background: #1e4bb0;
+}
+[data-os-style="rounded"] button.os-tray:hover {
+  background: #2a5fd0;
+}
+[data-os-style="rounded"] .os-menu {
+  border: 2px solid var(--os-title);
+  border-top-right-radius: 12px;
+  box-shadow: 4px -4px 16px rgba(0, 0, 0, 0.35);
+}
+
+/* classic: square and grey with raised 3D edges, BlipOS 1 and 2. */
+[data-os-style="classic"] .os-raised,
+[data-os-style="classic"] .os-window.os-framed,
+[data-os-style="classic"] .os-start,
+[data-os-style="classic"] .os-tab,
+[data-os-style="classic"] button.os-tray,
+[data-os-style="classic"] .os-close,
+[data-os-style="classic"] .os-menu {
+  border: 2px solid;
+  border-color: #ffffff #4a4a4a #4a4a4a #ffffff;
+  box-shadow: inset -1px -1px 0 #8a8780, inset 1px 1px 0 #f2f0ea;
+}
+[data-os-style="classic"] .os-window.os-framed {
+  box-shadow: inset -1px -1px 0 #8a8780, inset 1px 1px 0 #f2f0ea, 3px 4px 10px rgba(0, 0, 0, 0.3);
+}
+[data-os-style="classic"] .os-taskbar {
+  border-top: 2px solid #ffffff;
+}
+[data-os-style="classic"] .os-close,
+[data-os-style="classic"] .os-tab {
+  background: var(--os-bar);
+  color: var(--os-bar-text);
+}
+/* The close button keeps a 48px tap target, drawn as a smaller raised square inside it. */
+[data-os-style="classic"] .os-close {
+  margin: 4px;
+  height: 40px;
+  width: 40px;
+}
+[data-os-style="classic"] .os-start:active,
+[data-os-style="classic"] .os-tab[aria-pressed="true"],
+[data-os-style="classic"] .os-tray,
+[data-os-style="classic"] button.os-tray:active,
+[data-os-style="classic"] .os-close:active {
+  border-color: #4a4a4a #ffffff #ffffff #4a4a4a;
+  box-shadow: inset 1px 1px 0 #8a8780;
+}
+[data-os-style="classic"] .os-tab[aria-pressed="true"] {
+  background: #d8d5cd;
+  font-weight: bold;
+}
+[data-os-style="classic"] .os-tray {
+  border: 2px solid;
+  background: var(--os-bar);
+}
+[data-os-style="classic"] button.os-tray {
+  border-color: #ffffff #4a4a4a #4a4a4a #ffffff;
+  box-shadow: inset -1px -1px 0 #8a8780, inset 1px 1px 0 #f2f0ea;
+}
+[data-os-style="classic"] .os-alert {
+  border-radius: 0;
+}
+
+/* ------------------------------------------------------------------
+   Pop-ups and hint boxes (docs/UI_THEME.md > Pop-ups and hint boxes).
+   In the classic style they become dialog boxes. In the rounded style the
+   components' own classes draw them, and the dialog title bar is hidden.
+   ------------------------------------------------------------------ */
+
+[data-os-style="rounded"] .os-dialog-title {
+  display: none;
+}
+.os-dialog-title {
+  background: linear-gradient(to right, var(--os-title), var(--os-title-end));
+  color: var(--os-title-text);
+}
+
+[data-os-style="classic"] .os-dialog {
+  background: var(--os-body);
+  border: 2px solid;
+  border-color: #ffffff #4a4a4a #4a4a4a #ffffff;
+  border-radius: 0;
+  box-shadow: inset -1px -1px 0 #8a8780, inset 1px 1px 0 #f2f0ea, 3px 4px 10px rgba(0, 0, 0, 0.35);
+}
+
+[data-os-style="classic"] .os-button {
+  background: var(--os-bar);
+  color: var(--os-bar-text);
+  border: 2px solid;
+  border-color: #ffffff #4a4a4a #4a4a4a #ffffff;
+  border-radius: 0;
+  box-shadow: inset -1px -1px 0 #8a8780, inset 1px 1px 0 #f2f0ea;
+  font-weight: normal;
+}
+[data-os-style="classic"] .os-button:hover {
+  background: #d0cdc4;
+}
+[data-os-style="classic"] .os-button:active {
+  border-color: #4a4a4a #ffffff #ffffff #4a4a4a;
+  box-shadow: inset 1px 1px 0 #8a8780;
+}
+/* The main button: a dark outline and bold text. */
+[data-os-style="classic"] .os-button-default {
+  outline: 2px solid #1e1e1e;
+  outline-offset: 0;
+  font-weight: bold;
+}
+
+/* Email balloons become square pale-yellow notes with a thin dark edge. */
+[data-os-style="classic"] .os-note {
+  background: #fff8d6;
+  border: 1px solid #1e1e1e;
+  border-radius: 0;
+  box-shadow: 2px 2px 0 rgba(0, 0, 0, 0.35);
+}
+[data-os-style="classic"] .os-note-tail {
+  display: none;
+}

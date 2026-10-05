@@ -14,6 +14,7 @@ The room is never interactive in 3D. Everything the player clicks is 2D. The onl
   - the **desk still**, at the end of the walk-in clip: the whole desk, where the player taps to sit down.
   - the **seat still**, at the end of the sit-down clip: the monitor close up. The desktop sits inside it during play.
 - **Screen box:** where the monitor's screen sits in the seat still, as left, top, width and height in percent of the picture. The desktop is laid exactly over this box.
+- **Desk box:** where the monitor's screen sits in the desk still, in the same way. The pulsing outline for "Tap the screen to sit down" is drawn around it.
 - **Computer layout** and **phone layout** are the two layouts in UI_THEME.md (see UI_THEME.md > Windows).
 
 ---
@@ -129,6 +130,18 @@ Before cutting:
 - Never name a real game, product or artist in the prompt. The rooms must be our own.
 - Give Wan an earlier stage's desk still as the style picture, so every room has the same flat, low-poly look. Without one, Wan drifts towards a realistic photo look.
 - The screen shows a flat cartoon hill with no clouds. A real wallpaper photo, or a monitor that copies a real product's shape, means a new take.
+
+## Desk boxes
+
+Measured from each desk still: the sky and hill on the screen, as one rectangle.
+
+| Stage | Left | Top | Width | Height |
+|---|---|---|---|---|
+| 1 | 43.5% | 36.5% | 15.6% | 21.2% |
+| 2 | 38.4% | 33.9% | 22.9% | 23.3% |
+| 3 | 39.1% | 32.9% | 21.2% | 20.6% |
+| 4 | 41.4% | 26.8% | 17.0% | 16.9% |
+| 5 | 41.4% | 38.3% | 17.0% | 12.6% |
 
 ## Screen boxes
 
