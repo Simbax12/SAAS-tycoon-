@@ -138,6 +138,7 @@ What is built, what is next, and the decisions made. Keep this short and current
 | 2026-10-04 | Saved unfinished Milestone 4 work left uncommitted by an earlier session: the Shop and Stats windows, desk items, Shop icons and engine changes. It builds and its 27 tests pass, but it has not been reviewed or played. Milestone 4 is not finished |
 | 2026-10-04 | Milestone 4 finished: reviewed and played. GAME_LOGIC.md > Cash going out: an item bought mid-incident waits for the next incident. `game/reducer.ts` and a new test. The Test result scrolls into view. Diagram chips show features only. Windows behind are opaque. Hub: code map |
 | 2026-10-04 | `next.config.ts`: turned off the Next.js agent rules block, which `npm run dev` was adding to CLAUDE.md |
+| 2026-10-05 | Merged the Milestone 1 to 4 code from `claude/create-challenges-from-docs-mcwcdz` into main. Main had only the doc commits, so new sessions found no code |
 
 ## On-screen text to check
 
