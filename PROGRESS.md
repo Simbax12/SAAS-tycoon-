@@ -139,6 +139,7 @@ What is built, what is next, and the decisions made. Keep this short and current
 | 2026-10-04 | Milestone 4 finished: reviewed and played. GAME_LOGIC.md > Cash going out: an item bought mid-incident waits for the next incident. `game/reducer.ts` and a new test. The Test result scrolls into view. Diagram chips show features only. Windows behind are opaque. Hub: code map |
 | 2026-10-04 | `next.config.ts`: turned off the Next.js agent rules block, which `npm run dev` was adding to CLAUDE.md |
 | 2026-10-05 | Merged the Milestone 1 to 4 code from `claude/create-challenges-from-docs-mcwcdz` into main. Main had only the doc commits, so new sessions found no code |
+| 2026-10-05 | Fixed the flickering tutorial box on "Red means something is breaking.". The red traffic dots in `components/windows/Diagram.tsx` no longer catch the pointer, so the spotlight stops thinking the failing box is hidden each time a dot passes its centre |
 
 ## On-screen text to check
 

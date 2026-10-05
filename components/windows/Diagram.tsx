@@ -141,7 +141,8 @@ export default function Diagram({ state }: { state: GameState }) {
         {!reducedMotion &&
           trafficPath.length > 1 &&
           [0, 0.6, 1.2].map((delay) => (
-            <circle key={delay} r="7" fill="#C83232" stroke="#FFFFFF" strokeWidth="2">
+            // Not hit by the pointer, so the spotlight never mistakes a passing dot for a window on top.
+            <circle key={delay} r="7" fill="#C83232" stroke="#FFFFFF" strokeWidth="2" pointerEvents="none">
               <animateMotion dur="1.8s" begin={`${delay}s`} repeatCount="indefinite" path={pointsToPath(trafficPath.map((id) => at(id)!))} />
             </circle>
           ))}
