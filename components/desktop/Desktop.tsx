@@ -4,10 +4,10 @@ import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import type { AppId } from "@/data/desktopApps";
 import WindowBody from "@/components/windows/WindowBody";
 import { useGameContext } from "@/components/useGame";
-import { drawnStyle, osForStage } from "@/data/blipOs";
+import { drawnStyle, osForStage, wallpaperFor } from "@/data/blipOs";
 import { appById } from "@/data/desktopApps";
 import { itemEffects } from "@/data/upgrades";
-import { currentChallenge, currentStage, incidentOpen, usersOnScreen } from "@/game/rules";
+import { currentIncident, currentStage, incidentOpen, usersOnScreen } from "@/game/rules";
 import { emailView } from "@/game/emails";
 import Balloons from "./Balloons";
 import { DesktopContext } from "./DesktopContext";
@@ -27,6 +27,8 @@ type Props = {
   isPhone: boolean;
   reducedMotion: boolean;
   windows: Windows;
+  // While BlipOS upgrades, balloons and tips wait.
+  paused: boolean;
   onStandUp: () => void;
   // "Stand up" sits in the Start menu on a phone and when zoomed in (docs/ROOM.md > During play).
   standUpInMenu: boolean;
@@ -36,7 +38,7 @@ type Props = {
 
 // The BlipOS desktop: wallpaper, icons, windows and the taskbar (docs/UI_THEME.md > Desktop).
 // It fills whatever box it is given: the monitor's screen box, or the whole phone screen.
-export default function Desktop({ isPhone, reducedMotion, windows, onStandUp, standUpInMenu, zoom }: Props) {
+export default function Desktop({ isPhone, reducedMotion, windows, paused, onStandUp, standUpInMenu, zoom }: Props) {
   const { state, dispatch } = useGameContext();
   const areaRef = useRef<HTMLDivElement>(null);
   const rootRef = useRef<HTMLDivElement>(null);
@@ -103,8 +105,8 @@ export default function Desktop({ isPhone, reducedMotion, windows, onStandUp, st
   const unread = state.emails.filter((e) => !e.read && emailView(e.key)).length;
   const badges: IconBadges = { inbox: unread, incident: incidentOpen(state) ? "dot" : 0 };
 
-  const challenge = currentChallenge(state);
-  const alertText = state.phase === "arrived" && challenge?.arrives.by === "alert" ? challenge.arrives.text : null;
+  const incident = currentIncident(state);
+  const alertText = state.phase === "arrived" && incident?.arrives.by === "alert" ? incident.arrives.text : null;
 
   // The desktop shows the BlipOS version for the current stage (docs/UI_THEME.md > The upgrade).
   const os = osForStage(currentStage(state));
@@ -132,7 +134,7 @@ export default function Desktop({ isPhone, reducedMotion, windows, onStandUp, st
         className="absolute inset-0 flex flex-col overflow-hidden bg-[var(--os-desktop)] text-ink"
       >
         <div ref={areaRef} className="relative min-h-0 flex-1">
-          <Wallpaper kind={os.wallpaper} />
+          <Wallpaper kind={wallpaperFor(os, state.settings.wallpaper, state.owned.includes(itemEffects.wallpapers))} />
           <div className="absolute inset-0">
             <DesktopIcons isPhone={isPhone} badges={badges} onOpen={openApp} />
           </div>
@@ -169,6 +171,7 @@ export default function Desktop({ isPhone, reducedMotion, windows, onStandUp, st
             emails={state.emails}
             stage={currentStage(state)}
             hidden={guiding}
+            waiting={paused}
             onOpen={() => openApp("inbox")}
             onOpenShop={() => openApp("shop")}
           />
@@ -196,7 +199,9 @@ export default function Desktop({ isPhone, reducedMotion, windows, onStandUp, st
           onStart={() => setStartOpen((v) => !v)}
           onTab={(w) => windows.focus(w.id)}
         />
-        <Guide root={rootRef} windows={open} isPhone={isPhone} tourStep={tourStep} onTourStep={setTourStep} onActive={setGuiding} />
+        {!paused && (
+          <Guide root={rootRef} windows={open} isPhone={isPhone} tourStep={tourStep} onTourStep={setTourStep} onActive={setGuiding} />
+        )}
       </div>
     </DesktopContext.Provider>
   );

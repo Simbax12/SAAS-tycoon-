@@ -178,18 +178,17 @@ This links each doc to the code that copies from it. Change "Planned" to "Built"
 | Doc | Code that copies from it | Status |
 |---|---|---|
 | docs/CHALLENGES.md | `data/challenges.ts`, `data/patterns.ts` | Built |
-| docs/REPEATS.md | `data/repeats.ts` | Planned |
-| docs/REPEATS.md | `data/patterns.ts` | Built |
+| docs/REPEATS.md | `data/repeats.ts`, `data/patterns.ts` | Built |
 | docs/BLUEPRINTS.md | `data/blueprints.ts` | Planned |
 | docs/BLUEPRINTS.md | `data/patterns.ts` | Built |
 | docs/EXTRA_STEPS.md | `data/extraSteps.ts` | Planned |
 | docs/UPGRADES.md | `data/upgrades.ts` | Built |
 | docs/GAME_DESIGN.md | `data/stages.ts`, `data/howToPlay.ts`, `data/playOrder.ts`, `data/people.ts`, `data/emails.ts`, `data/tutorial.ts`, `game/rules.ts` | Built |
-| docs/GAME_LOGIC.md | `game/reducer.ts`, `game/types.ts`, `game/save.ts`, `game/emails.ts`, `game/reducer.test.ts` | Built |
+| docs/GAME_LOGIC.md | `game/reducer.ts`, `game/types.ts`, `game/save.ts`, `game/emails.ts`, `game/patternBook.ts`, `game/reducer.test.ts` | Built |
 | docs/UI_THEME.md | `data/desktopApps.ts`, `data/blipOs.ts`, `data/patterns.ts`, `components/desktop`, `components/windows`, `app/globals.css` | Built |
 | docs/ROOM.md | `data/rooms.ts`, `components/room`, `public/room` | Built |
 
-Other code: `app/page.tsx` and `app/layout.tsx` are the single page. `components/Game.tsx` holds the page together. `components/useScreen.ts` picks the phone or computer layout. `components/useGame.ts` holds the game state and saves it. `components/desktop/Guide.tsx` draws the spotlight for the tutorial, its replay and the first-time tips. `components/desktop/scrollWithin.ts` scrolls inside a window without moving the room. `data/patterns.ts` copies from three docs: pattern icons from UI_THEME.md, the familiar tools from the toolbox in BLUEPRINTS.md, and the five everyday patterns from REPEATS.md. `game/built.ts` lists what later milestones have not built yet. `data/systemMap.ts` holds the System Map layout agreed in Milestone 2 (see PROGRESS.md). `data/upgrades.ts` holds every Shop item and the request emails, and `itemEffects` says which item gives which effect. Only the Stage 1 effects are built so far. `components/desktop/shopIcons.tsx` draws the Shop item icons from UI_THEME.md. `components/room/DeskItems.tsx` draws the "Your setup" items on the desk from ROOM.md. So far `data/challenges.ts` holds Stage 1 only.
+Other code: `app/page.tsx` and `app/layout.tsx` are the single page. `components/Game.tsx` holds the page together. `components/useScreen.ts` picks the phone or computer layout. `components/useGame.ts` holds the game state and saves it. `components/desktop/Guide.tsx` draws the spotlight for the tutorial, its replay and the first-time tips. `components/desktop/scrollWithin.ts` scrolls inside a window without moving the room. `data/patterns.ts` copies from three docs: pattern icons from UI_THEME.md, the familiar tools from the toolbox in BLUEPRINTS.md, and the five everyday patterns from REPEATS.md. `game/built.ts` lists what later milestones have not built yet. `data/systemMap.ts` holds the System Map layout agreed in Milestone 2 (see PROGRESS.md). `data/upgrades.ts` holds every Shop item and the request emails, and `itemEffects` says which item gives which effect. Only the Stage 1 and 2 effects are built so far. `components/desktop/shopIcons.tsx` draws the Shop item icons from UI_THEME.md. `components/room/DeskItems.tsx` draws the "Your setup" items on the desk from ROOM.md. So far `data/challenges.ts` holds Stages 1 and 2, and `data/repeats.ts` holds R1 and R2. `data/incidents.ts` looks up any incident by id, new or repeat. `game/patternBook.ts` works out the Pattern Book, pips and "Also seen as" lines from the results.
 
 ## Commands
 

@@ -1,8 +1,9 @@
 // Turns a saved email key into the words shown on screen (docs/GAME_LOGIC.md > Email keys).
 // A key that no longer points to anything gives undefined, and the Inbox hides it.
 
-import { challengeById } from "../data/challenges";
 import { openers, startOfStage, thanksText } from "../data/emails";
+import { incidentById } from "../data/incidents";
+import { repeatById } from "../data/repeats";
 import { senderName, type PersonId } from "../data/people";
 import type { StageNumber } from "../data/stages";
 import { requestFor } from "../data/upgrades";
@@ -17,6 +18,8 @@ export type EmailView = {
   investigate?: string;
   // The Shop item an "Open in Shop" button opens.
   shopItem?: string;
+  // A refresher shows this repeat's pattern: icon, name, "Use this when" and "Also seen as" lines.
+  refresher?: string;
 };
 
 const asStage = (s: string): StageNumber | undefined =>
@@ -28,7 +31,7 @@ export function emailView(key: string): EmailView | undefined {
   const id = key.slice(at + 1);
 
   if (kind === "arrive" || kind === "thanks") {
-    const arrives = challengeById(id)?.arrives;
+    const arrives = incidentById(id)?.arrives;
     if (!arrives || arrives.by !== "email") return undefined;
     const name = senderName(arrives.from, id);
     if (kind === "arrive") return { key, from: arrives.from, name, text: arrives.text, investigate: id };
@@ -51,6 +54,12 @@ export function emailView(key: string): EmailView | undefined {
     const stage = asStage(id);
     const email = stage && startOfStage[stage];
     return email ? { key, from: email.from, name: senderName(email.from, key), text: email.text } : undefined;
+  }
+
+  // docs/GAME_DESIGN.md > Refreshers. Maya sends it. The list shows the pattern's name.
+  if (kind === "refresher") {
+    const repeat = repeatById(id);
+    return repeat ? { key, from: "maya", name: "Maya", text: repeat.pattern, refresher: id } : undefined;
   }
 
   return undefined;

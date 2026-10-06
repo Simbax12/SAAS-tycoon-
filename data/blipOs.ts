@@ -7,6 +7,22 @@ import type { StageNumber } from "./stages";
 // glass (2009) and flat (today) are drawn when their stages are built. Until then they use "rounded".
 export type OsStyle = "classic" | "rounded" | "glass" | "flat";
 
+// The Wallpaper pack's three extra wallpapers (docs/UI_THEME.md > The player's setup).
+export const packWallpapers = [
+  { id: "sunset", name: "Sunset hill" },
+  { id: "night", name: "Night sky" },
+  { id: "snow", name: "Snowy hill" },
+] as const;
+
+export type WallpaperId = "plain" | "hill" | (typeof packWallpapers)[number]["id"];
+
+// The setting is "standard" for the version's own wallpaper, or a pack wallpaper's id.
+// A pack wallpaper only shows while the pack is owned, because a reset keeps the settings.
+export function wallpaperFor(version: BlipOsVersion, setting: string, packOwned: boolean): WallpaperId {
+  const pack = packWallpapers.find((w) => w.id === setting);
+  return pack && packOwned ? pack.id : version.wallpaper;
+}
+
 export type BlipOsVersion = {
   version: StageNumber;
   stage: StageNumber;

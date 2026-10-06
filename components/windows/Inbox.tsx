@@ -1,11 +1,15 @@
 "use client";
 
 import { useState } from "react";
-import { SenderBadge } from "@/components/desktop/gameIcons";
+import { patternIcons } from "@/data/patterns";
+import { repeatById } from "@/data/repeats";
+import { PatternIcon, SenderBadge } from "@/components/desktop/gameIcons";
 import { useDesktop } from "@/components/desktop/DesktopContext";
 import { useGameContext } from "@/components/useGame";
 import { emailView, type EmailView } from "@/game/emails";
+import { alsoSeenAs, useWhenFor } from "@/game/patternBook";
 import { incidentOpen } from "@/game/rules";
+import { AlsoSeenAs } from "./PatternBook";
 import { TUTORIAL_INCIDENT } from "@/data/tutorial";
 
 // Every email, newest first, each with its sender badge (docs/UI_THEME.md > Emails and sender badges).
@@ -66,7 +70,7 @@ function OpenEmail({ view, onBack }: { view: EmailView; onBack: () => void }) {
         <SenderBadge from={view.from} />
         {view.name}
       </p>
-      <p className="text-[20px] leading-normal">{view.text}</p>
+      {view.refresher ? <Refresher repeatId={view.refresher} /> : <p className="text-[20px] leading-normal">{view.text}</p>}
       {canInvestigate && (
         <button
           type="button"
@@ -90,5 +94,23 @@ function OpenEmail({ view, onBack }: { view: EmailView; onBack: () => void }) {
         </button>
       )}
     </article>
+  );
+}
+
+// A refresher shows the pattern's icon, its name, its "Use this when" line and its "Also seen as"
+// lines. There is no test and no reward (docs/GAME_DESIGN.md > Refreshers).
+function Refresher({ repeatId }: { repeatId: string }) {
+  const { state } = useGameContext();
+  const pattern = repeatById(repeatId)!.pattern;
+  const icon = patternIcons[pattern];
+  return (
+    <div className="flex items-start gap-3 rounded-lg border-2 border-[#6B3FA0] bg-white px-4 py-3">
+      {icon && <PatternIcon id={icon} size={48} />}
+      <div className="flex min-w-0 flex-col gap-2">
+        <h3 className="text-[20px] font-bold">{pattern}</h3>
+        <p className="text-[18px]">{useWhenFor(pattern)}</p>
+        <AlsoSeenAs lines={alsoSeenAs(state, pattern)} />
+      </div>
+    </div>
   );
 }

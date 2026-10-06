@@ -1,19 +1,21 @@
 // The game engine (docs/GAME_LOGIC.md). Every change to the game state goes through here.
 // It never names a single incident: everything is looked up by id in the data files.
 
-import { challengeById } from "../data/challenges";
 import { startOfStage, thanksText } from "../data/emails";
+import { isRepeat } from "../data/incidents";
 import { playOrder } from "../data/playOrder";
-import { penalties } from "../data/stages";
+import { REFRESHER_AT_ONCE } from "../data/repeats";
 import { TUTORIAL_INCIDENT } from "../data/tutorial";
 import { itemEffects, requestEmails, upgradeById } from "../data/upgrades";
 import {
+  badDip,
   badPenalty,
   callButton,
   canBuy,
   canBuyLifeline,
   canTestFirst,
   currentChallenge,
+  currentIncident,
   currentRow,
   currentStage,
   incidentOpen,
@@ -23,7 +25,6 @@ import {
   partialPenalty,
   payFor,
   solvedFirstTry,
-  usersOnScreen,
 } from "./rules";
 import type { Action, GameState, Run, Settings } from "./types";
 
@@ -33,7 +34,8 @@ export const defaultSettings: Settings = {
   textSize: "normal",
   reduceMotion: false,
   sound: false,
-  wallpaper: "hill",
+  // "standard" is the wallpaper of the BlipOS version. The Wallpaper pack adds three more.
+  wallpaper: "standard",
 };
 
 export const freshRun = (): Run => ({
@@ -102,13 +104,16 @@ function receiveCash(state: GameState, amount: number): GameState {
 
 // docs/GAME_LOGIC.md > When the run starts.
 export function startIncident(state: GameState): GameState {
-  const challenge = currentChallenge(state);
   let s: GameState = { ...state, run: freshRun(), phase: "waiting" };
-  if (!challenge) return s;
+  if (!currentIncident(s)) return s;
 
-  // Options that owned upgrades take away. Maya's line for it arrives with Stage 2, the first stage that has one.
-  const removed = challenge.options.filter((o) => o.removedBy && s.owned.includes(o.removedBy)).map((o) => o.id);
-  s = { ...s, run: { ...s.run, removed } };
+  // Options that owned upgrades take away. Only new incidents lose options this way, and Maya
+  // says each item's line (rules.ts > removalLines).
+  const challenge = currentChallenge(s);
+  if (challenge) {
+    const removed = challenge.options.filter((o) => o.removedBy && s.owned.includes(o.removedBy)).map((o) => o.id);
+    s = { ...s, run: { ...s.run, removed } };
+  }
 
   // An incident that needs a feature waits until it is bought. The Shop shows it as Needed next.
   const needs = currentRow(s)?.needs;
@@ -118,9 +123,9 @@ export function startIncident(state: GameState): GameState {
 
 // The alert or email from "Arrives by" shows.
 function arrive(state: GameState): GameState {
-  const challenge = currentChallenge(state)!;
+  const incident = currentIncident(state)!;
   const s: GameState = { ...state, phase: "arrived" };
-  return challenge.arrives.by === "email" ? sendEmail(s, `arrive:${challenge.id}`) : s;
+  return incident.arrives.by === "email" ? sendEmail(s, `arrive:${incident.id}`) : s;
 }
 
 // docs/GAME_LOGIC.md > Cash going out, and > The investor top-up.
@@ -150,13 +155,18 @@ function buyLifeline(state: GameState): GameState {
   return { ...state, cash: state.cash - lifelinePrice(state), lifeline: currentStage(state) };
 }
 
-// "Test first" shows one option's result and changes nothing else. It cannot be used on an
-// option that has been removed (docs/UPGRADES.md > Rules when effects combine).
+// The ids of the options or cards still showing: not removed by an upgrade and not tried.
+function choicesShowing(state: GameState): string[] {
+  const incident = currentIncident(state);
+  if (!incident) return [];
+  const ids = isRepeat(incident) ? incident.cards.map((c) => c.pattern) : incident.options.map((o) => o.id);
+  return ids.filter((id) => !state.run.removed.includes(id) && !state.run.tried.includes(id));
+}
+
+// "Test first" shows one option's or card's result and changes nothing else. It cannot be used on
+// an option that has been removed. It works on repeats too (docs/UPGRADES.md > Rules when effects combine).
 function testFirst(state: GameState, optionId: string): GameState {
-  const challenge = currentChallenge(state);
-  if (!challenge || !canTestFirst(state)) return state;
-  const { removed, tried } = state.run;
-  if (!challenge.options.some((o) => o.id === optionId) || removed.includes(optionId) || tried.includes(optionId)) return state;
+  if (!canTestFirst(state) || !choicesShowing(state).includes(optionId)) return state;
   return { ...state, run: { ...state.run, testUsed: true } };
 }
 
@@ -170,15 +180,20 @@ function sendRequests(state: GameState, due: (r: (typeof requestEmails)[number])
 // docs/GAME_LOGIC.md > When an incident is solved.
 function solve(state: GameState): GameState {
   const row = currentRow(state)!;
-  const challenge = currentChallenge(state)!;
+  const incident = currentIncident(state)!;
   const { run } = state;
+  const firstTry = solvedFirstTry(run);
   let s: GameState = {
     ...state,
     phase: "solved",
-    results: { ...state.results, [row.id]: { stars: run.stars, firstTry: solvedFirstTry(run) } },
-    users: state.users + challenge.usersGained,
+    results: { ...state.results, [row.id]: { stars: run.stars, firstTry } },
+    users: state.users + incident.usersGained,
     run: { ...run, dip: 0 },
   };
+  // A repeat that was not solved first try gets a refresher (docs/GAME_DESIGN.md > Refreshers).
+  if (isRepeat(incident) && !firstTry && !s.refreshersDue.includes(row.id)) {
+    s = { ...s, refreshersDue: [...s.refreshersDue, row.id] };
+  }
   s = receiveCash(s, payFor(row.kind, row.stage, run.stars));
 
   // The player wins when the final incident in the play order is solved.
@@ -188,26 +203,23 @@ function solve(state: GameState): GameState {
 
 // After a wrong pick: if only the right answer is still showing, move to the guided answer.
 function afterWrongPick(state: GameState): GameState {
-  const challenge = currentChallenge(state)!;
-  const { removed, tried } = state.run;
-  const showing = challenge.options.filter((o) => !removed.includes(o.id) && !tried.includes(o.id));
-  return showing.length === 1 ? { ...state, phase: "guided" } : state;
+  return choicesShowing(state).length === 1 ? { ...state, phase: "guided" } : state;
 }
 
+// docs/GAME_LOGIC.md > Picking.
 function pick(state: GameState, optionId: string): GameState {
-  const challenge = currentChallenge(state);
-  if (state.phase !== "choosing" || !challenge) return state;
-  const option = challenge.options.find((o) => o.id === optionId);
-  if (!option || state.run.removed.includes(option.id) || state.run.tried.includes(option.id)) return state;
+  const incident = currentIncident(state);
+  if (state.phase !== "choosing" || !incident || !choicesShowing(state).includes(optionId)) return state;
+  if (isRepeat(incident)) return pickCard(state, optionId);
 
+  const option = incident.options.find((o) => o.id === optionId)!;
   // The Tune step arrives in Milestone 6, so the best option solves the incident straight away.
   if (option.type === "best") return solve(state);
 
-  const stage = currentStage(state);
-  const wrong = option.type === "partial" ? partialPenalty(stage) : badPenalty(stage);
-  const [s, taken] = takeCash(state, wrong);
+  const wrong = option.type === "partial" ? partialPenalty(currentStage(state)) : badPenalty(state);
   // An outage: users dip by a share of the users on screen until the incident is solved.
-  const dip = option.type === "bad" ? Math.round(usersOnScreen(s) * penalties.badDip) : 0;
+  const dip = option.type === "bad" ? badDip(state) : 0;
+  const [s, taken] = takeCash(state, wrong);
   return afterWrongPick({
     ...s,
     run: {
@@ -217,7 +229,20 @@ function pick(state: GameState, optionId: string): GameState {
       dip: s.run.dip + dip,
       paid: s.run.paid + taken,
     },
-    recycleBin: [...s.recycleBin, { incidentId: challenge.id, choice: option.id }],
+    recycleBin: [...s.recycleBin, { incidentId: incident.id, choice: option.id }],
+  });
+}
+
+// In a repeat, a wrong card costs 1 star. No cash is lost and there is no dip.
+function pickCard(state: GameState, pattern: string): GameState {
+  const repeat = currentIncident(state);
+  if (!repeat || !isRepeat(repeat)) return state;
+  const card = repeat.cards.find((c) => c.pattern === pattern)!;
+  if (card.right) return solve(state);
+  return afterWrongPick({
+    ...state,
+    run: { ...state.run, stars: loseStar(state.run.stars), tried: [...state.run.tried, card.pattern] },
+    recycleBin: [...state.recycleBin, { incidentId: repeat.id, choice: card.pattern }],
   });
 }
 
@@ -249,16 +274,19 @@ function useLifeline(state: GameState): GameState {
 // docs/GAME_LOGIC.md > After the player taps Next.
 function next(state: GameState): GameState {
   if (state.phase !== "solved" || state.won) return state;
-  const challenge = currentChallenge(state)!;
+  const incident = currentIncident(state)!;
   let s = state;
   // The tutorial runs inside its incident only, so it ends when the player moves on.
   if (typeof s.tutorial === "number" && s.currentId === TUTORIAL_INCIDENT) s = { ...s, tutorial: "done" };
 
   // 1. The thank-you email, if the incident came from a person who sends one.
-  if (challenge.arrives.by === "email" && thanksText(challenge.arrives.from)) s = sendEmail(s, `thanks:${challenge.id}`);
-  // 2. Refreshers arrive with repeats in Milestone 5.
+  if (incident.arrives.by === "email" && thanksText(incident.arrives.from)) s = sendEmail(s, `thanks:${incident.id}`);
+  // 2. Refreshers that are due: those waiting since an earlier incident, and any sent straight away.
+  const due = s.refreshersDue.filter((id) => id !== incident.id || REFRESHER_AT_ONCE.includes(id));
+  s = due.reduce((acc, id) => sendEmail(acc, `refresher:${id}`), s);
+  s = { ...s, refreshersDue: s.refreshersDue.filter((id) => !due.includes(id)) };
   // 3. Request emails that arrive after this incident.
-  s = sendRequests(s, (r) => "after" in r.arrives && r.arrives.after === challenge.id);
+  s = sendRequests(s, (r) => "after" in r.arrives && r.arrives.after === incident.id);
 
   // 4. Move on, unless the next incident is not built yet. Then play stops here, and tapping
   // Next again once it is built carries on from the same place.
@@ -327,6 +355,9 @@ export function reducer(state: GameState, action: Action): GameState {
 
     case "tutorial":
       return { ...state, tutorial: action.step };
+
+    case "setting":
+      return { ...state, settings: { ...state.settings, ...action.settings } };
 
     case "tipSeen":
       return state.tipsSeen.includes(action.id) ? state : { ...state, tipsSeen: [...state.tipsSeen, action.id] };

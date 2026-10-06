@@ -1,6 +1,6 @@
 "use client";
 
-import { challengeById } from "@/data/challenges";
+import { incidentById, isRepeat, patternOf } from "@/data/incidents";
 import { patternIcons } from "@/data/patterns";
 import { incidentsOnMap, mapArrows, mapBoxes, type MapBox } from "@/data/systemMap";
 import { upgradeById, type Upgrade } from "@/data/upgrades";
@@ -17,9 +17,13 @@ const BOX_H = 72;
 export default function Diagram({ state }: { state: GameState }) {
   const { reducedMotion } = useDesktop();
 
+  const solved = (id: string) => !!state.results[id];
   const shows = (b: MapBox) =>
-    !b.shownWhen || ("owned" in b.shownWhen ? state.owned.includes(b.shownWhen.owned) : !!state.results[b.shownWhen.solved]);
-  const boxes = mapBoxes.filter(shows);
+    !b.shownWhen || ("owned" in b.shownWhen ? state.owned.includes(b.shownWhen.owned) : solved(b.shownWhen.solved));
+  // A box that made room for a new one sits in its new place.
+  const boxes = mapBoxes
+    .filter(shows)
+    .map((b) => (b.movedWhen && solved(b.movedWhen.solved) ? { ...b, x: b.movedWhen.x, y: b.movedWhen.y } : b));
   const at = (id: string) => boxes.find((b) => b.id === id);
   const arrows = mapArrows.filter((a) => at(a.from) && at(a.to));
 
@@ -27,21 +31,29 @@ export default function Diagram({ state }: { state: GameState }) {
   const onMap = incidentsOnMap[state.currentId];
   const failing = incidentOpen(state) ? onMap?.failing : undefined;
   const justSolved = state.phase === "solved" ? state.currentId : undefined;
+  // A solved repeat makes the badges with its pattern's icon pulse once.
+  const current = incidentById(state.currentId);
+  const practised = justSolved && current && isRepeat(current) ? current.pattern : undefined;
 
-  // The Map change of every solved incident, drawn with its pattern's icon.
+  // The Map change of every solved incident, drawn with its pattern's icon, in the order solved.
+  // Badges on the same box sit side by side, from its top right corner leftwards.
+  const perBox: Record<string, number> = {};
   const badges = Object.keys(state.results).flatMap((id) => {
-    const place = incidentsOnMap[id];
-    const pattern = challengeById(id)?.pattern.name;
+    const place = incidentsOnMap[id]?.badge;
+    const incident = incidentById(id);
+    const pattern = incident ? patternOf(incident) : undefined;
     const icon = pattern ? patternIcons[pattern] : undefined;
     if (!place || !icon) return [];
-    if ("box" in place.badge) {
-      const b = at(place.badge.box);
-      return b ? [{ id, icon, x: b.x + BOX_W / 2 - 14, y: b.y - BOX_H / 2 - 14 }] : [];
+    const pop = id === justSolved ? "part-pop" : pattern === practised ? "part-pulse" : undefined;
+    if ("box" in place) {
+      const b = at(place.box);
+      if (!b) return [];
+      const n = (perBox[b.id] = (perBox[b.id] ?? 0) + 1) - 1;
+      return [{ id, icon, pop, x: b.x + BOX_W / 2 - 14 - n * 38, y: b.y - BOX_H / 2 - 14 }];
     }
-    const { from, to } = place.badge.arrow;
-    const f = at(from);
-    const t = at(to);
-    return f && t ? [{ id, icon, x: (f.x + t.x) / 2 + 6, y: (f.y + t.y) / 2 - 16 }] : [];
+    const f = at(place.arrow.from);
+    const t = at(place.arrow.to);
+    return f && t ? [{ id, icon, pop, x: (f.x + t.x) / 2 + 6, y: (f.y + t.y) / 2 - 16 }] : [];
   });
 
   // Traffic dots run from Users along the arrows to the failing box: the "Sees" loop.
@@ -61,12 +73,11 @@ export default function Diagram({ state }: { state: GameState }) {
   const viewBox = `${left} ${top} ${right - left} ${bottom - top}`;
 
   const edge = (from: MapBox, to: MapBox) => {
-    // Arrows run between box edges, not centres.
+    // Arrows run between box edges, not centres, at any angle.
     const dx = to.x - from.x;
     const dy = to.y - from.y;
-    const fx = dx === 0 ? 0 : Math.sign(dx) * BOX_W / 2;
-    const fy = dx === 0 ? Math.sign(dy) * BOX_H / 2 : 0;
-    return { x1: from.x + fx, y1: from.y + fy, x2: to.x - fx, y2: to.y - fy };
+    const t = Math.min(dx ? BOX_W / 2 / Math.abs(dx) : Infinity, dy ? BOX_H / 2 / Math.abs(dy) : Infinity);
+    return { x1: from.x + dx * t, y1: from.y + dy * t, x2: to.x - dx * t, y2: to.y - dy * t };
   };
 
   return (
@@ -76,11 +87,23 @@ export default function Diagram({ state }: { state: GameState }) {
           <marker id="arrow-head" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
             <path d="M0 0 L10 5 L0 10 Z" fill="#1E1E1E" />
           </marker>
+          <marker id="arrow-head-thick" viewBox="0 0 10 10" refX="7" refY="5" markerWidth="3.2" markerHeight="3.2" orient="auto-start-reverse">
+            <path d="M0 0 L10 5 L0 10 Z" fill="#1E1E1E" />
+          </marker>
         </defs>
 
         {arrows.map((a) => {
           const e = edge(at(a.from)!, at(a.to)!);
-          return <line key={`${a.from}-${a.to}`} {...e} stroke="#1E1E1E" strokeWidth="2.5" markerEnd="url(#arrow-head)" />;
+          const thick = !!a.thickWhen && solved(a.thickWhen.solved);
+          return (
+            <line
+              key={`${a.from}-${a.to}`}
+              {...e}
+              stroke="#1E1E1E"
+              strokeWidth={thick ? 7 : 2.5}
+              markerEnd={thick ? "url(#arrow-head-thick)" : "url(#arrow-head)"}
+            />
+          );
         })}
 
         {boxes.map((b) => {
@@ -119,7 +142,7 @@ export default function Diagram({ state }: { state: GameState }) {
         })}
 
         {badges.map((p) => (
-          <g key={p.id} className={p.id === justSolved && !reducedMotion ? "part-pop" : undefined}>
+          <g key={p.id} className={reducedMotion ? undefined : p.pop}>
             <circle cx={p.x + 14} cy={p.y + 14} r="17" fill="#FFF8D6" stroke="#1E1E1E" strokeWidth="2" />
             <svg x={p.x} y={p.y} width="28" height="28" overflow="visible">
               <PatternIcon id={p.icon} size={28} />

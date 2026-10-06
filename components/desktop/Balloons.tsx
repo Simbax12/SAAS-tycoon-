@@ -10,13 +10,14 @@ const SHOW_MS = 3500;
 // (docs/UI_THEME.md > Desktop, and docs/GAME_DESIGN.md > The order emails arrive in).
 // When a stage starts, a balloon says "New in the Shop" after that stage's emails (docs/UPGRADES.md > Request emails).
 // While the spotlight shows, balloons stay hidden so they never cover the thing to tap.
+// While BlipOS upgrades, they wait, and rise once the new desktop shows.
 
 // The queue holds email keys, and this for the Shop balloon.
 const SHOP = "shop";
 
-type Props = { emails: Email[]; stage: number; hidden: boolean; onOpen: () => void; onOpenShop: () => void };
+type Props = { emails: Email[]; stage: number; hidden: boolean; waiting: boolean; onOpen: () => void; onOpenShop: () => void };
 
-export default function Balloons({ emails, stage, hidden, onOpen, onOpenShop }: Props) {
+export default function Balloons({ emails, stage, hidden, waiting, onOpen, onOpenShop }: Props) {
   const [queue, setQueue] = useState<string[]>([]);
   // Emails already there when the desktop appears are not new, and neither is the stage.
   const seen = useRef(emails.length);
@@ -32,16 +33,16 @@ export default function Balloons({ emails, stage, hidden, onOpen, onOpenShop }: 
 
   const key = queue[0];
   useEffect(() => {
-    if (!key) return;
+    if (!key || waiting) return;
     const t = setTimeout(() => setQueue((q) => q.slice(1)), SHOW_MS);
     return () => clearTimeout(t);
-  }, [key]);
+  }, [key, waiting]);
 
   const view = key === SHOP ? { text: "New in the Shop" } : key ? emailView(key) : undefined;
   const text = view && ("name" in view ? `New email from ${view.name}` : view.text);
   return (
     <div className="pointer-events-none absolute bottom-2 right-2 z-[950]" aria-live="polite">
-      {view && !hidden && (
+      {view && !hidden && !waiting && (
         <button
           key={key}
           type="button"

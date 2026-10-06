@@ -2,10 +2,11 @@
 // Pay and penalties: docs/GAME_DESIGN.md > Money, > Option types in new incidents and > Stars.
 
 import { challengeById, type Challenge } from "../data/challenges";
+import { incidentById, type IncidentData } from "../data/incidents";
 import { playOrder, playOrderRow, type IncidentKind, type PlayOrderRow } from "../data/playOrder";
 import { callPrices, penalties, progressMarkers, REPEAT_PAY_SHARE, stageByNumber, starMultiplier, type StageNumber } from "../data/stages";
 import { TUTORIAL_INCIDENT } from "../data/tutorial";
-import { itemEffects, LIFELINE_TIMES, upgradeById, upgrades, type Upgrade } from "../data/upgrades";
+import { itemEffects, LIFELINE_TIMES, MONITORING_SHARE, upgradeById, upgrades, type Upgrade } from "../data/upgrades";
 import { BUILDS_BUILT } from "./built";
 import type { GameState, Run, Stars } from "./types";
 
@@ -18,7 +19,11 @@ export function payFor(kind: IncidentKind, stage: StageNumber, stars: Stars): nu
 }
 
 export const partialPenalty = (stage: StageNumber) => Math.round(baseCash(stage) * penalties.partialCash);
-export const badPenalty = (stage: StageNumber) => Math.round(baseCash(stage) * penalties.badCash);
+
+// Monitoring halves bad-choice penalties: the cash loss and the user dip (docs/UPGRADES.md > Servers).
+const badShare = (state: GameState) => (state.owned.includes(itemEffects.halfPenalties) ? MONITORING_SHARE : 1);
+export const badPenalty = (state: GameState) => Math.round(baseCash(currentStage(state)) * penalties.badCash * badShare(state));
+export const badDip = (state: GameState) => Math.round(usersOnScreen(state) * penalties.badDip * badShare(state));
 
 export const usersOnScreen = (state: GameState) => state.users - state.run.dip;
 
@@ -46,15 +51,15 @@ export function progressShare(users: number): number {
 // A new or repeat incident has one call per clue: the Nudge, then each Clue line.
 // Builds get their own count when Blueprint arrives in Milestone 6.
 export function callsIn(state: GameState): number {
-  const challenge = currentChallenge(state);
-  return challenge ? 1 + challenge.clues.length : 0;
+  const incident = currentIncident(state);
+  return incident ? 1 + incident.clues.length : 0;
 }
 
 // The clues given so far in this incident, in order.
 export function cluesGiven(state: GameState): string[] {
-  const challenge = currentChallenge(state);
-  if (!challenge) return [];
-  return [challenge.nudge, ...challenge.clues].slice(0, state.run.calls);
+  const incident = currentIncident(state);
+  if (!incident) return [];
+  return [incident.nudge, ...incident.clues].slice(0, state.run.calls);
 }
 
 // The price of the next call. Every call in the tutorial incident is free, and the Engineering
@@ -111,7 +116,22 @@ export const canTestFirst = (state: GameState) =>
 
 export const currentRow = (state: GameState): PlayOrderRow | undefined => playOrderRow(state.currentId);
 
+// The current incident, new or repeat.
+export const currentIncident = (state: GameState): IncidentData | undefined => incidentById(state.currentId);
+
+// The current incident, if it is a new one.
 export const currentChallenge = (state: GameState): Challenge | undefined => challengeById(state.currentId);
+
+// What Maya says when owned upgrades took options away at the start of this incident
+// (docs/GAME_LOGIC.md > When the run starts). Each item's line is said once.
+export function removalLines(state: GameState): string[] {
+  const options = currentChallenge(state)?.options ?? [];
+  const lines = options
+    .filter((o) => o.removedBy && state.run.removed.includes(o.id))
+    .map((o) => upgradeById(o.removedBy!)?.maya)
+    .filter((line): line is string => !!line);
+  return [...new Set(lines)];
+}
 
 export function currentStage(state: GameState): StageNumber {
   if (state.won) return 5;
@@ -119,8 +139,7 @@ export function currentStage(state: GameState): StageNumber {
 }
 
 // Whether this milestone can play an incident: its data file has it.
-// Repeats arrive in Milestone 5, so for now only new incidents have data.
-export const isPlayable = (row: PlayOrderRow) => row.kind === "new" && challengeById(row.id) !== undefined;
+export const isPlayable = (row: PlayOrderRow) => row.kind !== "build" && incidentById(row.id) !== undefined;
 
 // The incident after the current one. Builds are skipped until Blueprint is built.
 // "blocked" means the next incident is not in the data files yet, so play stops here.

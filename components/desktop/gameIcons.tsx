@@ -42,6 +42,30 @@ const patternDrawings: Partial<Record<PatternIconId, React.ReactNode>> = {
       <path d="M5.5 20.5 V22 M18.5 20.5 V22" stroke={INK} strokeWidth="1.8" />
     </>
   ),
+  lightning: <path d="M14 2 L5 13.5 H11 L9.5 22 L19 9.5 H13 Z" fill="#F2B632" stroke={INK} strokeWidth="1.6" />,
+  bookmark: (
+    <>
+      <rect x="4" y="3" width="13" height="18" rx="1.5" fill="#F4F0E0" stroke={INK} strokeWidth="1.6" />
+      <path d="M7 8 H13 M7 12 H13 M7 16 H11" stroke={INK} strokeWidth="1.2" />
+      <path d="M15 3 H20 V12 L17.5 10 L15 12 Z" fill="#C83232" stroke={INK} strokeWidth="1.4" />
+    </>
+  ),
+  globe: (
+    <>
+      <circle cx="12" cy="12" r="9" fill="#7FB8F0" stroke={INK} strokeWidth="1.6" />
+      <path d="M3 12 H21 M12 3 C8 7 8 17 12 21 M12 3 C16 7 16 17 12 21" fill="none" stroke={INK} strokeWidth="1.2" />
+      <circle cx="7" cy="8" r="1.6" fill="#F2B632" stroke={INK} strokeWidth="1" />
+      <circle cx="17" cy="9" r="1.6" fill="#F2B632" stroke={INK} strokeWidth="1" />
+      <circle cx="10" cy="17" r="1.6" fill="#F2B632" stroke={INK} strokeWidth="1" />
+    </>
+  ),
+  basket: (
+    <>
+      <path d="M7 10 L10 4 M17 10 L14 4" fill="none" stroke={INK} strokeWidth="1.6" />
+      <path d="M2.5 10 H21.5 L19 20.5 H5 Z" fill="#E0A458" stroke={INK} strokeWidth="1.6" />
+      <path d="M8.5 13 V18 M12 13 V18 M15.5 13 V18" stroke={INK} strokeWidth="1.3" />
+    </>
+  ),
 };
 
 export function PatternIcon({ id, size, className }: Props & { id: PatternIconId }) {
@@ -80,6 +104,24 @@ const boxDrawings: Record<BoxIconId, React.ReactNode> = {
     </>
   ),
   secrets: patternDrawings.safe,
+  cache: patternDrawings.lightning,
+  storage: (
+    <>
+      <rect x="3" y="4" width="18" height="16" rx="1.5" fill="#E0A458" stroke={INK} strokeWidth="1.4" />
+      <path d="M3 9 H21" stroke={INK} strokeWidth="1.4" />
+      <rect x="9" y="12" width="6" height="3" rx="0.8" fill="#F4F0E0" stroke={INK} strokeWidth="1.2" />
+    </>
+  ),
+  // A ring of small CDN boxes (docs/CHALLENGES.md > 2.3 The Heavy Photos).
+  cdn: (
+    <>
+      <circle cx="12" cy="12" r="7" fill="none" stroke={INK} strokeWidth="1.2" strokeDasharray="2 2" />
+      <rect x="9" y="1.5" width="6" height="5" rx="1" fill="#7FB8F0" stroke={INK} strokeWidth="1.2" />
+      <rect x="1.5" y="12" width="6" height="5" rx="1" fill="#7FB8F0" stroke={INK} strokeWidth="1.2" />
+      <rect x="16.5" y="12" width="6" height="5" rx="1" fill="#7FB8F0" stroke={INK} strokeWidth="1.2" />
+      <rect x="9" y="17.5" width="6" height="5" rx="1" fill="#7FB8F0" stroke={INK} strokeWidth="1.2" />
+    </>
+  ),
 };
 
 export function BoxIcon({ id, x, y, size = 24 }: { id: BoxIconId; x: number; y: number; size?: number }) {

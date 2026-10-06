@@ -115,10 +115,33 @@ body {
   animation: part-pop 500ms ease-out;
 }
 
+/* When a repeat is fixed, the part that carries the pattern's icon pulses once. */
+@keyframes part-pulse {
+  0%,
+  100% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.4);
+  }
+}
+
+.part-pulse {
+  transform-box: fill-box;
+  transform-origin: center;
+  animation: part-pulse 560ms ease-in-out;
+}
+
+/* The "Seen before" stamp on a solved repeat. It sits a little tilted, like a rubber stamp. */
+.seen-stamp {
+  transform: rotate(-4deg);
+}
+
 @media (prefers-reduced-motion: reduce) {
   .balloon-rise,
   .box-pulse,
-  .part-pop {
+  .part-pop,
+  .part-pulse {
     animation: none;
   }
 }

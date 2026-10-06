@@ -15,12 +15,14 @@ What is built, what is next, and the decisions made. Keep this short and current
 - Milestone 3: Help. The 8-step tutorial runs inside 1.1 with a spotlight, and can be skipped or replayed from Settings. First-time tips show once each; the alert tip shows on 1.2. Calls to Dana: a "Call Dana" button with the next price, her phone window with every clue so far, "Not enough cash" and "No more calls". All calls in 1.1 are free. Victor's lifeline and the handbook's free call work in the engine, ready for the Shop. The Pattern Book shows each learned pattern with its icon, "Use this when" line, pips and "Tools you will meet". The Recycle Bin lists every wrong pick with why it failed. How to Play already had its exact text. 19 reducer tests pass. Checked in Chromium at 1440, 1024 and 375 pixels wide: two wrong picks lead to the guided answer.
 - BlipOS 1: the desktop now has the grey 1995-style look in the garage. Windows, taskbar, Start menu and server alerts follow the version for the current stage, from `data/blipOs.ts`. The loading bar says "BlipOS 1".
 - Milestone 4: Shop and money. The Shop has three tabs, cards with icons, price dots, "Needed next", "Not enough cash" and "Owned". Every Shop item is in `data/upgrades.ts`. Maya asks for the Test environment after 1.1 and Sam for Payments after 1.2, each with "Open in Shop". 1.3 waits until Payments is bought. The investor lends the shortfall for the feature Needed next, and Maya says so. Test first works in every incident. The Second monitor puts the Incident window and the Pattern Book side by side, or gives them tabs on a phone, and shows on the desk. Victor's lifeline can be bought and held, one at a time. The Stats window shows users, the bar to 1 billion, the stage, stars, top-ups and the loan. 28 reducer tests pass. Played in Chromium at 1440 and 375 pixels wide: buying Payments unlocks 1.3, and with too little cash the investor pays the rest.
+- Milestone 5: Repeats and Stage 2. The four Stage 2 incidents are in `data/challenges.ts`, and R1 and R2 in the new `data/repeats.ts`. A repeat asks "Which pattern fixes this?" with three shuffled pattern cards, each with a free "Remind me". A wrong card costs a star, with no cash lost and no outage. The right card shows "Seen before", fills a pip, gold if solved first try, and adds its "Also seen as" line. A repeat not solved first try sends Maya's refresher after the next incident. Thank-you emails come from repeats too. Test first, calls and Victor work in repeats. When Stage 2 starts, the loading bar says "Upgrading to BlipOS 2", then the new emails rise one by one. The System Map grows with the Cache, the index tab, Storage, the CDN and the thick Server to Database arrow, and a repeat's pattern icon pulses once. Stage 2 Shop items work: the Bigger server removes the bigger-server option in 2.1 and Maya says why, Monitoring halves bad-choice penalties, and the Wallpaper pack adds sunset hill, night sky and snowy hill in Settings. Play stops after 2.4 with "Stage 3 is coming soon". 38 reducer tests pass. Played in Chromium at 1440, 1024 and 375 pixels wide: R1 with a wrong card, its refresher after 2.2, and the pips in the Pattern Book.
 
 ## Next
 
-- Play Milestone 4: `npm install`, then `npm run dev`, then open http://localhost:3000. Use Settings > Reset game for a fresh start. To see the investor, spend cash on optional items before buying Payments.
+- Play Milestone 5: `npm run dev`, then open http://localhost:3000. An old save carries on from 1.4: tap Next to start Stage 2. Pick a wrong card in R1 to see the silver pip and the refresher after 2.2.
 - Check the new on-screen text listed at the end of this file.
-- Milestone 5: Repeats and Stage 2. See the build order in docs/START_HERE.md.
+- Milestone 6: Work apps. See the build order in docs/START_HERE.md.
+- Milestone 8: Monitoring's live numbers on every System Map box. No doc says which numbers yet, so that needs an answer first.
 - With Stage 3: the Faster PC must only pay more in incidents that start after it is bought. The run does not yet remember that.
 
 ## Decisions
@@ -92,6 +94,15 @@ What is built, what is next, and the decisions made. Keep this short and current
 | 2026-10-04 | There is no "New in the Shop" balloon when the game starts, only when Stage 2 and later stages start | Tutorial step 8 already points at the Shop, and balloons stay hidden while the spotlight shows |
 | 2026-10-04 | While an incident waits for its feature, the Incident window says "No incident right now." | Nothing has arrived yet (GAME_LOGIC.md > Phases). Sam's request email, its tip and the "Needed next" badge point to the Shop |
 | 2026-10-04 | Reducer tests run with `npm test`: TypeScript compiles `game/` and `data/`, then Node's own test runner runs them | No extra library is needed |
+| 2026-10-06 | Monitoring halves bad-choice penalties now. Its live numbers on every System Map box wait for Milestone 8 | UPGRADES.md says "live numbers" but no doc says which numbers. Agreed when Milestone 5 started |
+| 2026-10-06 | The Stage 2 System Map: the Database moves right once 2.1 is solved, and the Cache sits below, between Server and Database. Storage sits top right, joined from Server. The CDN sits above Users, joined from Users. After 2.4 the Server to Database arrow is thick, with the basket icon on it | The docs give each Map change but not where boxes sit. Agreed when Milestone 5 started. The layout lives in `data/systemMap.ts` |
+| 2026-10-06 | The failing box is Database in 2.1, 2.2 and 2.4, and Server in 2.3, R1 and R2. Badges on the same box sit side by side | The docs say what breaks but not which box glows red. Database already had the padlock from 1.2 when 2.2 adds its index tab |
+| 2026-10-06 | A repeat card's id is its pattern's name | Every card is a different pattern, and pattern names are already used as ids across the docs |
+| 2026-10-06 | When a new stage starts, the loading bar says "Upgrading to BlipOS 2" over the desktop, and the stage's balloons wait for it. The room clips for a new stage come with Milestone 8 | START_HERE.md lists those clips under Milestone 8. Without waiting, Maya's opener balloon would rise behind the loading bar |
+| 2026-10-06 | A refresher shows in the Inbox list as the pattern's name, from Maya | GAME_DESIGN.md > Refreshers lists what the email shows but gives it no other words |
+| 2026-10-06 | R10's refresher goes out at once. The list of such repeats is in `data/repeats.ts` | GAME_DESIGN.md > Refreshers says so. Keeping it in data means the engine never names an incident |
+| 2026-10-06 | The wallpaper setting is "standard" for the BlipOS version's own wallpaper. A pack wallpaper only shows while the pack is owned | A reset keeps the settings but clears the Shop, so a pack wallpaper must not outlive the pack |
+| 2026-10-06 | On a narrow card, "Remind me" drops below the pattern's name | At 375 pixels wide the button cut long names such as "Password hashing" short |
 
 ## Change log
 
@@ -140,6 +151,7 @@ What is built, what is next, and the decisions made. Keep this short and current
 | 2026-10-04 | `next.config.ts`: turned off the Next.js agent rules block, which `npm run dev` was adding to CLAUDE.md |
 | 2026-10-05 | Merged the Milestone 1 to 4 code from `claude/create-challenges-from-docs-mcwcdz` into main. Main had only the doc commits, so new sessions found no code |
 | 2026-10-05 | Fixed the flickering tutorial box on "Red means something is breaking.". The red traffic dots in `components/windows/Diagram.tsx` no longer catch the pointer, so the spotlight stops thinking the failing box is hidden each time a dot passes its centre |
+| 2026-10-06 | Milestone 5 built: Stage 2 in `data/challenges.ts`, `data/repeats.ts` (R1, R2), `data/incidents.ts`, `game/patternBook.ts`, the Stage 2 System Map, repeat cards with "Remind me", pips, "Also seen as", refreshers, the BlipOS 2 upgrade bar, the Bigger server, Monitoring and Wallpaper pack effects, and Stage 2 pattern and box icons. Hub: code map |
 
 ## On-screen text to check
 
@@ -186,3 +198,11 @@ New in Milestone 4:
 - Incident window: "Test first", "Tap a fix to test it.", "Cancel", "Test" and "This would work".
 - Stats: "Users: 500", "Stage 1: Garage", "6 of 6 stars", "Investor top-ups: 1", "Loan owed: £100", and the bar's labels "1K", "100K", "10M", "100M" and "1B".
 - Screen reader labels, not shown on screen: "Users, out of 1 billion" on the bar, and each desk item's name.
+
+New in Milestone 5:
+
+- Incident window, repeats: "Which pattern fixes this?", "Remind me", "Seen before" and the heading "Also seen as". All from the docs.
+- Loading bar: "Upgrading to BlipOS 2". From the docs.
+- Settings: the heading "Wallpaper" and the choice "Standard", for the BlipOS version's own wallpaper. New words. The other three, "Sunset hill", "Night sky" and "Snowy hill", come from UI_THEME.md.
+- Pattern Book: the heading "Also seen as".
+- Play stops after 2.4 with "Stage 3 is coming soon. Thanks for playing!", the same words as at the end of Stage 1 before.

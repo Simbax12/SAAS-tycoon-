@@ -3,7 +3,7 @@
 import { useEffect, useRef, useState } from "react";
 import { tips, TUTORIAL_INCIDENT, tutorialSteps, type TipId, type TourTarget } from "@/data/tutorial";
 import { useGameContext } from "@/components/useGame";
-import { currentChallenge, currentRow } from "@/game/rules";
+import { currentIncident, currentRow } from "@/game/rules";
 import type { GameState } from "@/game/types";
 import { scrollWithin } from "./scrollWithin";
 import type { OpenWindow } from "./useWindows";
@@ -56,7 +56,7 @@ function tipMoment(id: TipId, state: GameState): boolean {
   const kind = currentRow(state)?.kind;
   switch (id) {
     case "alert":
-      return state.phase === "arrived" && currentChallenge(state)?.arrives.by === "alert";
+      return state.phase === "arrived" && currentIncident(state)?.arrives.by === "alert";
     case "request":
       return state.emails.some((e) => e.key.startsWith("request:"));
     case "repeat":

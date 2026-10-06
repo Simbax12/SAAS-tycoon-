@@ -38,6 +38,18 @@ export default function RoomFrame({ stage, screen, windows, firstVisit }: Props)
   const [booted, setBooted] = useState(false);
 
   const afterSit = useCallback(() => setPhase(booted ? "seated" : "loading"), [booted]);
+
+  // When a new stage starts during play, BlipOS upgrades: the loading bar says "Upgrading to
+  // BlipOS 2", then the desktop shows in its new look (docs/UI_THEME.md > The upgrade). The desktop
+  // stays underneath, so the new stage's emails wait and then rise one by one.
+  // The room clips for a new stage come first once they are built in Milestone 8 (docs/START_HERE.md > Build order).
+  const [upgrading, setUpgrading] = useState(false);
+  const lastStage = useRef(stage);
+  useEffect(() => {
+    if (stage > lastStage.current && phase === "seated") setUpgrading(true);
+    lastStage.current = stage;
+  }, [stage, phase]);
+  const upgraded = useCallback(() => setUpgrading(false), []);
   const sitDown = () => (reducedMotion ? afterSit() : setPhase("sit"));
   const booted_ = useCallback(() => {
     setBooted(true);
@@ -78,14 +90,22 @@ export default function RoomFrame({ stage, screen, windows, firstVisit }: Props)
     phase === "loading" ? (
       <LoadingBar version={osForStage(stage).version} onDone={booted_} reducedMotion={reducedMotion} />
     ) : (
-      <Desktop
-        isPhone={isPhone}
-        reducedMotion={reducedMotion}
-        windows={windows}
-        onStandUp={() => setPhase("desk")}
-        standUpInMenu={isPhone || zoomed}
-        zoom={isPhone ? undefined : { zoomed, onToggle: onZoom }}
-      />
+      <>
+        <Desktop
+          isPhone={isPhone}
+          reducedMotion={reducedMotion}
+          windows={windows}
+          paused={upgrading}
+          onStandUp={() => setPhase("desk")}
+          standUpInMenu={isPhone || zoomed}
+          zoom={isPhone ? undefined : { zoomed, onToggle: onZoom }}
+        />
+        {upgrading && (
+          <div className="absolute inset-0 z-[2000]">
+            <LoadingBar version={osForStage(stage).version} upgrade onDone={upgraded} reducedMotion={reducedMotion} />
+          </div>
+        )}
+      </>
     );
 
   return (

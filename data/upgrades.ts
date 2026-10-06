@@ -141,4 +141,12 @@ export const itemEffects = {
   testFirst: "srv-test",
   // The Pattern Book can stay open beside an incident.
   secondMonitor: "gear-monitor",
+  // "Bad-choice penalties are halved".
+  halfPenalties: "srv-monitoring",
+  // "Three extra wallpapers in Settings".
+  wallpapers: "gear-wallpapers",
 };
+
+// Monitoring: "users dip 5% and cash loss is 5% of base", half the usual bad-choice penalties.
+// Its live numbers on the System Map come in Milestone 8 (see PROGRESS.md).
+export const MONITORING_SHARE = 0.5;

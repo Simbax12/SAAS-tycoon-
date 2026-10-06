@@ -6,18 +6,22 @@ import { BlipLogo } from "./icons";
 // The BlipOS loading bar, 2 seconds at most (docs/UI_THEME.md > Desktop).
 export const LOADING_MS = 1600;
 
-// It names the BlipOS version (docs/UI_THEME.md > The upgrade).
-export default function LoadingBar({ version, onDone, reducedMotion }: { version: number; onDone: () => void; reducedMotion: boolean }) {
+// It names the BlipOS version. When a new stage starts it says "Upgrading to BlipOS 2" and so on
+// (docs/UI_THEME.md > The upgrade).
+type Props = { version: number; upgrade?: boolean; onDone: () => void; reducedMotion: boolean };
+
+export default function LoadingBar({ version, upgrade, onDone, reducedMotion }: Props) {
+  const words = `${upgrade ? "Upgrading to " : ""}BlipOS ${version}`;
   useEffect(() => {
     const t = setTimeout(onDone, LOADING_MS);
     return () => clearTimeout(t);
   }, [onDone]);
 
   return (
-    <div className="absolute inset-0 flex flex-col items-center justify-center gap-6 bg-[#173A8A] text-white" role="status" aria-label={`BlipOS ${version}`}>
-      <div className="flex items-center gap-3 text-[32px] font-bold">
+    <div className="absolute inset-0 flex flex-col items-center justify-center gap-6 bg-[#173A8A] text-white" role="status" aria-label={words}>
+      <div className="flex items-center gap-3 px-4 text-center text-[32px] font-bold">
         <BlipLogo size={48} />
-        BlipOS {version}
+        {words}
       </div>
       <div className="h-6 w-[min(260px,70%)] overflow-hidden rounded-full border-2 border-white/80 bg-[#0E2560]">
         <div
