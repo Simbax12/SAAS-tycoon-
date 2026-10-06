@@ -1,7 +1,8 @@
 "use client";
 
+import { BUILD_BRIEF, type Build } from "@/data/blueprints";
 import { thanksText } from "@/data/emails";
-import { isRepeat, type IncidentData } from "@/data/incidents";
+import { isBuild, isRepeat, type IncidentData } from "@/data/incidents";
 import { victorLine } from "@/data/people";
 import { patternIcons } from "@/data/patterns";
 import {
@@ -17,6 +18,10 @@ import {
   WarningIcon,
 } from "@/components/desktop/gameIcons";
 import { fullNumber } from "@/components/desktop/format";
+import { AppIcon } from "@/components/desktop/icons";
+import { useDesktop } from "@/components/desktop/DesktopContext";
+import type { AppId } from "@/data/desktopApps";
+import { appById } from "@/data/desktopApps";
 import { useEffect, useRef, useState } from "react";
 import { ShopIcon } from "@/components/desktop/shopIcons";
 import { scrollWithin } from "@/components/desktop/scrollWithin";
@@ -28,8 +33,8 @@ import {
   cluesGiven,
   currentIncident,
   currentRow,
+  incidentPay,
   nextIncident,
-  payFor,
   removalLines,
   shuffled,
 } from "@/game/rules";
@@ -76,7 +81,7 @@ type Choice = {
   remind?: string;
 };
 
-function choicesOf(incident: IncidentData): Choice[] {
+function choicesOf(incident: Exclude<IncidentData, Build>): Choice[] {
   if (isRepeat(incident)) {
     return incident.cards.map((c) => ({ id: c.pattern, right: c.right, result: c.text, pattern: c.pattern, remind: useWhenFor(c.pattern) }));
   }
@@ -87,6 +92,7 @@ function choicesOf(incident: IncidentData): Choice[] {
 // and repeats follow docs/GAME_DESIGN.md > Repeat incident flow: recall, not recognition.
 export default function Incident() {
   const { state, dispatch } = useGameContext();
+  const { investigate } = useDesktop();
   const incident = currentIncident(state);
   const row = currentRow(state);
   const { phase, run } = state;
@@ -102,6 +108,7 @@ export default function Incident() {
   if (!incident || !row || phase === "waiting") {
     return <p className="text-[18px]">No incident right now.</p>;
   }
+  if (isBuild(incident)) return <BuildIncident build={incident} />;
 
   const repeat = isRepeat(incident);
   const choices = choicesOf(incident);
@@ -135,11 +142,27 @@ export default function Incident() {
           <button
             type="button"
             data-tour="investigate"
-            onClick={() => dispatch({ type: "investigate" })}
+            onClick={investigate}
             className={`${button} self-start bg-[#FFE08A] hover:bg-[#FFD35C]`}
           >
             Investigate
           </button>
+        </>
+      )}
+
+      {/* The Triage step runs in Terminal, before the fix (docs/GAME_DESIGN.md > Triage, in Terminal). */}
+      {phase === "triage" && (
+        <>
+          <p className="text-[18px]">{incident.arrives.text}</p>
+          <OpenAppButton id="terminal" />
+        </>
+      )}
+
+      {/* The Tune step runs in SysDash, after the fix (docs/GAME_DESIGN.md > Tune, in SysDash). */}
+      {phase === "tune" && (
+        <>
+          <Fixed result={right.result} />
+          <OpenAppButton id="sysdash" />
         </>
       )}
 
@@ -302,6 +325,57 @@ export default function Incident() {
   );
 }
 
+// A button that opens a work app, with its icon and name.
+export function OpenAppButton({ id }: { id: AppId }) {
+  const { openApp } = useDesktop();
+  return (
+    <button type="button" autoFocus onClick={() => openApp(id)} className={`${button} flex items-center gap-2 self-start bg-[#FFE08A] text-ink hover:bg-[#FFD35C]`}>
+      <AppIcon id={id} size={30} />
+      {appById(id).name}
+    </button>
+  );
+}
+
+function Fixed({ result }: { result: string }) {
+  return (
+    <p className="flex items-start gap-2 rounded-md border-2 border-ok bg-[#E4F3E2] px-3 py-2 text-[18px]" role="status">
+      <TickIcon />
+      <span>{result}</span>
+    </p>
+  );
+}
+
+// A Build is drawn in Blueprint. The Incident window says so and opens it
+// (docs/GAME_DESIGN.md > Build incident flow: draw the design).
+function BuildIncident({ build }: { build: Build }) {
+  const { state } = useGameContext();
+  const { investigate } = useDesktop();
+  const { phase, run } = state;
+  return (
+    <div className="flex flex-col gap-4">
+      <div className="flex items-center justify-between gap-2">
+        <h3 className="text-[20px] font-bold">{build.title}</h3>
+        <Stars stars={phase === "solved" ? state.results[build.id]?.stars ?? run.stars : run.stars} />
+      </div>
+      {phase === "arrived" && (
+        <>
+          <p className="text-[18px]">{build.arrives.text}</p>
+          <button type="button" data-tour="investigate" onClick={investigate} className={`${button} self-start bg-[#FFE08A] hover:bg-[#FFD35C]`}>
+            Investigate
+          </button>
+        </>
+      )}
+      {(phase === "choosing" || phase === "guided") && (
+        <>
+          <MayaSays>{phase === "guided" ? build.result : BUILD_BRIEF}</MayaSays>
+          <OpenAppButton id="blueprint" />
+        </>
+      )}
+      {phase === "solved" && <Solved result={build.result} />}
+    </div>
+  );
+}
+
 function PatternName({ pattern }: { pattern: string }) {
   const icon = patternIcons[pattern];
   return (
@@ -315,7 +389,7 @@ function PatternName({ pattern }: { pattern: string }) {
 // Calls to Dana: her phone window with every clue so far, then the button for the next call
 // (docs/UI_THEME.md > Dana and Victor, and docs/GAME_DESIGN.md > Consultant calls).
 // `children` sits beside the call button: the "Test first" button (docs/UI_THEME.md > Test first).
-function Calls({ children }: { children?: React.ReactNode }) {
+export function Calls({ children }: { children?: React.ReactNode }) {
   const { state, dispatch } = useGameContext();
   const clues = cluesGiven(state);
   const next = callButton(state);
@@ -397,10 +471,9 @@ function Calls({ children }: { children?: React.ReactNode }) {
 
 // What was learned or strengthened and earned, then Next. A new incident adds a Pattern Book
 // entry. A repeat shows the "Seen before" stamp, fills a pip and adds its "Also seen as" line.
-function Solved({ result }: { result: string }) {
+export function Solved({ result }: { result: string }) {
   const { state, dispatch } = useGameContext();
   const incident = currentIncident(state)!;
-  const row = currentRow(state)!;
   const stars = state.results[incident.id].stars;
   const upNext = nextIncident(state);
   // Next sends the thank-you email first. If the next incident is not built yet, play then stops here.
@@ -412,12 +485,18 @@ function Solved({ result }: { result: string }) {
 
   return (
     <>
-      <p className="flex items-start gap-2 rounded-md border-2 border-ok bg-[#E4F3E2] px-3 py-2 text-[18px]" role="status">
-        <TickIcon />
-        <span>{result}</span>
-      </p>
+      <Fixed result={result} />
 
-      {isRepeat(incident) ? (
+      {isBuild(incident) ? (
+        // Each pattern the Build practises gains a "Built in" line in the Pattern Book.
+        <ul className="flex flex-col gap-2 rounded-lg border-2 border-[#6B3FA0] bg-white px-4 py-3">
+          {incident.practises.map((p) => (
+            <li key={p}>
+              <PatternName pattern={p} />
+            </li>
+          ))}
+        </ul>
+      ) : isRepeat(incident) ? (
         <Practised pattern={incident.pattern} />
       ) : (
         <div className="flex items-start gap-3 rounded-lg border-2 border-[#6B3FA0] bg-white px-4 py-3">
@@ -431,7 +510,7 @@ function Solved({ result }: { result: string }) {
 
       <div className="flex flex-wrap items-center gap-x-6 gap-y-2 text-[20px] font-bold">
         <span>+{fullNumber(incident.usersGained)} users</span>
-        <span>+£{fullNumber(payFor(row.kind, row.stage, stars))}</span>
+        <span>+£{fullNumber(incidentPay(state))}</span>
         <Stars stars={stars} />
       </div>
 

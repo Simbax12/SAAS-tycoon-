@@ -11,7 +11,17 @@ export type Storage = Pick<globalThis.Storage, "getItem" | "setItem">;
 export const saveKey = (version: number) => `zero-to-a-billion:save:v${version}`;
 
 // migrations[n] upgrades a version n save to version n + 1. Add one with every change to the save format.
-const migrations: Record<number, (old: Record<string, unknown>) => Record<string, unknown>> = {};
+const migrations: Record<number, (old: Record<string, unknown>) => Record<string, unknown>> = {
+  // Version 2 gives each part on the Blueprint canvas a place. Version 1 could not play a Build,
+  // so its canvas is always empty, but any part names found are spread along the middle.
+  1: (old) => {
+    const run = old.run as { canvas?: { parts?: unknown[] } | null } | undefined;
+    const parts = run?.canvas?.parts;
+    if (!run || !run.canvas || !Array.isArray(parts)) return old;
+    const placed = parts.map((p, i) => (typeof p === "string" ? { name: p, x: (i + 0.5) / parts.length, y: 0.5 } : p));
+    return { ...old, run: { ...run, canvas: { ...run.canvas, parts: placed } } };
+  },
+};
 
 export function saveGame(storage: Storage, state: GameState) {
   try {

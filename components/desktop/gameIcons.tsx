@@ -132,6 +132,11 @@ export function BoxIcon({ id, x, y, size = 24 }: { id: BoxIconId; x: number; y: 
   );
 }
 
+// A System Map box's icon on its own, for use outside the diagram.
+export function BoxSvg({ id, size }: Props & { id: BoxIconId }) {
+  return <Svg size={size}>{boxDrawings[id]}</Svg>;
+}
+
 // Sender badges (docs/UI_THEME.md > Emails and sender badges).
 type BadgeStyle = { colour: string; word: string; icon: React.ReactNode };
 

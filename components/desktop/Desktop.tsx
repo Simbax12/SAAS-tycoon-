@@ -7,7 +7,7 @@ import { useGameContext } from "@/components/useGame";
 import { drawnStyle, osForStage, wallpaperFor } from "@/data/blipOs";
 import { appById } from "@/data/desktopApps";
 import { itemEffects } from "@/data/upgrades";
-import { currentIncident, currentStage, incidentOpen, usersOnScreen } from "@/game/rules";
+import { currentBuild, currentIncident, currentStage, currentTriage, incidentOpen, usersOnScreen } from "@/game/rules";
 import { emailView } from "@/game/emails";
 import Balloons from "./Balloons";
 import { DesktopContext } from "./DesktopContext";
@@ -91,14 +91,29 @@ export default function Desktop({ isPhone, reducedMotion, windows, paused, onSta
     },
     [openApp],
   );
+  // Where an incident starts after "Investigate" (docs/GAME_DESIGN.md > Extra steps: Triage and Tune,
+  // and > Build incident flow: draw the design).
+  const startsIn: AppId = currentTriage(state) ? "terminal" : currentBuild(state) ? "blueprint" : "incident";
+  const investigate = useCallback(() => {
+    dispatch({ type: "investigate" });
+    openApp(startsIn);
+  }, [dispatch, openApp, startsIn]);
+  // After the fix is chosen, SysDash opens for the Tune step (docs/GAME_DESIGN.md > Tune, in SysDash).
+  // It waits until the desktop has its size, so the window is placed inside it.
+  const tuning = state.phase === "tune" && area.width > 0;
+  useEffect(() => {
+    if (tuning) openApp("sysdash");
+    // Only when the step begins, so closing SysDash keeps it closed.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [tuning]);
   const closeStart = useCallback(() => setStartOpen(false), []);
   const startTour = useCallback(() => {
     windows.close("settings");
     setTourStep(1);
   }, [windows]);
   const tools = useMemo(
-    () => ({ openApp, reducedMotion, startTour, openShopAt, shopFocus }),
-    [openApp, reducedMotion, startTour, openShopAt, shopFocus],
+    () => ({ openApp, investigate, reducedMotion, startTour, openShopAt, shopFocus }),
+    [openApp, investigate, reducedMotion, startTour, openShopAt, shopFocus],
   );
 
   // The Inbox shows its unread count. The Incident icon shows a red badge while one is waiting.
@@ -161,10 +176,7 @@ export default function Desktop({ isPhone, reducedMotion, windows, paused, onSta
               text={alertText}
               area={area}
               isPhone={isPhone}
-              onInvestigate={() => {
-                dispatch({ type: "investigate" });
-                openApp("incident");
-              }}
+              onInvestigate={investigate}
             />
           )}
           <Balloons

@@ -137,11 +137,37 @@ body {
   transform: rotate(-4deg);
 }
 
+/* In Blueprint, a wrong arrow flashes red after a failed deploy (docs/UI_THEME.md > Blueprint). */
+@keyframes arrow-flash {
+  0%,
+  100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.35;
+  }
+}
+
+.arrow-flash {
+  animation: arrow-flash 500ms ease-in-out 3;
+}
+
+/* An arrow on the Blueprint canvas can be picked with the keyboard. Its handle shows the focus. */
+.bp-arrow {
+  outline: none;
+}
+.bp-arrow:focus-visible .bp-handle {
+  stroke: #2a5fd0;
+  stroke-width: 5;
+  r: 12;
+}
+
 @media (prefers-reduced-motion: reduce) {
   .balloon-rise,
   .box-pulse,
   .part-pop,
-  .part-pulse {
+  .part-pulse,
+  .arrow-flash {
     animation: none;
   }
 }

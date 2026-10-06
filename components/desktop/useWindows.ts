@@ -12,6 +12,11 @@ export type OpenWindow = { id: AppId; x: number; y: number; z: number; width?: n
 export type Area = { width: number; height: number };
 
 export const WINDOW_SIZE = { width: 600, height: 460 };
+
+// Blueprint needs room for its tray and canvas side by side, so it opens larger, up to the whole desktop.
+const OPEN_SIZE: Partial<Record<AppId, { width: number; height: number }>> = {
+  blueprint: { width: 1000, height: 700 },
+};
 const CASCADE = 32;
 const EDGE = 8;
 
@@ -41,6 +46,12 @@ export function useWindows() {
       const z = topZ(list) + 1;
       if (list.some((w) => w.id === id)) return list.map((w) => (w.id === id ? { ...w, z } : w));
       // Each new window sits a little lower and further right than the last.
+      const size = OPEN_SIZE[id];
+      if (size) {
+        const width = Math.min(size.width, area.width);
+        const height = Math.min(size.height, area.height);
+        return [...list, { id, x: Math.max(0, (area.width - width) / 2), y: 0, z, width, height }];
+      }
       const step = (list.length % 5) * CASCADE;
       return [...list, { id, ...clampPosition(EDGE + step, EDGE + step, area), z }];
     });

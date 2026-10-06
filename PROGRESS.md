@@ -16,12 +16,14 @@ What is built, what is next, and the decisions made. Keep this short and current
 - BlipOS 1: the desktop now has the grey 1995-style look in the garage. Windows, taskbar, Start menu and server alerts follow the version for the current stage, from `data/blipOs.ts`. The loading bar says "BlipOS 1".
 - Milestone 4: Shop and money. The Shop has three tabs, cards with icons, price dots, "Needed next", "Not enough cash" and "Owned". Every Shop item is in `data/upgrades.ts`. Maya asks for the Test environment after 1.1 and Sam for Payments after 1.2, each with "Open in Shop". 1.3 waits until Payments is bought. The investor lends the shortfall for the feature Needed next, and Maya says so. Test first works in every incident. The Second monitor puts the Incident window and the Pattern Book side by side, or gives them tabs on a phone, and shows on the desk. Victor's lifeline can be bought and held, one at a time. The Stats window shows users, the bar to 1 billion, the stage, stars, top-ups and the loan. 28 reducer tests pass. Played in Chromium at 1440 and 375 pixels wide: buying Payments unlocks 1.3, and with too little cash the investor pays the rest.
 - Milestone 5: Repeats and Stage 2. The four Stage 2 incidents are in `data/challenges.ts`, and R1 and R2 in the new `data/repeats.ts`. A repeat asks "Which pattern fixes this?" with three shuffled pattern cards, each with a free "Remind me". A wrong card costs a star, with no cash lost and no outage. The right card shows "Seen before", fills a pip, gold if solved first try, and adds its "Also seen as" line. A repeat not solved first try sends Maya's refresher after the next incident. Thank-you emails come from repeats too. Test first, calls and Victor work in repeats. When Stage 2 starts, the loading bar says "Upgrading to BlipOS 2", then the new emails rise one by one. The System Map grows with the Cache, the index tab, Storage, the CDN and the thick Server to Database arrow, and a repeat's pattern icon pulses once. Stage 2 Shop items work: the Bigger server removes the bigger-server option in 2.1 and Maya says why, Monitoring halves bad-choice penalties, and the Wallpaper pack adds sunset hill, night sky and snowy hill in Settings. Play stops after 2.4 with "Stage 3 is coming soon". 38 reducer tests pass. Played in Chromium at 1440, 1024 and 375 pixels wide: R1 with a wrong card, its refresher after 2.2, and the pips in the Pattern Book.
+- Milestone 6: Work apps. B1 and B2 are in `data/blueprints.ts` with the whole toolbox, and every Triage and Tune step is in `data/extraSteps.ts`. Builds are no longer skipped. Blueprint: a tray of shuffled parts with "like" and a tool name, a canvas with the Goal on a sticky note, parts placed by dragging or by tapping the part then the canvas, arrows drawn by dragging one part onto another or tapping one then the other, "Remove", "Deploy and test", wrong moves with their "Says" sentence and a red "Stopped" mark, two failed deploys drawing the Solution, calls that place and lock parts and remove the decoys, Test first, Victor's lifeline, and "My designs". Terminal runs T1, T2, T6 and T7, with the Triage bonus, and shows past logs. SysDash runs a Tune step wave by wave with the Tune bonus, and shows users, cash and stage gauges otherwise. The Pattern Book's tools now come from the toolbox, and each entry gains "Built in" lines. The Recycle Bin shows a Build's wrong moves. The save is now version 2, and version 1 saves carry over. 46 reducer tests pass, including GAME_LOGIC.md Examples 2 and 6. Played in Chromium at 1440 and 375 pixels wide: T1 with a wrong tap, then B1 drawn with taps alone, one wrong deploy, then the right one at 2 stars.
 
 ## Next
 
-- Play Milestone 5: `npm run dev`, then open http://localhost:3000. An old save carries on from 1.4: tap Next to start Stage 2. Pick a wrong card in R1 to see the silver pip and the refresher after 2.2.
+- Play Milestone 6: `npm run dev`, then open http://localhost:3000. An old save that stopped after 2.4 carries on: tap Next and B2 arrives from Zoe. Use Settings > Reset game to play T1 on 1.2 and B1 after 1.4. Play stops after B2 with "Stage 3 is coming soon".
+- No Tune step can be reached until Stage 3. SysDash's Tune flow was checked with a stand-in step that was then removed, and in the reducer tests.
 - Check the new on-screen text listed at the end of this file.
-- Milestone 6: Work apps. See the build order in docs/START_HERE.md.
+- Milestone 7: Stages 3 to 5. See the build order in docs/START_HERE.md.
 - Milestone 8: Monitoring's live numbers on every System Map box. No doc says which numbers yet, so that needs an answer first.
 - With Stage 3: the Faster PC must only pay more in incidents that start after it is bought. The run does not yet remember that.
 
@@ -103,6 +105,21 @@ What is built, what is next, and the decisions made. Keep this short and current
 | 2026-10-06 | R10's refresher goes out at once. The list of such repeats is in `data/repeats.ts` | GAME_DESIGN.md > Refreshers says so. Keeping it in data means the engine never names an incident |
 | 2026-10-06 | The wallpaper setting is "standard" for the BlipOS version's own wallpaper. A pack wallpaper only shows while the pack is owned | A reset keeps the settings but clears the Shop, so a pack wallpaper must not outlive the pack |
 | 2026-10-06 | On a narrow card, "Remind me" drops below the pattern's name | At 375 pixels wide the button cut long names such as "Password hashing" short |
+| 2026-10-06 | Milestone 6 includes T6 on 1.4 and T7 on 2.4, not only T1 and T2 | START_HERE.md names T1 and T2 because it was written before T6 to T10 were added. Both are on Stage 1 and 2 incidents, so leaving them out would change those incidents later |
+| 2026-10-06 | Every Triage and Tune step is copied into `data/extraSteps.ts` now. A step only plays once its incident is in the data files | They are found by incident id, so Stages 3 to 5 need no change to this file |
+| 2026-10-06 | The save is version 2. Each part on the Blueprint canvas keeps its place, as shares of the canvas's width and height. Version 1 saves are migrated | Where a part sits does not change the answer, but the player's layout must survive closing the window and a reload. Shares fit any screen size |
+| 2026-10-06 | Dragging a part onto another part draws an arrow. Dropping it on empty canvas moves it. Tapping one part and then another also draws an arrow | UI_THEME.md lists dragging to join and to place, but not how to move a part. One drag does both, decided by where it ends |
+| 2026-10-06 | Each arrow has a small round handle in its middle, above the parts, with a 48px tap area. Tapping it picks the arrow for "Remove" | Arrows between close parts were hidden under the cards and could not be tapped |
+| 2026-10-06 | The tray shows only parts not yet on the canvas. A removed part goes back to the tray | GAME_DESIGN.md says parts left in the tray do not matter, so parts move out of it |
+| 2026-10-06 | A part placed by a call, and the Solution when it is drawn, sit left to right in the order traffic flows | The docs say a call places a part but not where. This puts it where the answer needs it |
+| 2026-10-06 | In a Build, Dana only says the Nudge. Her later calls place parts and remove the decoys without words | GAME_DESIGN.md > Calls in a Build gives her no other lines |
+| 2026-10-06 | A failed deploy marks a wrong move's arrow or part red with "Stopped". The full "Sees" animations come in Milestone 8 | The same as for incidents, agreed in Milestone 2 |
+| 2026-10-06 | With no wrong move, traffic stops at the first arrow drawn that is not in the Solution, or else at the part where the first missing Solution arrow should start | GAME_DESIGN.md says "the first missing or wrong arrow" but not how to pick it |
+| 2026-10-06 | In Blueprint, "Test first" makes the next deploy a test and says "Next deploy is a test." with "Cancel" | A Build has no card to tap, so the player needs to know the next deploy is the one being tested |
+| 2026-10-06 | "Investigate" opens Terminal when the incident has a Triage step, and Blueprint for a Build. SysDash opens by itself when a Tune step begins | GAME_DESIGN.md says each app "opens" at that step |
+| 2026-10-06 | Blueprint opens in a larger window, up to 1000 by 700 pixels | The tray and the canvas need to sit side by side |
+| 2026-10-06 | The SysDash cash gauge is full at 10 times the stage's base cash | UI_THEME.md asks for a gauge but gives no top. Tied to base cash, it means the same in every stage |
+| 2026-10-06 | A log line's id is "cause", "symptom" or "routine1" to "routine4" in the order written. A wrong move's id is its trigger, such as "connects:Users>Database" | Saves hold ids, never text |
 
 ## Change log
 
@@ -151,6 +168,7 @@ What is built, what is next, and the decisions made. Keep this short and current
 | 2026-10-04 | `next.config.ts`: turned off the Next.js agent rules block, which `npm run dev` was adding to CLAUDE.md |
 | 2026-10-05 | Merged the Milestone 1 to 4 code from `claude/create-challenges-from-docs-mcwcdz` into main. Main had only the doc commits, so new sessions found no code |
 | 2026-10-05 | Fixed the flickering tutorial box on "Red means something is breaking.". The red traffic dots in `components/windows/Diagram.tsx` no longer catch the pointer, so the spotlight stops thinking the failing box is hidden each time a dot passes its centre |
+| 2026-10-06 | Milestone 6 built: `data/blueprints.ts` (toolbox, B1, B2), `data/extraSteps.ts` (all Triage and Tune steps), `game/blueprint.ts`, the Triage, Tune, canvas and deploy actions in `game/reducer.ts`, save version 2 with a migration in `game/save.ts`, "Built in" lines in `game/patternBook.ts`, and the Blueprint, Terminal and SysDash windows. `data/patterns.ts` now works out tool names from the toolbox. `game/built.ts` is removed. Hub: code map |
 | 2026-10-06 | Milestone 5 built: Stage 2 in `data/challenges.ts`, `data/repeats.ts` (R1, R2), `data/incidents.ts`, `game/patternBook.ts`, the Stage 2 System Map, repeat cards with "Remind me", pips, "Also seen as", refreshers, the BlipOS 2 upgrade bar, the Bigger server, Monitoring and Wallpaper pack effects, and Stage 2 pattern and box icons. Hub: code map |
 
 ## On-screen text to check
@@ -206,3 +224,12 @@ New in Milestone 5:
 - Settings: the heading "Wallpaper" and the choice "Standard", for the BlipOS version's own wallpaper. New words. The other three, "Sunset hill", "Night sky" and "Snowy hill", come from UI_THEME.md.
 - Pattern Book: the heading "Also seen as".
 - Play stops after 2.4 with "Stage 3 is coming soon. Thanks for playing!", the same words as at the end of Stage 1 before.
+
+New in Milestone 6:
+
+- Blueprint: "Remove", "Deploy and test", "Stopped", "like" before a tool name and the heading "Built in", from the docs. "Test first", "Cancel", "Test", "This would work" and "Back" as before.
+- Blueprint, new words: "Next deploy is a test." while Test first is waiting, and "No designs yet." when no Build is finished.
+- Terminal, new words: "No logs yet." before the first Triage step is solved.
+- SysDash: "Wave 1 of 3", "Run wave", "Too low", "Just right" and "Too high", from the docs. Minus and plus buttons beside the dial. The idle gauges' labels "Users", "Cash" and "Stage", with the stage shown as "2: First office".
+- Buttons that open a work app show its icon and name: "Terminal", "SysDash", "Blueprint" and "Incident".
+- Screen reader labels, not shown on screen: "Canvas", "Tray", and each arrow as its two parts, such as "Users → Database".

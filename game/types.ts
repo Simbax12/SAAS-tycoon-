@@ -6,9 +6,14 @@ export type Phase = "waiting" | "arrived" | "triage" | "choosing" | "guided" | "
 
 export type Stars = 1 | 2 | 3;
 
+// A part on the Blueprint canvas, by its tray name. x and y place its centre, as shares of the
+// canvas's width and height, so the design fits any screen.
+export type PlacedPart = { name: string; x: number; y: number };
+
 // Build only: parts placed, arrows drawn, parts locked by calls, and whether the decoys were removed.
+// Save version 1 held part names only. Builds could not be played then, so no save has one.
 export type Canvas = {
-  parts: string[];
+  parts: PlacedPart[];
   arrows: { from: string; to: string }[];
   locked: string[];
   decoysRemoved: boolean;
@@ -86,6 +91,17 @@ export type Action =
   | { type: "buyLifeline" }
   // Try one option with no penalty. It changes nothing but `testUsed`.
   | { type: "testFirst"; optionId: string }
+  // Triage: tap a log line, by its id (docs/GAME_LOGIC.md > Part 3: Player actions).
+  | { type: "tapLine"; lineId: string }
+  // Tune: set the dial to a stop, by its place in the step's stops, and run the next wave.
+  | { type: "runWave"; stop: number }
+  // Blueprint. Placing a part that is already on the canvas moves it.
+  | { type: "placePart"; part: string; x: number; y: number }
+  | { type: "removePart"; part: string }
+  | { type: "drawArrow"; from: string; to: string }
+  | { type: "deleteArrow"; from: string; to: string }
+  // "Deploy and test". A test deploy needs the Test environment, once per incident.
+  | { type: "deploy"; test?: boolean }
   // Move the tutorial to a step, or skip or finish it (docs/GAME_DESIGN.md > Tutorial).
   | { type: "tutorial"; step: number | "skipped" | "done" }
   // Change a setting (docs/GAME_LOGIC.md > Part 3: Player actions).

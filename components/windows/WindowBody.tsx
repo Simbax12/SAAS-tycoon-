@@ -1,5 +1,5 @@
-import { appById, type AppId } from "@/data/desktopApps";
-import { AppIcon } from "@/components/desktop/icons";
+import type { AppId } from "@/data/desktopApps";
+import Blueprint from "./Blueprint";
 import HowToPlay from "./HowToPlay";
 import Inbox from "./Inbox";
 import Incident from "./Incident";
@@ -8,19 +8,11 @@ import RecycleBin from "./RecycleBin";
 import Settings from "./Settings";
 import Shop from "./Shop";
 import Stats from "./Stats";
+import SysDash from "./SysDash";
 import SystemMap from "./SystemMap";
+import Terminal from "./Terminal";
 
-// Until a later milestone builds a window, it shows its icon and what it will hold
-// (the "Opens" column in docs/UI_THEME.md > Desktop icons).
-function Placeholder({ id }: { id: AppId }) {
-  return (
-    <div className="flex flex-col items-start gap-3">
-      <AppIcon id={id} size={72} />
-      <p className="text-[18px]">{appById(id).opens}.</p>
-    </div>
-  );
-}
-
+// The body of each desktop window (docs/UI_THEME.md > Desktop icons).
 export default function WindowBody({ id }: { id: AppId }) {
   switch (id) {
     case "howToPlay":
@@ -41,7 +33,11 @@ export default function WindowBody({ id }: { id: AppId }) {
       return <Shop />;
     case "stats":
       return <Stats />;
-    default:
-      return <Placeholder id={id} />;
+    case "blueprint":
+      return <Blueprint />;
+    case "terminal":
+      return <Terminal />;
+    case "sysdash":
+      return <SysDash />;
   }
 }

@@ -2,20 +2,35 @@
 // Pay and penalties: docs/GAME_DESIGN.md > Money, > Option types in new incidents and > Stars.
 
 import { challengeById, type Challenge } from "../data/challenges";
-import { incidentById, type IncidentData } from "../data/incidents";
+import { buildById, type Build } from "../data/blueprints";
+import { bonuses, triageFor, tuneFor } from "../data/extraSteps";
+import { incidentById, isBuild, type IncidentData } from "../data/incidents";
 import { playOrder, playOrderRow, type IncidentKind, type PlayOrderRow } from "../data/playOrder";
 import { callPrices, penalties, progressMarkers, REPEAT_PAY_SHARE, stageByNumber, starMultiplier, type StageNumber } from "../data/stages";
 import { TUTORIAL_INCIDENT } from "../data/tutorial";
 import { itemEffects, LIFELINE_TIMES, MONITORING_SHARE, upgradeById, upgrades, type Upgrade } from "../data/upgrades";
-import { BUILDS_BUILT } from "./built";
 import type { GameState, Run, Stars } from "./types";
 
 export const baseCash = (stage: StageNumber) => stageByNumber(stage).baseCash;
 
-// docs/GAME_LOGIC.md > Cash coming in. Bonuses and the Faster PC arrive in later milestones.
-export function payFor(kind: IncidentKind, stage: StageNumber, stars: Stars): number {
+// docs/GAME_LOGIC.md > Cash coming in: base cash, halved for a repeat, times the star multiplier,
+// plus the Triage and Tune bonuses, rounded once. The Faster PC arrives with Stage 3.
+export function payFor(kind: IncidentKind, stage: StageNumber, stars: Stars, run?: Run): number {
   const base = baseCash(stage) * (kind === "repeat" ? REPEAT_PAY_SHARE : 1);
-  return Math.round(base * starMultiplier[stars]);
+  return Math.round(base * starMultiplier[stars] + (run ? bonusFor(stage, run) : 0));
+}
+
+// The Triage bonus, for finding the cause on the first tap, and the Tune bonus for each wave set right.
+export function bonusFor(stage: StageNumber, run: Run): number {
+  const triage = run.triageTaps[0] === "cause" ? bonuses.triage : 0;
+  const tune = run.tuneWaves.filter((w) => w.right).length * bonuses.tuneWave;
+  return baseCash(stage) * (triage + tune);
+}
+
+// What the current incident pays when it is solved with the run as it is.
+export function incidentPay(state: GameState): number {
+  const row = currentRow(state)!;
+  return payFor(row.kind, row.stage, state.run.stars, state.run);
 }
 
 export const partialPenalty = (stage: StageNumber) => Math.round(baseCash(stage) * penalties.partialCash);
@@ -49,17 +64,20 @@ export function progressShare(users: number): number {
 // --- Calls to Dana (docs/GAME_DESIGN.md > Consultant calls) ---
 
 // A new or repeat incident has one call per clue: the Nudge, then each Clue line.
-// Builds get their own count when Blueprint arrives in Milestone 6.
+// A Build has 2, plus one for each Tray part other than the "Call 1 places" part.
 export function callsIn(state: GameState): number {
   const incident = currentIncident(state);
-  return incident ? 1 + incident.clues.length : 0;
+  if (!incident) return 0;
+  return isBuild(incident) ? 2 + incident.tray.filter((p) => p !== incident.call1).length : 1 + incident.clues.length;
 }
 
-// The clues given so far in this incident, in order.
+// What Dana has said so far in this incident, in order. In a Build she only says the Nudge;
+// her later calls place parts and remove the decoys.
 export function cluesGiven(state: GameState): string[] {
   const incident = currentIncident(state);
   if (!incident) return [];
-  return [incident.nudge, ...incident.clues].slice(0, state.run.calls);
+  const lines = isBuild(incident) ? [incident.nudge] : [incident.nudge, ...incident.clues];
+  return lines.slice(0, state.run.calls);
 }
 
 // The price of the next call. Every call in the tutorial incident is free, and the Engineering
@@ -138,18 +156,21 @@ export function currentStage(state: GameState): StageNumber {
   return currentRow(state)?.stage ?? 1;
 }
 
-// Whether this milestone can play an incident: its data file has it.
-export const isPlayable = (row: PlayOrderRow) => row.kind !== "build" && incidentById(row.id) !== undefined;
+// The current incident, if it is a Build.
+export const currentBuild = (state: GameState): Build | undefined => buildById(state.currentId);
 
-// The incident after the current one. Builds are skipped until Blueprint is built.
-// "blocked" means the next incident is not in the data files yet, so play stops here.
+// The current incident's extra steps, if it has them (docs/EXTRA_STEPS.md).
+export const currentTriage = (state: GameState) => triageFor(state.currentId);
+export const currentTune = (state: GameState) => tuneFor(state.currentId);
+
+// Whether this milestone can play an incident: its data file has it.
+export const isPlayable = (row: PlayOrderRow) => incidentById(row.id) !== undefined;
+
+// The incident after the current one. "blocked" means it is not in the data files yet, so play stops here.
 export function nextIncident(state: GameState): { row: PlayOrderRow; blocked: boolean } | null {
   const at = playOrder.findIndex((r) => r.id === state.currentId);
-  for (const row of playOrder.slice(at + 1)) {
-    if (row.kind === "build" && !BUILDS_BUILT) continue;
-    return { row, blocked: !isPlayable(row) };
-  }
-  return null;
+  const row = playOrder[at + 1];
+  return row ? { row, blocked: !isPlayable(row) } : null;
 }
 
 // --- The fixed shuffle (docs/GAME_LOGIC.md > Derived values) ---

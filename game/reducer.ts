@@ -1,12 +1,25 @@
 // The game engine (docs/GAME_LOGIC.md). Every change to the game state goes through here.
 // It never names a single incident: everything is looked up by id in the data files.
 
+import { wrongMoveId } from "../data/blueprints";
 import { startOfStage, thanksText } from "../data/emails";
-import { isRepeat } from "../data/incidents";
+import { isBuild, isRepeat } from "../data/incidents";
 import { playOrder } from "../data/playOrder";
 import { REFRESHER_AT_ONCE } from "../data/repeats";
 import { TUTORIAL_INCIDENT } from "../data/tutorial";
 import { itemEffects, requestEmails, upgradeById } from "../data/upgrades";
+import {
+  callInBuild,
+  clampShare,
+  deployOutcome,
+  drawSolution,
+  emptyCanvas,
+  onCanvas,
+  placePart,
+  removePart,
+  sameArrow,
+  trayParts,
+} from "./blueprint";
 import {
   badDip,
   badPenalty,
@@ -14,21 +27,25 @@ import {
   canBuy,
   canBuyLifeline,
   canTestFirst,
+  currentBuild,
   currentChallenge,
   currentIncident,
   currentRow,
   currentStage,
+  currentTriage,
+  currentTune,
   incidentOpen,
+  incidentPay,
   lifelinePrice,
   loseStar,
   nextIncident,
   partialPenalty,
-  payFor,
   solvedFirstTry,
 } from "./rules";
-import type { Action, GameState, Run, Settings } from "./types";
+import type { Action, Canvas, GameState, Run, Settings } from "./types";
 
-export const SAVE_VERSION = 1;
+// Version 2 places each part on the Blueprint canvas (game/save.ts has the migration).
+export const SAVE_VERSION = 2;
 
 export const defaultSettings: Settings = {
   textSize: "normal",
@@ -106,6 +123,8 @@ function receiveCash(state: GameState, amount: number): GameState {
 export function startIncident(state: GameState): GameState {
   let s: GameState = { ...state, run: freshRun(), phase: "waiting" };
   if (!currentIncident(s)) return s;
+  // A Build starts with an empty canvas.
+  if (currentBuild(s)) s = { ...s, run: { ...s.run, canvas: emptyCanvas() } };
 
   // Options that owned upgrades take away. Only new incidents lose options this way, and Maya
   // says each item's line (rules.ts > removalLines).
@@ -158,7 +177,7 @@ function buyLifeline(state: GameState): GameState {
 // The ids of the options or cards still showing: not removed by an upgrade and not tried.
 function choicesShowing(state: GameState): string[] {
   const incident = currentIncident(state);
-  if (!incident) return [];
+  if (!incident || isBuild(incident)) return [];
   const ids = isRepeat(incident) ? incident.cards.map((c) => c.pattern) : incident.options.map((o) => o.id);
   return ids.filter((id) => !state.run.removed.includes(id) && !state.run.tried.includes(id));
 }
@@ -190,14 +209,92 @@ function solve(state: GameState): GameState {
     users: state.users + incident.usersGained,
     run: { ...run, dip: 0 },
   };
+  // The finished design is kept so the player can look at it again in Blueprint.
+  if (isBuild(incident) && run.canvas) s = { ...s, blueprints: { ...s.blueprints, [row.id]: run.canvas.arrows } };
   // A repeat that was not solved first try gets a refresher (docs/GAME_DESIGN.md > Refreshers).
   if (isRepeat(incident) && !firstTry && !s.refreshersDue.includes(row.id)) {
     s = { ...s, refreshersDue: [...s.refreshersDue, row.id] };
   }
-  s = receiveCash(s, payFor(row.kind, row.stage, run.stars));
+  s = receiveCash(s, incidentPay(state));
 
   // The player wins when the final incident in the play order is solved.
   if (row.id === playOrder[playOrder.length - 1].id) s = sendEmail({ ...s, won: true }, "opener:win");
+  return s;
+}
+
+// The right fix is chosen. If the incident has a Tune step, it runs now, and the incident counts
+// as solved when it ends (docs/GAME_DESIGN.md > Tune, in SysDash).
+const fixChosen = (state: GameState): GameState => (currentTune(state) ? { ...state, phase: "tune" } : solve(state));
+
+// docs/GAME_LOGIC.md > Part 3: Player actions, "Tap a log line". The cause moves on to the fix.
+// A symptom or routine line greys out. Only the first tap decides the bonus.
+function tapLine(state: GameState, lineId: string): GameState {
+  const line = currentTriage(state)?.lines.find((l) => l.id === lineId);
+  if (state.phase !== "triage" || !line || state.run.triageTaps.includes(lineId)) return state;
+  const s: GameState = { ...state, run: { ...state.run, triageTaps: [...state.run.triageTaps, lineId] } };
+  return line.kind === "cause" ? { ...s, phase: "choosing" } : s;
+}
+
+// Each wave is played once, with no retries. After the last, the incident is solved.
+function runWave(state: GameState, stop: number): GameState {
+  const tune = currentTune(state);
+  if (state.phase !== "tune" || !tune || !Number.isInteger(stop) || stop < 0 || stop >= tune.stops.length) return state;
+  const wave = tune.waves[state.run.tuneWaves.length];
+  if (!wave) return state;
+  const tuneWaves = [...state.run.tuneWaves, { stop, right: stop === wave.right }];
+  const s: GameState = { ...state, run: { ...state.run, tuneWaves } };
+  return tuneWaves.length === tune.waves.length ? solve(s) : s;
+}
+
+// --- Blueprint (docs/GAME_LOGIC.md > Part 3: Player actions) ---
+
+// Changes the canvas of the Build being drawn. Nothing changes once the Solution has been drawn.
+function editCanvas(state: GameState, change: (canvas: Canvas) => Canvas): GameState {
+  const canvas = state.run.canvas;
+  if (state.phase !== "choosing" || !currentBuild(state) || !canvas) return state;
+  const changed = change(canvas);
+  return changed === canvas ? state : { ...state, run: { ...state.run, canvas: changed } };
+}
+
+// Places a part from the tray, or moves one already on the canvas. A part locked by a call stays put.
+function place(state: GameState, part: string, x: number, y: number): GameState {
+  const build = currentBuild(state);
+  return editCanvas(state, (canvas) => {
+    if (!build || !trayParts(build, canvas).includes(part) || canvas.locked.includes(part)) return canvas;
+    if (!Number.isFinite(x) || !Number.isFinite(y)) return canvas;
+    return placePart(canvas, part, clampShare(x), clampShare(y));
+  });
+}
+
+function drawArrow(state: GameState, from: string, to: string): GameState {
+  return editCanvas(state, (canvas) => {
+    const drawn = canvas.arrows.some((a) => sameArrow(a, { from, to }));
+    if (from === to || drawn || !onCanvas(canvas, from) || !onCanvas(canvas, to)) return canvas;
+    return { ...canvas, arrows: [...canvas.arrows, { from, to }] };
+  });
+}
+
+// docs/GAME_LOGIC.md > Deploying.
+function deploy(state: GameState, test: boolean): GameState {
+  const build = currentBuild(state);
+  const canvas = state.run.canvas;
+  if (state.phase !== "choosing" || !build || !canvas || canvas.arrows.length === 0) return state;
+
+  // A test deploy loses nothing and counts for nothing. It only uses up "Test first".
+  if (test) return canTestFirst(state) ? { ...state, run: { ...state.run, testUsed: true } } : state;
+
+  const outcome = deployOutcome(build, canvas);
+  if (outcome.kind === "right") return solve(state);
+  let s: GameState = {
+    ...state,
+    run: { ...state.run, stars: loseStar(state.run.stars), failedDeploys: state.run.failedDeploys + 1 },
+  };
+  // A wrong move from the Build's list goes to the Recycle Bin. A general failure does not.
+  if (outcome.kind === "wrongMove") {
+    s = { ...s, recycleBin: [...s.recycleBin, { incidentId: build.id, choice: wrongMoveId(outcome.move.trigger) }] };
+  }
+  // After the second failed deploy, Blueprint draws the Solution.
+  if (s.run.failedDeploys >= 2) s = { ...s, phase: "guided", run: { ...s.run, canvas: drawSolution(build, canvas) } };
   return s;
 }
 
@@ -212,9 +309,9 @@ function pick(state: GameState, optionId: string): GameState {
   if (state.phase !== "choosing" || !incident || !choicesShowing(state).includes(optionId)) return state;
   if (isRepeat(incident)) return pickCard(state, optionId);
 
+  if (isBuild(incident)) return state;
   const option = incident.options.find((o) => o.id === optionId)!;
-  // The Tune step arrives in Milestone 6, so the best option solves the incident straight away.
-  if (option.type === "best") return solve(state);
+  if (option.type === "best") return fixChosen(state);
 
   const wrong = option.type === "partial" ? partialPenalty(currentStage(state)) : badPenalty(state);
   // An outage: users dip by a share of the users on screen until the incident is solved.
@@ -238,7 +335,7 @@ function pickCard(state: GameState, pattern: string): GameState {
   const repeat = currentIncident(state);
   if (!repeat || !isRepeat(repeat)) return state;
   const card = repeat.cards.find((c) => c.pattern === pattern)!;
-  if (card.right) return solve(state);
+  if (card.right) return fixChosen(state);
   return afterWrongPick({
     ...state,
     run: { ...state.run, stars: loseStar(state.run.stars), tried: [...state.run.tried, card.pattern] },
@@ -253,12 +350,17 @@ function call(state: GameState): GameState {
   if (button.kind !== "call" || !button.affordable) return state;
   const handbookFree =
     button.price === 0 && state.currentId !== TUTORIAL_INCIDENT && state.owned.includes(itemEffects.freeFirstCall);
+  const calls = state.run.calls + 1;
+  // In a Build, calls place parts and remove the decoys (docs/GAME_DESIGN.md > Calls in a Build).
+  const build = currentBuild(state);
+  const canvas = build && state.run.canvas ? callInBuild(build, state.run.canvas, calls) : state.run.canvas;
   return {
     ...state,
     cash: state.cash - button.price,
     run: {
       ...state.run,
-      calls: state.run.calls + 1,
+      calls,
+      canvas,
       paid: state.run.paid + button.price,
       handbookUsed: state.run.handbookUsed || handbookFree,
     },
@@ -268,7 +370,10 @@ function call(state: GameState): GameState {
 // Victor gives the answer once every call is used (docs/UPGRADES.md > Victor's lifeline).
 function useLifeline(state: GameState): GameState {
   if (state.phase !== "choosing" || callButton(state).kind !== "lifeline") return state;
-  return { ...state, lifeline: null, phase: "guided", run: { ...state.run, lifelineUsed: true } };
+  // In a Build, Victor draws the Solution.
+  const build = currentBuild(state);
+  const canvas = build && state.run.canvas ? drawSolution(build, state.run.canvas) : state.run.canvas;
+  return { ...state, lifeline: null, phase: "guided", run: { ...state.run, lifelineUsed: true, canvas } };
 }
 
 // docs/GAME_LOGIC.md > After the player taps Next.
@@ -322,15 +427,40 @@ export function reducer(state: GameState, action: Action): GameState {
 
     case "investigate": {
       if (state.phase !== "arrived") return state;
-      // The Triage step arrives in Milestone 6, so the incident goes straight to choosing.
-      return { ...readEmail(state, `arrive:${state.currentId}`), phase: "choosing" };
+      // An incident with a Triage step starts in Terminal (docs/GAME_DESIGN.md > Extra steps: Triage and Tune).
+      return { ...readEmail(state, `arrive:${state.currentId}`), phase: currentTriage(state) ? "triage" : "choosing" };
     }
 
     case "pick":
       return pick(state, action.optionId);
 
     case "applyGuided":
-      return state.phase === "guided" ? solve(state) : state;
+      if (state.phase !== "guided") return state;
+      return currentBuild(state) ? solve(state) : fixChosen(state);
+
+    case "tapLine":
+      return tapLine(state, action.lineId);
+
+    case "runWave":
+      return runWave(state, action.stop);
+
+    case "placePart":
+      return place(state, action.part, action.x, action.y);
+
+    case "removePart":
+      return editCanvas(state, (canvas) => (canvas.locked.includes(action.part) ? canvas : removePart(canvas, action.part)));
+
+    case "drawArrow":
+      return drawArrow(state, action.from, action.to);
+
+    case "deleteArrow":
+      return editCanvas(state, (canvas) => ({
+        ...canvas,
+        arrows: canvas.arrows.filter((a) => !sameArrow(a, { from: action.from, to: action.to })),
+      }));
+
+    case "deploy":
+      return deploy(state, !!action.test);
 
     case "next":
       return next(state);

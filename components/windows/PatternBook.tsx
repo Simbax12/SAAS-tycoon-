@@ -34,7 +34,7 @@ export function AlsoSeenAs({ lines }: { lines: string[] }) {
 }
 
 // Every pattern learned so far (docs/UI_THEME.md > Pattern Book and pattern cards).
-// "Built in" lines arrive with Builds in Milestone 6.
+// Each entry also lists the Builds that practised it, under "Built in".
 export default function PatternBook() {
   const { state } = useGameContext();
   const patterns = patternBook(state);
@@ -53,6 +53,16 @@ export default function PatternBook() {
               <p className="text-[18px]">{p.useWhen}</p>
               {p.pips && <Pips pips={p.pips} />}
               <AlsoSeenAs lines={p.alsoSeenAs} />
+              {p.builtIn.length > 0 && (
+                <div className="text-[18px]">
+                  <p className="font-bold">Built in</p>
+                  <ul className="flex flex-col gap-1">
+                    {p.builtIn.map((title) => (
+                      <li key={title}>{title}</li>
+                    ))}
+                  </ul>
+                </div>
+              )}
               {patternTools[p.name] && (
                 <div className="text-[18px]">
                   <p className="font-bold">Tools you will meet</p>

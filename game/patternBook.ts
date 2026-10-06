@@ -1,7 +1,8 @@
 // The Pattern Book, worked out from `results` (docs/GAME_LOGIC.md > Derived values).
 // A solved new incident adds its pattern. A solved repeat fills a pip, gold if solved first try,
-// and adds its "Also seen as" line. "Built in" lines arrive with Builds in Milestone 6.
+// and adds its "Also seen as" line. A solved Build adds a "Built in" line to each pattern it practises.
 
+import { builds } from "../data/blueprints";
 import { challenges } from "../data/challenges";
 import { playOrder } from "../data/playOrder";
 import { everydayPatterns } from "../data/patterns";
@@ -16,6 +17,8 @@ export type PatternEntry = {
   // Only the five everyday patterns have pips.
   pips: Pip[] | null;
   alsoSeenAs: string[];
+  // The titles of the solved Builds that practised this pattern.
+  builtIn: string[];
 };
 
 // A pattern's "Use this when" line, from the new incident that teaches it.
@@ -44,12 +47,20 @@ export function alsoSeenAs(state: GameState, name: string): string[] {
   });
 }
 
+// The titles of a pattern's solved Builds, in play order (docs/GAME_DESIGN.md > Build incident flow: draw the design).
+export function builtIn(state: GameState, name: string): string[] {
+  return playOrder.flatMap((row) => {
+    const build = builds.find((b) => b.id === row.id);
+    return build && build.practises.includes(name) && state.results[row.id] ? [build.title] : [];
+  });
+}
+
 // Every pattern learned so far, in the order it was learned.
 export function patternBook(state: GameState): PatternEntry[] {
   return playOrder.flatMap((row) => {
     const challenge = challenges.find((c) => c.id === row.id);
     if (!challenge || !state.results[row.id]) return [];
     const { name, useWhen } = challenge.pattern;
-    return [{ name, useWhen, pips: pipsFor(state, name), alsoSeenAs: alsoSeenAs(state, name) }];
+    return [{ name, useWhen, pips: pipsFor(state, name), alsoSeenAs: alsoSeenAs(state, name), builtIn: builtIn(state, name) }];
   });
 }

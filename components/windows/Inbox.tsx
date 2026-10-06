@@ -56,8 +56,8 @@ export default function Inbox() {
 }
 
 function OpenEmail({ view, onBack }: { view: EmailView; onBack: () => void }) {
-  const { state, dispatch } = useGameContext();
-  const { openApp, openShopAt } = useDesktop();
+  const { state } = useGameContext();
+  const { investigate, openShopAt } = useDesktop();
   // "Investigate" shows while its incident is still open.
   const canInvestigate = view.investigate === state.currentId && incidentOpen(state);
 
@@ -75,10 +75,7 @@ function OpenEmail({ view, onBack }: { view: EmailView; onBack: () => void }) {
         <button
           type="button"
           data-tour="investigate"
-          onClick={() => {
-            dispatch({ type: "investigate" });
-            openApp("incident");
-          }}
+          onClick={investigate}
           className="min-h-12 rounded-md border-2 border-ink bg-[#FFE08A] px-5 text-[18px] font-bold hover:bg-[#FFD35C]"
         >
           Investigate
