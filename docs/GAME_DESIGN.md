@@ -266,11 +266,16 @@ There is no timer in either step. Nothing scrolls or moves until the player acts
 ### Triage, in Terminal
 
 1. After the player taps "Investigate", Terminal opens with the step's six log lines in a shuffled order.
+   - Above the lines: "Find the line that caused this. Not just a symptom."
+   - Under it: "What happened:" and the incident's "Arrives by" text.
+   - Then: "Wrong taps cost nothing. Right first time: +£50 bonus.", with the Triage bonus for the stage.
+   - In the first Triage step of the play order, Maya speaks first, in two bubbles: "Logs are the servers' diary. Every action writes a line." and "A symptom is what you notice. The cause is why it happened."
 2. The player taps the line that shows the real cause.
-   - The cause: the "Why" sentence appears. The incident carries on.
+   - The cause: the "Why" sentence appears. If it was the first tap, "Triage bonus: +£50" appears too, with the Triage bonus for the stage. A "Now pick a fix" button opens the Incident window, and the incident carries on.
    - The symptom: "That is a symptom. Look for what causes it." The line greys out. Try again.
    - A routine line: "That line is routine. Look for what changed." The line greys out. Try again.
 3. Finding the cause on the first tap pays the Triage bonus.
+4. Each line has an info button. It says what the line's source and level mean (see EXTRA_STEPS.md > Log sources). Tapping it is not a tap on the line, and costs nothing.
 
 ### Tune, in SysDash
 

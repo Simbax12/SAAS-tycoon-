@@ -121,6 +121,12 @@ What is built, what is next, and the decisions made. Keep this short and current
 | 2026-10-06 | The SysDash cash gauge is full at 10 times the stage's base cash | UI_THEME.md asks for a gauge but gives no top. Tied to base cash, it means the same in every stage |
 | 2026-10-06 | A log line's id is "cause", "symptom" or "routine1" to "routine4" in the order written. A wrong move's id is its trigger, such as "connects:Users>Database" | Saves hold ids, never text |
 | 2026-10-07 | The game is hosted on Vercel's free plan at https://zero-to-a-billion.vercel.app/, linked to the GitHub repo. It shows `main`, and each other branch gets its own preview link | The game can be played on any phone or computer. Each push rebuilds it, with no code change needed. A save is kept per link and per device |
+| 2026-10-07 | The Triage step now says what to do: a goal line, "What happened" with the alert, the bonus on offer, and a "Now pick a fix" button with the bonus earned. In the first Triage step, Maya explains logs, symptoms and causes in two bubbles | Played on the Vercel link: Terminal gave no goal and no reason, so finding the right line still felt like guessing. GAME_DESIGN.md > Triage, in Terminal |
+| 2026-10-07 | Triage stays before Maya's explanation | Her sentence names the cause in most incidents, so after it the step would be word matching, not reading logs |
+| 2026-10-07 | Each log line and each Blueprint tray part has an info button. It shows the toolbox's "What it is" line, and for a log line also its tool and what its level means | So the game teaches, not just quizzes. Reusing the toolbox's words keeps one fact in one home. EXTRA_STEPS.md gives each log source its part and adds the log levels table, and the check script now checks both |
+| 2026-10-07 | The level meanings are neutral. ERROR does not mean "this is the cause" | In some steps the cause is only a WARN and the symptom is an ERROR |
+| 2026-10-07 | On a computer, a window grows to fit what is inside, down to the bottom of the desktop, and only then scrolls. Its width is 70% of the desktop, from 600 to 760 pixels. Blueprint is up to 1000 pixels wide and as tall as the desktop. This replaces the 1000 by 700 cap of 2026-10-06 | Windows were a fixed 600 by 460, even zoomed in, so they scrolled inside lots of empty space. UI_THEME.md > Windows |
+| 2026-10-07 | An open info box is screen state, like window places, and is never saved | It changes nothing in the game |
 
 ## Change log
 
@@ -172,6 +178,7 @@ What is built, what is next, and the decisions made. Keep this short and current
 | 2026-10-06 | Milestone 6 built: `data/blueprints.ts` (toolbox, B1, B2), `data/extraSteps.ts` (all Triage and Tune steps), `game/blueprint.ts`, the Triage, Tune, canvas and deploy actions in `game/reducer.ts`, save version 2 with a migration in `game/save.ts`, "Built in" lines in `game/patternBook.ts`, and the Blueprint, Terminal and SysDash windows. `data/patterns.ts` now works out tool names from the toolbox. `game/built.ts` is removed. Hub: code map |
 | 2026-10-06 | Milestone 5 built: Stage 2 in `data/challenges.ts`, `data/repeats.ts` (R1, R2), `data/incidents.ts`, `game/patternBook.ts`, the Stage 2 System Map, repeat cards with "Remind me", pips, "Also seen as", refreshers, the BlipOS 2 upgrade bar, the Bigger server, Monitoring and Wallpaper pack effects, and Stage 2 pattern and box icons. Hub: code map |
 | 2026-10-07 | The game is published on Vercel at https://zero-to-a-billion.vercel.app/. No code changed |
+| 2026-10-07 | Clearer Triage, info buttons and windows that grow to fit. Docs: GAME_DESIGN.md > Triage, in Terminal; EXTRA_STEPS.md log parts and log levels; UI_THEME.md Terminal, Blueprint and Windows. `scripts/check-docs.mjs` checks each log source's part and the levels table. Code: `data/extraSteps.ts`, `components/windows/Terminal.tsx`, the new `components/windows/InfoButton.tsx`, the Blueprint tray, `components/desktop/useWindows.ts` and `WindowFrame.tsx` |
 
 ## On-screen text to check
 
@@ -235,3 +242,11 @@ New in Milestone 6:
 - SysDash: "Wave 1 of 3", "Run wave", "Too low", "Just right" and "Too high", from the docs. Minus and plus buttons beside the dial. The idle gauges' labels "Users", "Cash" and "Stage", with the stage shown as "2: First office".
 - Buttons that open a work app show its icon and name: "Terminal", "SysDash", "Blueprint" and "Incident".
 - Screen reader labels, not shown on screen: "Canvas", "Tray", and each arrow as its two parts, such as "Users → Database".
+
+New after the first play on Vercel (2026-10-07), drafted by Claude:
+
+- Terminal: "Find the line that caused this. Not just a symptom.", "What happened:", "Wrong taps cost nothing. Right first time: +£50 bonus.", "Triage bonus: +£50" and the button "Now pick a fix". The amount is the stage's Triage bonus.
+- Maya, in the first Triage step: "Logs are the servers' diary. Every action writes a line." and "A symptom is what you notice. The cause is why it happened."
+- Log levels, in the info box: "Normal news. Something worked as expected.", "Something looks odd. Not broken yet." and "Something failed and needs fixing."
+- The info boxes reuse the toolbox's "What it is" lines. The tray's info box for "Plain-text password file" says "Always a mistake", which gives that decoy away.
+- Screen reader labels, not shown on screen: "About" and the line's source and level, such as "About postgres, ERROR", or the part's name.

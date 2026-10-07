@@ -11,11 +11,17 @@ export type OpenWindow = { id: AppId; x: number; y: number; z: number; width?: n
 
 export type Area = { width: number; height: number };
 
-export const WINDOW_SIZE = { width: 600, height: 460 };
+// On a computer a window's width grows with the desktop, from 600 to 760 pixels, and its height
+// grows to fit what is inside, up to the bottom of the desktop (docs/UI_THEME.md > Windows).
+export const WINDOW_WIDTH = { min: 600, max: 760 };
+const WIDTH_SHARE = 0.7;
+// A window never shrinks below this, so a nearly empty one still looks like a window.
+export const WINDOW_MIN_HEIGHT = 240;
 
-// Blueprint needs room for its tray and canvas side by side, so it opens larger, up to the whole desktop.
+// Blueprint needs room for its tray and canvas side by side, so it opens up to 1000 pixels wide and
+// as tall as the desktop. Its height follows the desktop, so zooming in gives it more room.
 const OPEN_SIZE: Partial<Record<AppId, { width: number; height: number }>> = {
-  blueprint: { width: 1000, height: 700 },
+  blueprint: { width: 1000, height: Infinity },
 };
 const CASCADE = 32;
 const EDGE = 8;
@@ -23,13 +29,11 @@ const EDGE = 8;
 // A window may hang off the desktop, but its title bar must stay in reach.
 const KEEP_VISIBLE = 96;
 
-export const windowSize = (area: Area) => ({
-  width: Math.min(WINDOW_SIZE.width, area.width - EDGE * 2),
-  height: Math.min(WINDOW_SIZE.height, area.height - EDGE * 2),
-});
+export const windowWidth = (area: Area) =>
+  Math.min(Math.min(WINDOW_WIDTH.max, Math.max(WINDOW_WIDTH.min, area.width * WIDTH_SHARE)), area.width - EDGE * 2);
 
 export function clampPosition(x: number, y: number, area: Area) {
-  const { width } = windowSize(area);
+  const width = windowWidth(area);
   return {
     x: Math.min(Math.max(x, KEEP_VISIBLE - width), area.width - KEEP_VISIBLE),
     y: Math.min(Math.max(y, 0), area.height - 48),
@@ -49,8 +53,7 @@ export function useWindows() {
       const size = OPEN_SIZE[id];
       if (size) {
         const width = Math.min(size.width, area.width);
-        const height = Math.min(size.height, area.height);
-        return [...list, { id, x: Math.max(0, (area.width - width) / 2), y: 0, z, width, height }];
+        return [...list, { id, x: Math.max(0, (area.width - width) / 2), y: 0, z, width, height: size.height }];
       }
       const step = (list.length % 5) * CASCADE;
       return [...list, { id, ...clampPosition(EDGE + step, EDGE + step, area), z }];

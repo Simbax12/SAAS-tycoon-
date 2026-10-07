@@ -3,7 +3,7 @@
 import { useRef } from "react";
 import { appById } from "@/data/desktopApps";
 import { AppIcon, CloseIcon } from "./icons";
-import { type Area, type OpenWindow, clampPosition, windowSize } from "./useWindows";
+import { type Area, type OpenWindow, WINDOW_MIN_HEIGHT, clampPosition, windowWidth } from "./useWindows";
 
 type Props = {
   win: OpenWindow;
@@ -56,14 +56,18 @@ export default function WindowFrame({ win, area, isPhone, onClose, onFocus, onMo
     onMove(pos.x + m[0], pos.y + m[1]);
   };
 
-  const usual = windowSize(area);
-  const width = Math.min(win.width ?? usual.width, area.width);
-  const height = Math.min(win.height ?? usual.height, area.height);
+  const width = Math.min(win.width ?? windowWidth(area), area.width);
   // The desktop can shrink when the browser is resized, so keep the title bar in reach.
   const pos = clampPosition(win.x, win.y, area);
+  // A window with no set height grows to fit what is inside, down to the bottom of the desktop.
+  // Only then does its body scroll (docs/UI_THEME.md > Windows).
+  const room = Math.max(area.height - pos.y, 48);
+  const height = win.height === undefined ? undefined : Math.min(win.height, area.height);
   const place: React.CSSProperties = isPhone
     ? { left: 0, top: 0, right: 0, bottom: 0, zIndex: win.z }
-    : { left: pos.x, top: pos.y, width, height, zIndex: win.z };
+    : height !== undefined
+      ? { left: pos.x, top: pos.y, width, height, zIndex: win.z }
+      : { left: pos.x, top: pos.y, width, maxHeight: room, minHeight: Math.min(WINDOW_MIN_HEIGHT, room), zIndex: win.z };
 
   return (
     <section

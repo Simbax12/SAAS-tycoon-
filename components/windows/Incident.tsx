@@ -326,12 +326,13 @@ export default function Incident() {
 }
 
 // A button that opens a work app, with its icon and name.
-export function OpenAppButton({ id }: { id: AppId }) {
+// It is labelled with the app's name, unless the docs give it other words.
+export function OpenAppButton({ id, label }: { id: AppId; label?: string }) {
   const { openApp } = useDesktop();
   return (
     <button type="button" autoFocus onClick={() => openApp(id)} className={`${button} flex items-center gap-2 self-start bg-[#FFE08A] text-ink hover:bg-[#FFD35C]`}>
       <AppIcon id={id} size={30} />
-      {appById(id).name}
+      {label ?? appById(id).name}
     </button>
   );
 }

@@ -30,15 +30,23 @@ export type TuneStep = {
   lesson: string;
 };
 
-// docs/EXTRA_STEPS.md > Log sources.
-export const logSources: Record<string, string> = {
-  nginx: "Nginx",
-  node: "Node.js",
-  postgres: "PostgreSQL",
-  redis: "Redis",
-  cloudflare: "Cloudflare",
-  stripe: "Stripe",
-  worker: "Background worker",
+// docs/EXTRA_STEPS.md > Log sources: the tool each source stands for, and its toolbox part.
+// The info button on a log line shows the part's "What it is" line from the toolbox.
+export const logSources: Record<string, { name: string; part: string }> = {
+  nginx: { name: "Nginx", part: "Web server" },
+  node: { name: "Node.js", part: "Web server" },
+  postgres: { name: "PostgreSQL", part: "Database" },
+  redis: { name: "Redis", part: "Cache" },
+  cloudflare: { name: "Cloudflare", part: "CDN" },
+  stripe: { name: "Stripe", part: "Payment provider" },
+  worker: { name: "Background worker", part: "Background worker" },
+};
+
+// docs/EXTRA_STEPS.md > Log levels: what each level means, shown by the info button.
+export const logLevels: Record<LogLevel, string> = {
+  INFO: "Normal news. Something worked as expected.",
+  WARN: "Something looks odd. Not broken yet.",
+  ERROR: "Something failed and needs fixing.",
 };
 
 // Gives routine lines their ids in the order they are written.
@@ -271,6 +279,18 @@ export const tuneSteps: TuneStep[] = [
 
 export const triageFor = (incidentId: string): TriageStep | undefined => triageSteps.find((t) => t.incidentId === incidentId);
 export const tuneFor = (incidentId: string): TuneStep | undefined => tuneSteps.find((t) => t.incidentId === incidentId);
+
+// Copied from docs/GAME_DESIGN.md > Triage, in Terminal: the words around the log lines.
+// `bonus` is the stage's Triage bonus, already written as money, such as "£50".
+export const triageText = {
+  goal: "Find the line that caused this. Not just a symptom.",
+  whatHappened: "What happened:",
+  bonusOffer: (bonus: string) => `Wrong taps cost nothing. Right first time: +${bonus} bonus.`,
+  bonusEarned: (bonus: string) => `Triage bonus: +${bonus}`,
+  nextStep: "Now pick a fix",
+  // Maya's two bubbles, in the first Triage step of the play order.
+  firstTime: ["Logs are the servers' diary. Every action writes a line.", "A symptom is what you notice. The cause is why it happened."],
+};
 
 // Copied from docs/GAME_DESIGN.md > Triage, in Terminal: what a wrong tap says.
 export const triageWrong: Record<Exclude<LogKind, "cause">, string> = {

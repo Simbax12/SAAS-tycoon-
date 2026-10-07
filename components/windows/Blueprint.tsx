@@ -11,6 +11,7 @@ import { deployOutcome, flowLayout, freeSpot, onCanvas, sameArrow, trayParts, ty
 import { canTestFirst, currentBuild, shuffled } from "@/game/rules";
 import type { PlacedPart } from "@/game/types";
 import { Calls, MayaSays, Solved, Stars } from "./Incident";
+import { InfoBox, InfoButton } from "./InfoButton";
 import { PartIcon } from "./partIcons";
 
 const button = "min-h-12 rounded-md border-2 border-ink px-5 text-[18px] font-bold";
@@ -31,6 +32,19 @@ export default function Blueprint() {
   const build = currentBuild(state);
   const drawing = build && state.run.canvas && ["choosing", "guided", "solved"].includes(state.phase);
   return drawing ? <Workbench build={build} /> : <MyDesigns />;
+}
+
+// A tray part's "What it is" line from the toolbox, opened by its info button (docs/UI_THEME.md > Blueprint).
+function PartInfo({ name }: { name: string }) {
+  const part = toolboxPart(name);
+  if (!part) return null;
+  return (
+    <InfoBox>
+      <p>
+        <span className="font-bold">{part.name}:</span> {part.what}.
+      </p>
+    </InfoBox>
+  );
 }
 
 // --- The canvas, shared by the Build being drawn and the finished designs ---
@@ -349,6 +363,8 @@ function Workbench({ build }: { build: Build }) {
   const rectsRef = useRef<Record<string, Rect>>({});
   const [narrow, setNarrow] = useState(false);
   const [trayPick, setTrayPick] = useState<string | null>(null);
+  // The tray part whose info box is open. Screen state only, never saved.
+  const [infoPart, setInfoPart] = useState<string | null>(null);
   const [selected, setSelected] = useState<Selection>(null);
   const [drag, setDrag] = useState<Drag | null>(null);
   const suppressClick = useRef(false);
@@ -528,10 +544,11 @@ function Workbench({ build }: { build: Build }) {
           <ul
             data-tour="blueprintTray"
             aria-label="Tray"
-            className={`flex shrink-0 gap-2 ${narrow ? "flex-row overflow-x-auto pb-1" : "w-[184px] flex-col overflow-y-auto"}`}
+            className={`flex shrink-0 gap-2 ${narrow ? "flex-row overflow-x-auto pb-1" : "w-[240px] flex-col overflow-y-auto"}`}
           >
             {shuffledTray.map((p) => (
               <li key={p} className="shrink-0">
+                <div className="flex items-stretch gap-1">
                 <button
                   type="button"
                   disabled={!editable}
@@ -542,14 +559,19 @@ function Workbench({ build }: { build: Build }) {
                     setSelected(null);
                     setTrayPick(trayPick === p ? null : p);
                   }}
-                  className={`flex min-h-12 rounded-lg border-2 px-2 py-1.5 ${narrow ? "touch-pan-x" : "w-full touch-pan-y"} ${trayLook(p)}`}
+                  className={`flex min-h-12 rounded-lg border-2 px-2 py-1.5 ${narrow ? "touch-pan-x" : "min-w-0 flex-1 touch-pan-y"} ${trayLook(p)}`}
                 >
                   <PartCard name={p} compact={narrow} />
                 </button>
+                <InfoButton label={p} open={infoPart === p} onToggle={() => setInfoPart(infoPart === p ? null : p)} />
+                </div>
+                {!narrow && infoPart === p && <PartInfo name={p} />}
               </li>
             ))}
           </ul>
         )}
+        {/* On a narrow window the tray is a strip, so the info box sits under the whole strip. */}
+        {narrow && infoPart && tray.includes(infoPart) && phase !== "solved" && <PartInfo name={infoPart} />}
 
         <Canvas
           canvasRef={canvasRef}

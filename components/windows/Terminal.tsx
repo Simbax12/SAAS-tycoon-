@@ -2,12 +2,15 @@
 
 import { incidentById } from "@/data/incidents";
 import { playOrder } from "@/data/playOrder";
-import { triageFor, triageWrong, type LogLevel, type LogLine, type TriageStep } from "@/data/extraSteps";
-import { useEffect, useRef } from "react";
+import { bonuses, logLevels, logSources, triageFor, triageText, triageWrong, type LogLevel, type LogLine, type TriageStep } from "@/data/extraSteps";
+import { toolboxPart } from "@/data/blueprints";
+import { useEffect, useRef, useState } from "react";
+import { fullNumber } from "@/components/desktop/format";
 import { scrollWithin } from "@/components/desktop/scrollWithin";
 import { useGameContext } from "@/components/useGame";
-import { shuffled } from "@/game/rules";
-import { OpenAppButton } from "./Incident";
+import { baseCash, shuffled } from "@/game/rules";
+import { InfoBox, InfoButton } from "./InfoButton";
+import { MayaSays, OpenAppButton } from "./Incident";
 
 const CREAM = "#F4F0E0";
 
@@ -55,6 +58,43 @@ function LineText({ line }: { line: LogLine }) {
   );
 }
 
+// What a line's source and level mean, shown by its info button (docs/EXTRA_STEPS.md > Log sources).
+function LineInfo({ line }: { line: LogLine }) {
+  const source = logSources[line.source];
+  const part = source && toolboxPart(source.part);
+  return (
+    <InfoBox dark>
+      {source && (
+        <p>
+          <span className="font-bold">{line.source}</span> · {source.name}
+        </p>
+      )}
+      {part && (
+        <p>
+          <span className="font-bold">{part.name}:</span> {part.what}.
+        </p>
+      )}
+      <p>
+        <span className="font-bold">{line.level}:</span> {logLevels[line.level]}
+      </p>
+    </InfoBox>
+  );
+}
+
+// A log line with its info button at the right end. `row` is the line itself: a button while the
+// step waits for a tap, or plain text in the past logs.
+function LogRow({ line, open, onToggle, row }: { line: LogLine; open: boolean; onToggle: () => void; row: React.ReactNode }) {
+  return (
+    <li>
+      <div className="flex items-stretch gap-1">
+        <div className="min-w-0 flex-1">{row}</div>
+        <InfoButton dark label={`${line.source}, ${line.level}`} open={open} onToggle={onToggle} />
+      </div>
+      {open && <LineInfo line={line} />}
+    </li>
+  );
+}
+
 // The six lines in the save's fixed shuffled order (docs/GAME_LOGIC.md > Derived values).
 const linesOf = (step: TriageStep, seed: number) => shuffled(step.lines, seed, step.incidentId);
 
@@ -66,8 +106,11 @@ export default function Terminal() {
   const step = triageFor(state.currentId);
   // This incident's step, once it has begun. Before "Investigate" Terminal shows past steps.
   // Each new message scrolls into view, so the player sees what their tap did.
-  const message = useRef<HTMLParagraphElement>(null);
+  const message = useRef<HTMLDivElement>(null);
   useEffect(() => scrollWithin(message.current), [run.triageTaps.length]);
+  // Which lines have their info box open. Screen state only, never saved.
+  const [info, setInfo] = useState<string[]>([]);
+  const toggle = (key: string) => setInfo((open) => (open.includes(key) ? open.filter((k) => k !== key) : [...open, key]));
   const live = step && !["waiting", "arrived"].includes(phase) && (phase === "triage" || run.triageTaps.includes("cause")) ? step : null;
 
   const shell = "-m-4 flex min-h-[calc(100%+2rem)] flex-col gap-4 bg-[#1E1E1E] p-4 text-[18px] text-[#F4F0E0]";
@@ -75,16 +118,39 @@ export default function Terminal() {
   if (live) {
     const found = run.triageTaps.includes("cause");
     const last = live.lines.find((l) => l.id === run.triageTaps[run.triageTaps.length - 1]);
+    const incident = incidentById(live.incidentId);
+    const bonus = incident ? `£${fullNumber(Math.round(baseCash(incident.stage) * bonuses.triage))}` : "";
+    // Maya explains logs in the first Triage step of the play order (docs/GAME_DESIGN.md > Triage, in Terminal).
+    const firstStep = playOrder.find((row) => triageFor(row.id))?.id === live.incidentId;
     return (
       <div className={shell}>
-        <h3 className="text-[20px] font-bold">{incidentById(live.incidentId)?.title}</h3>
+        <h3 className="text-[20px] font-bold">{incident?.title}</h3>
+        {firstStep && !found && (
+          <div className="flex flex-col gap-2 text-ink">
+            {triageText.firstTime.map((line) => (
+              <MayaSays key={line}>{line}</MayaSays>
+            ))}
+          </div>
+        )}
+        <p className="text-[20px] font-bold">{triageText.goal}</p>
+        {incident && (
+          <p>
+            <span className="font-bold">{triageText.whatHappened}</span> {incident.arrives.text}
+          </p>
+        )}
+        {!found && <p>{triageText.bonusOffer(bonus)}</p>}
         <ul className="flex flex-col gap-2" data-tour="logLines">
           {linesOf(live, state.seed).map((line) => {
             const tapped = run.triageTaps.includes(line.id);
             const isCause = line.kind === "cause" && found;
             const grey = tapped && line.kind !== "cause";
             return (
-              <li key={line.id}>
+              <LogRow
+                key={line.id}
+                line={line}
+                open={info.includes(line.id)}
+                onToggle={() => toggle(line.id)}
+                row={
                 <button
                   type="button"
                   disabled={found || tapped}
@@ -101,23 +167,28 @@ export default function Terminal() {
                   {grey && <Mark kind="cross" />}
                   <LineText line={line} />
                 </button>
-              </li>
+                }
+              />
             );
           })}
         </ul>
         {found ? (
-          <>
-            <p ref={message} className="rounded-md border-2 border-[#8FD07A] px-3 py-2" role="status">
+          // The answer, the bonus and the way on stay together, so all of them scroll into view.
+          <div ref={message} className="flex flex-col gap-3">
+            <p className="rounded-md border-2 border-[#8FD07A] px-3 py-2" role="status">
               {live.why}
             </p>
-            {phase !== "solved" && <OpenAppButton id="incident" />}
-          </>
+            {run.triageTaps[0] === "cause" && <p className="font-bold">{triageText.bonusEarned(bonus)}</p>}
+            {phase !== "solved" && <OpenAppButton id="incident" label={triageText.nextStep} />}
+          </div>
         ) : (
           last &&
           last.kind !== "cause" && (
-            <p ref={message} className="rounded-md border-2 border-[#9A968A] px-3 py-2" role="status">
-              {triageWrong[last.kind]}
-            </p>
+            <div ref={message}>
+              <p className="rounded-md border-2 border-[#9A968A] px-3 py-2" role="status">
+                {triageWrong[last.kind]}
+              </p>
+            </div>
           )
         )}
       </div>
@@ -143,15 +214,22 @@ export default function Terminal() {
           <h3 className="text-[20px] font-bold">{incidentById(t.incidentId)?.title}</h3>
           <ul className="flex flex-col gap-1">
             {linesOf(t, state.seed).map((line) => (
-              <li
+              <LogRow
                 key={line.id}
-                className={`flex min-h-12 items-center gap-3 rounded-md border-2 px-3 py-2 ${
-                  line.kind === "cause" ? "border-[#8FD07A] bg-[#24361F]" : "border-transparent"
-                }`}
-              >
-                {line.kind === "cause" && <Mark kind="tick" />}
-                <LineText line={line} />
-              </li>
+                line={line}
+                open={info.includes(`${t.id}:${line.id}`)}
+                onToggle={() => toggle(`${t.id}:${line.id}`)}
+                row={
+                  <div
+                    className={`flex min-h-12 items-center gap-3 rounded-md border-2 px-3 py-2 ${
+                      line.kind === "cause" ? "border-[#8FD07A] bg-[#24361F]" : "border-transparent"
+                    }`}
+                  >
+                    {line.kind === "cause" && <Mark kind="tick" />}
+                    <LineText line={line} />
+                  </div>
+                }
+              />
             ))}
           </ul>
           <p>{t.why}</p>

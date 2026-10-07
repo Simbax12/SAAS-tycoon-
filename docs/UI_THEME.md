@@ -90,6 +90,7 @@ Icons that have something new show a small red dot. The Inbox icon shows the num
 - A title bar in the version's colours, with the window's icon and name on the left and a close button on the right.
 - A body in the version's window body colour, never pure white.
 - On a computer: windows can be dragged by the title bar and overlap. Clicking a window brings it to the front.
+- On a computer, a window grows to fit what is inside, up to the bottom of the desktop. Only then does its body scroll. Its width grows with the desktop, from 600 to 760 pixels. Blueprint opens larger, and two windows side by side share the desktop.
 - On a phone: one window at a time, full screen, with the taskbar still visible. No dragging.
 - Closing a window never loses progress.
 
@@ -223,6 +224,7 @@ A repeat incident card shows the pattern's icon large, its name, and a small "Re
 The drawing app. It opens from its icon or from a Build incident.
 
 - **Tray** on the left. Each part is a card with its icon, its name and, beneath, "like" and its first familiar tool.
+- Each part in the tray has the same info button as a Terminal row. It opens a box with the part's "What it is" line (see BLUEPRINTS.md > The parts). It never places or picks the part.
 - **Canvas** on the right: a pale grid.
 - **Sticky note** at the top of the canvas with the Build's Goal.
 - **Placing a part:** drag it from the tray to the canvas, or tap the part and then tap the canvas.
@@ -242,6 +244,8 @@ The log viewer. It opens from its icon or from a Triage step.
 - A dark window with cream text, in the same font as everything else.
 - Six rows, one per log line. Each row is a button at least 48px tall.
 - Each row shows a level badge, the source name and the message. The badge is an icon and a word: a circle for INFO, a triangle for WARN, a cross for ERROR.
+- Above the rows: the goal, "What happened" and the bonus line (see GAME_DESIGN.md > Triage, in Terminal).
+- Each row has an info button at its right end: the letter "i" in a circle, with a 48px tap area. It opens a box under the row with the source's tool name, its part and what the part is, and what the level means. Tapping it again closes the box.
 - Nothing scrolls and nothing blinks. The lines wait for the player.
 - A tapped line that is not the cause turns grey and stays on screen.
 - When no Triage step is waiting, Terminal shows the lines from past Triage steps with each cause marked.

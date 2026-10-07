@@ -11,17 +11,27 @@ The rules for how these steps play, and what they pay, are in GAME_DESIGN.md. Th
 
 ## Log sources
 
-Each log line starts with the short name of the thing that wrote it, the way real logs do.
+Each log line starts with the short name of the thing that wrote it, the way real logs do. "Part" is the toolbox part it belongs to (see BLUEPRINTS.md > The parts). The info button on a log line shows the part's "What it is" line.
 
-| Source | Stands for |
+| Source | Stands for | Part |
+|---|---|---|
+| nginx | Nginx | Web server |
+| node | Node.js | Web server |
+| postgres | PostgreSQL | Database |
+| redis | Redis | Cache |
+| cloudflare | Cloudflare | CDN |
+| stripe | Stripe | Payment provider |
+| worker | Background worker | Background worker |
+
+## Log levels
+
+Each log line has a level. The info button on a log line shows what its level means.
+
+| Level | Means |
 |---|---|
-| nginx | Nginx |
-| node | Node.js |
-| postgres | PostgreSQL |
-| redis | Redis |
-| cloudflare | Cloudflare |
-| stripe | Stripe |
-| worker | Background worker |
+| INFO | Normal news. Something worked as expected. |
+| WARN | Something looks odd. Not broken yet. |
+| ERROR | Something failed and needs fixing. |
 
 ## How to read a Triage step
 

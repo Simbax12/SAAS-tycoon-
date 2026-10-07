@@ -379,8 +379,17 @@ for (const d of Object.values(builds)) {
 }
 
 // ---------------------------------------------------------------- extra steps
-const sources = Object.fromEntries(all(cut(E, "## Log sources", "## How to read a Triage step"), /^\| ([a-z]+) \| ([^|]+) \|$/gm).map((m) => [m[1], m[2].trim()]));
+const sourceRows = all(cut(E, "## Log sources", "## Log levels"), /^\| ([a-z]+) \| ([^|]+) \| ([^|]+) \|$/gm);
+const sources = Object.fromEntries(sourceRows.map((m) => [m[1], m[2].trim()]));
 for (const [src, name] of Object.entries(sources)) if (!B.includes(name)) problem(`EXTRA_STEPS.md: log source "${src}" stands for "${name}", which is not in the toolbox`);
+// The info button on a log line shows its part's "What it is" line, so the part must be in the toolbox.
+for (const m of sourceRows) if (!parts[m[3].trim()]) problem(`EXTRA_STEPS.md: log source "${m[1]}" belongs to the part "${m[3].trim()}", which is not a part in the toolbox`);
+// The info button also says what the line's level means: one row per level, kept short.
+const levels = Object.fromEntries(all(cut(E, "## Log levels", "## How to read a Triage step"), /^\| (INFO|WARN|ERROR) \| ([^|]+) \|$/gm).map((m) => [m[1], m[2].trim()]));
+for (const level of ["INFO", "WARN", "ERROR"]) {
+  if (!levels[level]) problem(`EXTRA_STEPS.md: the log levels table has no row for ${level}`);
+  else if (words(levels[level]) >= 12) problem(`EXTRA_STEPS.md: the meaning of ${level} is 12 words or more`);
+}
 const triaged = [];
 const tuned = [];
 for (const { m, body } of sections(E, /^## ([TU])(\d+) on (\S+) (.*)$/gm)) {
