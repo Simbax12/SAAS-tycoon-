@@ -20,7 +20,7 @@ What is built, what is next, and the decisions made. Keep this short and current
 
 ## Next
 
-- Play Milestone 6: `npm run dev`, then open http://localhost:3000. An old save that stopped after 2.4 carries on: tap Next and B2 arrives from Zoe. Use Settings > Reset game to play T1 on 1.2 and B1 after 1.4. Play stops after B2 with "Stage 3 is coming soon".
+- Play Milestone 6 at https://zero-to-a-billion.vercel.app/, or locally with `npm run dev` and http://localhost:3000. The Vercel link starts with no save. An old save that stopped after 2.4 carries on: tap Next and B2 arrives from Zoe. Use Settings > Reset game to play T1 on 1.2 and B1 after 1.4. Play stops after B2 with "Stage 3 is coming soon".
 - No Tune step can be reached until Stage 3. SysDash's Tune flow was checked with a stand-in step that was then removed, and in the reducer tests.
 - Check the new on-screen text listed at the end of this file.
 - Milestone 7: Stages 3 to 5. See the build order in docs/START_HERE.md.
@@ -120,6 +120,7 @@ What is built, what is next, and the decisions made. Keep this short and current
 | 2026-10-06 | Blueprint opens in a larger window, up to 1000 by 700 pixels | The tray and the canvas need to sit side by side |
 | 2026-10-06 | The SysDash cash gauge is full at 10 times the stage's base cash | UI_THEME.md asks for a gauge but gives no top. Tied to base cash, it means the same in every stage |
 | 2026-10-06 | A log line's id is "cause", "symptom" or "routine1" to "routine4" in the order written. A wrong move's id is its trigger, such as "connects:Users>Database" | Saves hold ids, never text |
+| 2026-10-07 | The game is hosted on Vercel's free plan at https://zero-to-a-billion.vercel.app/, linked to the GitHub repo. It shows `main`, and each other branch gets its own preview link | The game can be played on any phone or computer. Each push rebuilds it, with no code change needed. A save is kept per link and per device |
 
 ## Change log
 
@@ -170,6 +171,7 @@ What is built, what is next, and the decisions made. Keep this short and current
 | 2026-10-05 | Fixed the flickering tutorial box on "Red means something is breaking.". The red traffic dots in `components/windows/Diagram.tsx` no longer catch the pointer, so the spotlight stops thinking the failing box is hidden each time a dot passes its centre |
 | 2026-10-06 | Milestone 6 built: `data/blueprints.ts` (toolbox, B1, B2), `data/extraSteps.ts` (all Triage and Tune steps), `game/blueprint.ts`, the Triage, Tune, canvas and deploy actions in `game/reducer.ts`, save version 2 with a migration in `game/save.ts`, "Built in" lines in `game/patternBook.ts`, and the Blueprint, Terminal and SysDash windows. `data/patterns.ts` now works out tool names from the toolbox. `game/built.ts` is removed. Hub: code map |
 | 2026-10-06 | Milestone 5 built: Stage 2 in `data/challenges.ts`, `data/repeats.ts` (R1, R2), `data/incidents.ts`, `game/patternBook.ts`, the Stage 2 System Map, repeat cards with "Remind me", pips, "Also seen as", refreshers, the BlipOS 2 upgrade bar, the Bigger server, Monitoring and Wallpaper pack effects, and Stage 2 pattern and box icons. Hub: code map |
+| 2026-10-07 | The game is published on Vercel at https://zero-to-a-billion.vercel.app/. No code changed |
 
 ## On-screen text to check
 
