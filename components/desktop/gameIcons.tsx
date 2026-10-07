@@ -173,6 +173,9 @@ const badgeStyles: Record<PersonId, BadgeStyle> = {
   victor: { colour: "#4A4A4A", word: "Lifeline", icon: badgeIcons.ring },
 };
 
+// The name beside a badge, or nothing when the badge word already is the name (docs/UI_THEME.md > Emails and sender badges).
+export const nameBesideBadge = (from: PersonId, name: string): string | null => (badgeStyles[from].word === name ? null : name);
+
 export function SenderBadge({ from }: { from: PersonId }) {
   const b = badgeStyles[from];
   return (

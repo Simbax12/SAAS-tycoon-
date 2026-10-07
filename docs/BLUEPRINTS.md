@@ -29,7 +29,7 @@ Tool names are real products, used as plain text so the player meets the names t
 | Session store | One shared place for login records | Redis | Stateless servers |
 | Message queue | A to-do list for slow work | Kafka, RabbitMQ, Amazon SQS | Message queue |
 | Background worker | Does queued jobs out of sight | Sidekiq, Celery | Message queue |
-| Plain-text password file | Passwords saved as readable text. Always a mistake | | |
+| Plain-text password file | Passwords saved as readable text | | |
 | One big server | A single large machine doing everything | | |
 
 A part with a pattern can only be used in a Build that comes after that pattern is learned.

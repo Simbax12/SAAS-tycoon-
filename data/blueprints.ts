@@ -29,7 +29,7 @@ export const toolbox: ToolboxPart[] = [
   { name: "Session store", what: "One shared place for login records", tools: ["Redis"], pattern: "Stateless servers" },
   { name: "Message queue", what: "A to-do list for slow work", tools: ["Kafka", "RabbitMQ", "Amazon SQS"], pattern: "Message queue" },
   { name: "Background worker", what: "Does queued jobs out of sight", tools: ["Sidekiq", "Celery"], pattern: "Message queue" },
-  { name: "Plain-text password file", what: "Passwords saved as readable text. Always a mistake", tools: [] },
+  { name: "Plain-text password file", what: "Passwords saved as readable text", tools: [] },
   { name: "One big server", what: "A single large machine doing everything", tools: [] },
 ];
 

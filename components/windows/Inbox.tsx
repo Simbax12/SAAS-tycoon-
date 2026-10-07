@@ -3,7 +3,7 @@
 import { useState } from "react";
 import { patternIcons } from "@/data/patterns";
 import { repeatById } from "@/data/repeats";
-import { PatternIcon, SenderBadge } from "@/components/desktop/gameIcons";
+import { nameBesideBadge, PatternIcon, SenderBadge } from "@/components/desktop/gameIcons";
 import { useDesktop } from "@/components/desktop/DesktopContext";
 import { useGameContext } from "@/components/useGame";
 import { emailView, type EmailView } from "@/game/emails";
@@ -44,7 +44,7 @@ export default function Inbox() {
             <span className="flex items-center gap-2">
               {!e.read && <span className="h-3 w-3 shrink-0 rounded-full bg-bar" aria-hidden="true" />}
               <SenderBadge from={e.view.from} />
-              <span>{e.view.name}</span>
+              {nameBesideBadge(e.view.from, e.view.name) && <span>{e.view.name}</span>}
               {!e.read && <span className="sr-only">, unread</span>}
             </span>
             <span className="w-full truncate">{e.view.text}</span>
@@ -68,7 +68,7 @@ function OpenEmail({ view, onBack }: { view: EmailView; onBack: () => void }) {
       </button>
       <p className="flex items-center gap-2 text-[18px] font-bold">
         <SenderBadge from={view.from} />
-        {view.name}
+        {nameBesideBadge(view.from, view.name)}
       </p>
       {view.refresher ? <Refresher repeatId={view.refresher} /> : <p className="text-[20px] leading-normal">{view.text}</p>}
       {canInvestigate && (

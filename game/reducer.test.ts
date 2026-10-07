@@ -10,6 +10,7 @@ import { freshState, reducer, SAVE_VERSION, startIncident } from "./reducer";
 import { repeatById } from "../data/repeats";
 import { alsoSeenAs, builtIn, patternBook, pipsFor } from "./patternBook";
 import { tuneFor, tuneSteps } from "../data/extraSteps";
+import { requestFor } from "../data/upgrades";
 import { deployOutcome } from "./blueprint";
 import {
   callButton,
@@ -288,7 +289,7 @@ test("1.3 waits for Payments, which Sam asks for after 1.2", () => {
     key: "request:feat-payments",
     from: "sam",
     name: "Sam",
-    text: "People love Blip. Time to earn something. Can we add payments for Blip Plus?",
+    text: requestFor("feat-payments")!.text,
     shopItem: "feat-payments",
   });
   // Nothing can be picked while it waits.

@@ -107,7 +107,7 @@ A server alert is a small window that opens by itself in the middle of the deskt
 
 ## Emails and sender badges
 
-Each email in the Inbox shows a sender badge, the sender's name and the first line.
+Each email in the Inbox shows a sender badge, the sender's name and the first line. When the badge word is the sender's name, as for Maya, the name is not shown again beside it.
 
 | Sender | Badge colour | Badge icon | Badge word |
 |---|---|---|---|

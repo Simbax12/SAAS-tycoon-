@@ -92,21 +92,21 @@ If the player already owns the item, its request email is not sent.
 
 | Item | From | Arrives | Email text |
 |---|---|---|---|
-| srv-test | Maya | After 1.1 | "A safe place to try a fix before it goes live would save us some pain." |
-| feat-payments | Sam | After 1.2 | "People love Blip. Time to earn something. Can we add payments for Blip Plus?" |
-| srv-bigger | Sam | Start of Stage 2 | "Can we not just buy a bigger server and move on?" |
-| feat-darkmode | Customer | After R1 | "My eyes hurt at night. Any chance of a dark mode?" |
-| srv-monitoring | Omar | After 2.2 | "Customers spot problems before we do. Can we watch the servers ourselves?" |
-| feat-photos | Customer | After R2 | "Please let us post photos! All my friends are asking for it." |
-| srv-standby | Lena | After 3.1 | "Every outage costs us money. Could we keep a spare server ready?" |
-| feat-groups | Customer | After R3 | "Can we have group chats? My football team wants to use Blip." |
-| feat-email | Zoe | After R4 | "New users forget about us. Can Blip send welcome and alert emails?" |
-| srv-analytics | Zoe | After R5 | "We are guessing what users do. Can we get proper numbers?" |
-| feat-voice | Customer | After 4.1 | "Typing is slow. Can I send voice notes instead?" |
-| feat-verified | Sam | After R7 | "Celebrities want to join, but they need a verified badge. Can we build it?" |
-| feat-global | Sam | After R8 | "The board wants Blip in every country. It is our biggest step yet. Are we ready?" |
-| feat-translate | Customer | After 5.1 | "My cousins abroad post in another language. Could Blip translate posts?" |
-| srv-drills | Sam | After 5.1 | "What if a whole data centre goes down? Can we practise for it?" |
+| srv-test | Maya | After 1.1 | "We cannot keep pushing bugs to the live app. We need a safe place to try a fix before it goes live." |
+| feat-payments | Sam | After 1.2 | "People love Blip, but we earn nothing from it. Please add payments for Blip Plus, so we can pay for servers and keep growing." |
+| srv-bigger | Sam | Start of Stage 2 | "Blip slows down at busy times. Please buy a bigger server. Then we will know for sure if more hardware is the answer." |
+| feat-darkmode | Customer | After R1 | "Blip is so bright that my eyes hurt at night. Please add a dark mode, so I can keep chatting after dark." |
+| srv-monitoring | Omar | After 2.2 | "Customers find problems before we do. Please add monitoring, so we see trouble early on the System Map and mistakes cost us less." |
+| feat-photos | Customer | After R2 | "All my friends want to share photos on Blip. Please add photo sharing, or we will all move to another app." |
+| srv-standby | Lena | After 3.1 | "Every outage loses us users. Please keep a standby server ready. When something breaks, it takes over and nobody notices." |
+| feat-groups | Customer | After R3 | "My football team wants one chat for all of us. Please add group chats, so we can plan our games on Blip." |
+| feat-email | Zoe | After R4 | "New users sign up, then forget about us. Please add email notifications, so Blip can welcome them and bring them back." |
+| srv-analytics | Zoe | After R5 | "We are guessing what users do. Please add analytics, so the numbers show us which fixes would never work." |
+| feat-voice | Customer | After 4.1 | "Typing on my phone is slow. Please add voice notes, so I can just talk to my friends instead." |
+| feat-verified | Sam | After R7 | "Celebrities want to join, but fans cannot tell real accounts from fakes. Please add verified badges, so they feel safe on Blip." |
+| feat-global | Sam | After R8 | "The board wants Blip in every country. Please fund a global launch. It is our biggest step yet, and it brings millions of users." |
+| feat-translate | Customer | After 5.1 | "My cousins abroad post in another language. Please add auto-translate, so I can read their posts and reply." |
+| srv-drills | Sam | After 5.1 | "What if a whole data centre goes down? Please let us run disaster drills, so we know what not to do when it happens." |
 
 "Your setup" items have no email. When a stage starts, a balloon says "New in the Shop".
 

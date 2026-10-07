@@ -127,6 +127,9 @@ What is built, what is next, and the decisions made. Keep this short and current
 | 2026-10-07 | The level meanings are neutral. ERROR does not mean "this is the cause" | In some steps the cause is only a WARN and the symptom is an ERROR |
 | 2026-10-07 | On a computer, a window grows to fit what is inside, down to the bottom of the desktop, and only then scrolls. Its width is 70% of the desktop, from 600 to 760 pixels. Blueprint is up to 1000 pixels wide and as tall as the desktop. This replaces the 1000 by 700 cap of 2026-10-06 | Windows were a fixed 600 by 460, even zoomed in, so they scrolled inside lots of empty space. UI_THEME.md > Windows |
 | 2026-10-07 | An open info box is screen state, like window places, and is never saved | It changes nothing in the game |
+| 2026-10-07 | Every request email now says the problem, asks for the item by name, and says how it helps | Played: the emails read like statements, so it was not clear why buying the item helps. The style follows the player's own example for the Test environment |
+| 2026-10-07 | An email shows the sender's name beside the badge only when the badge word is different | Maya's badge word is her name, so open emails showed "Maya Maya" |
+| 2026-10-07 | "Plain-text password file" in the toolbox no longer says "Always a mistake" | The tray's info box gave that decoy away |
 
 ## Change log
 
@@ -179,6 +182,7 @@ What is built, what is next, and the decisions made. Keep this short and current
 | 2026-10-06 | Milestone 5 built: Stage 2 in `data/challenges.ts`, `data/repeats.ts` (R1, R2), `data/incidents.ts`, `game/patternBook.ts`, the Stage 2 System Map, repeat cards with "Remind me", pips, "Also seen as", refreshers, the BlipOS 2 upgrade bar, the Bigger server, Monitoring and Wallpaper pack effects, and Stage 2 pattern and box icons. Hub: code map |
 | 2026-10-07 | The game is published on Vercel at https://zero-to-a-billion.vercel.app/. No code changed |
 | 2026-10-07 | Clearer Triage, info buttons and windows that grow to fit. Docs: GAME_DESIGN.md > Triage, in Terminal; EXTRA_STEPS.md log parts and log levels; UI_THEME.md Terminal, Blueprint and Windows. `scripts/check-docs.mjs` checks each log source's part and the levels table. Code: `data/extraSteps.ts`, `components/windows/Terminal.tsx`, the new `components/windows/InfoButton.tsx`, the Blueprint tray, `components/desktop/useWindows.ts` and `WindowFrame.tsx` |
+| 2026-10-07 | Rewrote all 15 request emails in UPGRADES.md and `data/upgrades.ts`. UI_THEME.md: the name is not repeated beside a badge that already shows it, in `components/windows/Inbox.tsx`. BLUEPRINTS.md and `data/blueprints.ts`: the plain-text password file line. The reducer test reads the Payments email from the data file |
 
 ## On-screen text to check
 
@@ -248,5 +252,9 @@ New after the first play on Vercel (2026-10-07), drafted by Claude:
 - Terminal: "Find the line that caused this. Not just a symptom.", "What happened:", "Wrong taps cost nothing. Right first time: +£50 bonus.", "Triage bonus: +£50" and the button "Now pick a fix". The amount is the stage's Triage bonus.
 - Maya, in the first Triage step: "Logs are the servers' diary. Every action writes a line." and "A symptom is what you notice. The cause is why it happened."
 - Log levels, in the info box: "Normal news. Something worked as expected.", "Something looks odd. Not broken yet." and "Something failed and needs fixing."
-- The info boxes reuse the toolbox's "What it is" lines. The tray's info box for "Plain-text password file" says "Always a mistake", which gives that decoy away.
+- The info boxes reuse the toolbox's "What it is" lines.
 - Screen reader labels, not shown on screen: "About" and the line's source and level, such as "About postgres, ERROR", or the part's name.
+
+New request emails:
+
+- All 15 request email texts in UPGRADES.md > Request emails. They were redrafted by Claude.

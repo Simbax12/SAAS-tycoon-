@@ -109,21 +109,21 @@ export type Arrives = { after: string } | { stageStart: StageNumber };
 export type RequestEmail = { item: string; from: PersonId; arrives: Arrives; text: string };
 
 export const requestEmails: RequestEmail[] = [
-  { item: "srv-test", from: "maya", arrives: { after: "1.1" }, text: "A safe place to try a fix before it goes live would save us some pain." },
-  { item: "feat-payments", from: "sam", arrives: { after: "1.2" }, text: "People love Blip. Time to earn something. Can we add payments for Blip Plus?" },
-  { item: "srv-bigger", from: "sam", arrives: { stageStart: 2 }, text: "Can we not just buy a bigger server and move on?" },
-  { item: "feat-darkmode", from: "customer", arrives: { after: "R1" }, text: "My eyes hurt at night. Any chance of a dark mode?" },
-  { item: "srv-monitoring", from: "omar", arrives: { after: "2.2" }, text: "Customers spot problems before we do. Can we watch the servers ourselves?" },
-  { item: "feat-photos", from: "customer", arrives: { after: "R2" }, text: "Please let us post photos! All my friends are asking for it." },
-  { item: "srv-standby", from: "lena", arrives: { after: "3.1" }, text: "Every outage costs us money. Could we keep a spare server ready?" },
-  { item: "feat-groups", from: "customer", arrives: { after: "R3" }, text: "Can we have group chats? My football team wants to use Blip." },
-  { item: "feat-email", from: "zoe", arrives: { after: "R4" }, text: "New users forget about us. Can Blip send welcome and alert emails?" },
-  { item: "srv-analytics", from: "zoe", arrives: { after: "R5" }, text: "We are guessing what users do. Can we get proper numbers?" },
-  { item: "feat-voice", from: "customer", arrives: { after: "4.1" }, text: "Typing is slow. Can I send voice notes instead?" },
-  { item: "feat-verified", from: "sam", arrives: { after: "R7" }, text: "Celebrities want to join, but they need a verified badge. Can we build it?" },
-  { item: "feat-global", from: "sam", arrives: { after: "R8" }, text: "The board wants Blip in every country. It is our biggest step yet. Are we ready?" },
-  { item: "feat-translate", from: "customer", arrives: { after: "5.1" }, text: "My cousins abroad post in another language. Could Blip translate posts?" },
-  { item: "srv-drills", from: "sam", arrives: { after: "5.1" }, text: "What if a whole data centre goes down? Can we practise for it?" },
+  { item: "srv-test", from: "maya", arrives: { after: "1.1" }, text: "We cannot keep pushing bugs to the live app. We need a safe place to try a fix before it goes live." },
+  { item: "feat-payments", from: "sam", arrives: { after: "1.2" }, text: "People love Blip, but we earn nothing from it. Please add payments for Blip Plus, so we can pay for servers and keep growing." },
+  { item: "srv-bigger", from: "sam", arrives: { stageStart: 2 }, text: "Blip slows down at busy times. Please buy a bigger server. Then we will know for sure if more hardware is the answer." },
+  { item: "feat-darkmode", from: "customer", arrives: { after: "R1" }, text: "Blip is so bright that my eyes hurt at night. Please add a dark mode, so I can keep chatting after dark." },
+  { item: "srv-monitoring", from: "omar", arrives: { after: "2.2" }, text: "Customers find problems before we do. Please add monitoring, so we see trouble early on the System Map and mistakes cost us less." },
+  { item: "feat-photos", from: "customer", arrives: { after: "R2" }, text: "All my friends want to share photos on Blip. Please add photo sharing, or we will all move to another app." },
+  { item: "srv-standby", from: "lena", arrives: { after: "3.1" }, text: "Every outage loses us users. Please keep a standby server ready. When something breaks, it takes over and nobody notices." },
+  { item: "feat-groups", from: "customer", arrives: { after: "R3" }, text: "My football team wants one chat for all of us. Please add group chats, so we can plan our games on Blip." },
+  { item: "feat-email", from: "zoe", arrives: { after: "R4" }, text: "New users sign up, then forget about us. Please add email notifications, so Blip can welcome them and bring them back." },
+  { item: "srv-analytics", from: "zoe", arrives: { after: "R5" }, text: "We are guessing what users do. Please add analytics, so the numbers show us which fixes would never work." },
+  { item: "feat-voice", from: "customer", arrives: { after: "4.1" }, text: "Typing on my phone is slow. Please add voice notes, so I can just talk to my friends instead." },
+  { item: "feat-verified", from: "sam", arrives: { after: "R7" }, text: "Celebrities want to join, but fans cannot tell real accounts from fakes. Please add verified badges, so they feel safe on Blip." },
+  { item: "feat-global", from: "sam", arrives: { after: "R8" }, text: "The board wants Blip in every country. Please fund a global launch. It is our biggest step yet, and it brings millions of users." },
+  { item: "feat-translate", from: "customer", arrives: { after: "5.1" }, text: "My cousins abroad post in another language. Please add auto-translate, so I can read their posts and reply." },
+  { item: "srv-drills", from: "sam", arrives: { after: "5.1" }, text: "What if a whole data centre goes down? Please let us run disaster drills, so we know what not to do when it happens." },
 ];
 
 export const requestFor = (item: string): RequestEmail | undefined => requestEmails.find((r) => r.item === item);
