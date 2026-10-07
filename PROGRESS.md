@@ -254,7 +254,3 @@ New after the first play on Vercel (2026-10-07), drafted by Claude:
 - Log levels, in the info box: "Normal news. Something worked as expected.", "Something looks odd. Not broken yet." and "Something failed and needs fixing."
 - The info boxes reuse the toolbox's "What it is" lines.
 - Screen reader labels, not shown on screen: "About" and the line's source and level, such as "About postgres, ERROR", or the part's name.
-
-New request emails:
-
-- All 15 request email texts in UPGRADES.md > Request emails. They were redrafted by Claude.
