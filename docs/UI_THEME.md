@@ -138,6 +138,7 @@ Each email in the Inbox shows a sender badge, the sender's name and the first li
 - When the player fixes a repeat incident, the part that carries the pattern's icon pulses once.
 - Each feature bought appears as a small labelled chip beside the Users box.
 - The same diagram component is used in the Incident window and the System Map window.
+- In the Incident window, the incident's "Sees" sentence shows as a caption under the diagram while the incident is open, so the player can read what the animation shows.
 
 ## Shop cards
 

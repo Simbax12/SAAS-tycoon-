@@ -194,7 +194,7 @@ After the player taps "Next", emails arrive one after another, each with its own
 Never assume the player knows a technical term. Every new incident follows these steps.
 
 1. **Arrive.** The alert or email from the incident's "Arrives by" line appears. The player taps "Investigate".
-2. **Show.** The player opens the Incident window. The diagram plays the incident's "Sees" animation from CHALLENGES.md. The failing part glows red.
+2. **Show.** The player opens the Incident window. The diagram plays the incident's "Sees" animation from CHALLENGES.md, with the "Sees" sentence as a caption under it. The failing part glows red.
 3. **Explain.** Maya's one-sentence explanation appears in a speech bubble.
 4. **Choose.** Three option cards appear in a shuffled order. Each card shows the plain description in large text and the industry label in small text beneath.
 5. **Result.** The diagram animates the outcome and the Result sentence appears.
@@ -222,8 +222,8 @@ Cash can never go below £0.
 Repetition is what makes the patterns stick. A repeat does not explain the problem again. The player has to spot which pattern they already know fits.
 
 1. **Arrive.** The alert or email from the repeat's "Arrives by" line appears. The player taps "Investigate".
-2. **Show.** The diagram plays the "Sees" animation from REPEATS.md.
-3. **Recall.** Maya does not explain. The window asks: "Which pattern fixes this?" Three pattern cards appear in a shuffled order. Each card shows the pattern's icon and name only.
+2. **Show.** The diagram plays the "Sees" animation from REPEATS.md, with the "Sees" sentence as a caption under it. Above the cards, "What happened:" and the repeat's "Arrives by" text say what the person reported.
+3. **Recall.** Maya does not explain the cause. The window asks: "Which pattern fixes this?" Three pattern cards appear in a shuffled order. Each card shows the pattern's icon and name only.
 4. **Remind me.** Each card has a small "Remind me" button. It shows that pattern's "Use this when" line from the Pattern Book. It is free.
 5. **Result.**
    - Right card: the Result sentence appears with a "Seen before" stamp. Go to step 6.

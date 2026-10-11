@@ -3,6 +3,7 @@
 import { BUILD_BRIEF, type Build } from "@/data/blueprints";
 import { isBuild, isRepeat, type IncidentData } from "@/data/incidents";
 import { victorLine } from "@/data/people";
+import { triageText } from "@/data/extraSteps";
 import { itemEffects, upgradeById } from "@/data/upgrades";
 import { patternIcons } from "@/data/patterns";
 import {
@@ -32,6 +33,7 @@ import {
   callButton,
   canTestFirst,
   computerNeeded,
+  incidentOpen,
   cluesGiven,
   currentIncident,
   currentRow,
@@ -129,6 +131,8 @@ export default function Incident() {
       </div>
 
       <Diagram state={state} />
+      {/* What the diagram shows, in words, while the incident is open (docs/UI_THEME.md > The System Map and incident diagram). */}
+      {incidentOpen(state) && <p className="-mt-2 text-[18px] italic text-[#4A4A4A]">{incident.sees}</p>}
 
       {run.dip > 0 && (
         <p className="flex items-center gap-2 rounded-md border-2 border-alert bg-[#FBE3E3] px-3 py-2 text-[18px]">
@@ -171,7 +175,13 @@ export default function Incident() {
         <>
           {/* A repeat does not explain the problem again (docs/GAME_DESIGN.md > Repeat incident flow: recall, not recognition). */}
           {repeat ? (
-            <p className="text-[20px] font-bold">Which pattern fixes this?</p>
+            <>
+              {/* What the person reported, without naming the cause. */}
+              <p className="text-[18px]">
+                <span className="font-bold">{triageText.whatHappened}</span> {incident.arrives.text}
+              </p>
+              <p className="text-[20px] font-bold">Which pattern fixes this?</p>
+            </>
           ) : (
             <>
               {removalLines(state).map((line) => (
