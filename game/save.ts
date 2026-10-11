@@ -4,11 +4,15 @@
 
 import { playOrder } from "../data/playOrder";
 import { defaultSettings, SAVE_VERSION, startIncident } from "./reducer";
+import { computerNeeded } from "./rules";
 import type { GameState } from "./types";
 
 export type Storage = Pick<globalThis.Storage, "getItem" | "setItem">;
 
 export const saveKey = (version: number) => `zero-to-a-billion:save:v${version}`;
+
+// The Faster PC's price, given back when version 4 removes it.
+const FASTER_PC_REFUND = 6_000;
 
 // migrations[n] upgrades a version n save to version n + 1. Add one with every change to the save format.
 const migrations: Record<number, (old: Record<string, unknown>) => Record<string, unknown>> = {
@@ -26,7 +30,23 @@ const migrations: Record<number, (old: Record<string, unknown>) => Record<string
     const run = old.run as Record<string, unknown> | undefined;
     return run ? { ...old, run: { ...run, standbySaved: false, lateItems: [] } } : old;
   },
+  // Version 4 removes the Faster PC from the Shop. A save that owns it gets its £6,000 back
+  // (docs/GAME_LOGIC.md > Loading a save).
+  3: (old) => {
+    const owned = Array.isArray(old.owned) ? (old.owned as string[]) : [];
+    if (!owned.includes("gear-pc")) return old;
+    const run = old.run as { lateItems?: string[] } | undefined;
+    const lateItems = run?.lateItems?.filter((id) => id !== "gear-pc");
+    return {
+      ...old,
+      owned: owned.filter((id) => id !== "gear-pc"),
+      cash: (Number(old.cash) || 0) + FASTER_PC_REFUND,
+      run: run ? { ...run, lateItems } : run,
+    };
+  },
 };
+
+
 
 export function saveGame(storage: Storage, state: GameState) {
   try {
@@ -62,7 +82,10 @@ function carryOn(state: GameState): GameState {
   if (typeof state.currentId !== "string" || !Array.isArray(state.emails) || typeof state.results !== "object") {
     throw new Error("Not a save");
   }
-  const s: GameState = { ...state, settings: { ...defaultSettings, ...state.settings } };
+  let s: GameState = { ...state, settings: { ...defaultSettings, ...state.settings } };
+  // A save that finished a stage before new computers existed gets Maya's email now, so "Next" can move on.
+  const pc = computerNeeded(s);
+  if (pc && !s.emails.some((e) => e.key === `request:${pc.id}`)) s = { ...s, emails: [...s.emails, { key: `request:${pc.id}`, read: false }] };
   // If the current incident was removed from the play order, carry on from the first one not yet solved.
   if (!playOrder.some((r) => r.id === s.currentId)) {
     const first = playOrder.find((r) => !s.results[r.id]) ?? playOrder[playOrder.length - 1];

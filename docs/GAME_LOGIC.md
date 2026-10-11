@@ -97,7 +97,7 @@ A customer email shows the name given to its incident or item (see GAME_DESIGN.m
 | Current stage | The stage of the current incident. After the win, Stage 5 |
 | Users on screen | `users` minus `dip`. The progress bar uses this number (see GAME_DESIGN.md > Progress bar) |
 | Shop items on show | Items whose stage is at or below the current stage (see UPGRADES.md > Upgrades: the Shop) |
-| Needed next | The current incident's "Needs" feature, if it is not owned |
+| Needed next | The current incident's "Needs" feature, if it is not owned. Or, once the last incident of a stage is solved, the next stage's new computer, if it is not owned (see UPGRADES.md > New computers) |
 | Can buy | On show, not owned, and either `cash` is at least the price or the item is Needed next |
 | Calls in this incident | New or repeat: the Nudge plus each Clue line. Build: 2, plus one for each Tray part other than the "Call 1 places" part |
 | Next call price | (see GAME_DESIGN.md > Consultant calls). £0 if the incident is 1.1, or if the Engineering handbook is owned and `handbookUsed` is false |
@@ -112,6 +112,7 @@ A customer email shows the name given to its incident or item (see GAME_DESIGN.m
 3. If `currentId` was removed from the play order, the current incident becomes the first incident in the play order with no entry in `results`.
 4. Incidents added to the play order before `currentId` are not played on this save.
 5. Results, emails and Recycle Bin entries for ids that no longer exist are ignored.
+6. An owned Shop item that no longer exists is taken out of `owned`, and the price the player paid goes back into `cash`. The migration that removes it knows that price.
 
 ---
 
@@ -179,7 +180,7 @@ Upgrades bought after this point do not change this incident (see GAME_DESIGN.md
 | Deploy and test | A Build, phase is `choosing` | See "Deploying" below |
 | Apply the guided answer | Phase is `guided` | Moves to `tune`, or to `solved` if there is no Tune step |
 | Set the dial and run a wave | Phase is `tune` | Records the wave. After the third wave, moves to `solved` |
-| Next | Phase is `solved` and the game is not won | Runs the after-solve steps |
+| Next | Phase is `solved`, the game is not won, and if the next incident is in a new stage, that stage's new computer is owned | Runs the after-solve steps |
 | Buy | The item can be bought | See "Money" below |
 | Buy Victor's lifeline | `lifeline` is none and `cash` is at least its price for the current stage | Takes the price from `cash`. Sets `lifeline` to the current stage |
 | Open an email | Any time | Marks it as read |
@@ -259,8 +260,7 @@ When an incident is solved, work out its pay in this order (see GAME_DESIGN.md >
 2. Times the star multiplier for the run's final stars.
 3. Plus the Triage bonus, if the cause was the first line tapped.
 4. Plus the Tune bonus for each wave set right.
-5. Times 1.1 if the Faster PC is owned and not in `lateItems`.
-6. Round once, to the nearest whole pound.
+5. Round once, to the nearest whole pound.
 
 Triage and Tune bonuses are paid here, with the rest of the pay, not the moment they are earned.
 
@@ -274,7 +274,7 @@ All cash coming in pays the loan first: the smaller of the pay and `loanOwed` co
 
 ## The investor top-up
 
-This only happens when the player buys the feature that is Needed next and `cash` is below its price (see GAME_DESIGN.md > The game must never get stuck):
+This only happens when the player buys the item that is Needed next, a must-have feature or a new computer, and `cash` is below its price (see GAME_DESIGN.md > The game must never get stuck):
 
 1. Add the shortfall to `loanOwed`. Add 1 to `topUps`. Show Maya's investor line.
 2. Buy the feature as normal. `cash` ends at £0.
@@ -293,6 +293,7 @@ The loan never passes through `cash` on its own, so it cannot be spent on anythi
 2. The Pattern Book and pips change by themselves, because they are worked out from `results` (see GAME_DESIGN.md > Pips and mastery).
 3. A repeat that was not solved first try is added to `refreshersDue` (see GAME_DESIGN.md > Refreshers).
 4. Pay cash and add users, as above.
+5. If this was the last incident of its stage and the next stage's computer is not owned, send its request email now, so the player can buy it before "Next" (see UPGRADES.md > New computers).
 
 ---
 
@@ -306,7 +307,7 @@ Run these in order. Each email shows its own balloon, one after another (see GAM
 2. **Refresher emails** that are now due.
 3. **Request emails** whose "Arrives" names the incident just solved (see UPGRADES.md > Request emails). Skip any for items already owned (see UPGRADES.md > Request emails).
 4. Set `currentId` to the next id in the play order.
-5. **If the stage has changed:** drop an unused lifeline from an earlier stage. The new stage's room clips play first (see ROOM.md > When a new stage starts). Then BlipOS upgrades to the new stage's version (see UI_THEME.md > The upgrade). Then Maya's stage opening email. Then request emails that arrive at the start of this stage. Then any other email for the start of this stage. Then the "New in the Shop" balloon.
+5. **If the stage has changed:** drop an unused lifeline from an earlier stage. The new stage's room clips play first (see ROOM.md > When a new stage starts). Then BlipOS updates to the new stage's version and the milestone banner shows (see UI_THEME.md > The upgrade). Then Maya's stage opening email. Then request emails that arrive at the start of this stage. Then any other email for the start of this stage. Then the "New in the Shop" balloon.
 6. **Start the next incident** (see "When the run starts").
 
 ## The start of the game
@@ -347,12 +348,12 @@ Each example is one incident traced with exact numbers. Each one should become a
 - Pay: £2,000 x 1 = £2,000, plus Triage bonus 10% of £2,000 = £200. Total £2,200. Cash after £2,800.
 - Users +9,000. First try: no. Caching is learned with pip 1 gold, because pip 1 is always gold.
 
-## Example 3: R7 The Trending Crush, a repeat with Tune and the Faster PC
+## Example 3: R7 The Trending Crush, a repeat with Tune
 
-- Faster PC owned. Caching already has pip 1 from 2.1 and pip 2 from R3.
+- Caching already has pip 1 from 2.1 and pip 2 from R3.
 - The player picks Sharding (wrong). Stars 3 to 2. No cash lost, no dip.
 - The player picks Caching. Tune: 2 of 3 waves right.
-- Pay: £50,000 / 2 x 1 = £25,000. Tune bonus 2 x 5% of £50,000 = £5,000. Subtotal £30,000. Faster PC: x 1.1 = £33,000.
+- Pay: £50,000 / 2 x 1 = £25,000. Tune bonus 2 x 5% of £50,000 = £5,000. Total £30,000.
 - Users +15,000,000. First try: no, so Caching's pip 3 is silver and R7 goes into `refreshersDue`.
 - Next sends `thanks:R7` from Sam. The refresher is sent after 4.3 is solved.
 

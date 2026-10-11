@@ -3,17 +3,15 @@
 import { useEffect } from "react";
 import { BlipLogo } from "./icons";
 
-// The BlipOS loading bar, 2 seconds at most (docs/UI_THEME.md > Desktop). Half as long with the Faster PC.
+// The BlipOS loading bar, 2 seconds at most (docs/UI_THEME.md > Desktop).
 export const LOADING_MS = 1600;
-const FAST_LOADING_MS = 800;
 
-// It names the BlipOS version. When a new stage starts it says "Upgrading to BlipOS 2" and so on
-// (docs/UI_THEME.md > The upgrade).
-type Props = { version: number; upgrade?: boolean; onDone: () => void; reducedMotion: boolean; fast?: boolean };
+// It names the BlipOS version. A new stage shows the update screen instead (OsUpdate.tsx).
+type Props = { version: number; onDone: () => void; reducedMotion: boolean };
 
-export default function LoadingBar({ version, upgrade, onDone, reducedMotion, fast }: Props) {
-  const words = `${upgrade ? "Upgrading to " : ""}BlipOS ${version}`;
-  const ms = fast ? FAST_LOADING_MS : LOADING_MS;
+export default function LoadingBar({ version, onDone, reducedMotion }: Props) {
+  const words = `BlipOS ${version}`;
+  const ms = LOADING_MS;
   useEffect(() => {
     const t = setTimeout(onDone, ms);
     return () => clearTimeout(t);

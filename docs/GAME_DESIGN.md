@@ -51,7 +51,17 @@ Every email from a customer shows a first name. Each name is used once. The than
 | 4 | Big tech | 10 million to 100 million | The data is too big | £50,000 |
 | 5 | Planet scale | 100 million to 1 billion | Distance, disasters and attacks | £250,000 |
 
-A new stage starts when the last incident of the stage before it is solved.
+A new stage starts when the last incident of the stage before it is solved and the new stage's computer is bought (see UPGRADES.md > New computers).
+
+### Moving to a new stage
+
+1. The last incident of the stage is solved. Maya's request email asks for the new computer, and the Shop marks it "Needed next".
+2. Until it is bought, the Incident window says "Buy the new computer in the Shop." in place of "Next".
+3. Once it is bought, the player taps "Next". Thank-you, refresher and request emails arrive as usual.
+4. The new room's walk-in clip plays, then its desk still with "Tap the screen to sit down", then the sit-down clip (see ROOM.md > When a new stage starts).
+5. BlipOS updates to the new stage's version (see UI_THEME.md > The upgrade).
+6. The milestone banner shows over the desktop: "Milestone reached", then the stage number and name, such as "Stage 2: First office", then the users so far, such as "1,000 users". It goes away when tapped, or after 5 seconds.
+7. Maya's stage opening email arrives, then the rest of the stage's emails, then the first incident.
 
 ### Stage opening emails (Maya)
 
@@ -144,12 +154,21 @@ An email lands in the Inbox. A balloon rises from the taskbar: "New email from S
 
 | Kind | What it is | Button |
 |---|---|---|
-| Incident email | Someone describes a problem | "Investigate" opens the incident |
-| Request email | Someone asks for a feature or upgrade | "Open in Shop" opens the Shop at that item |
+| Incident email | Someone describes a problem | "Investigate" starts the incident and says which app to open |
+| Request email | Someone asks for a feature or upgrade | "Find in Shop" says to open the Shop, which then opens at that item |
 | Maya email | Stage openers and refreshers | None |
 | Thank-you email | A short reply after their problem is fixed | None |
 
 Each incident says how it arrives, with the exact text, in its "Arrives by" line. Request emails and when they arrive are listed in UPGRADES.md.
+
+### Opening apps
+
+Nothing opens by itself. The player opens every window from its desktop icon or from the Start menu, the way a real computer works.
+
+- When a step needs an app, the game says which one, for example "Open Terminal from the desktop or the Start menu." Its desktop icon and its Start menu row pulse until it is opened.
+- This covers "Investigate", "Find in Shop", Triage in Terminal, Builds in Blueprint, Tune in SysDash and the win screen.
+- The first time this happens, a tip spotlights the icon (see "First-time tips").
+- Tapping an email balloon still opens the Inbox, because the player chose to tap it.
 
 ### The order emails arrive in
 
@@ -175,7 +194,7 @@ After the player taps "Next", emails arrive one after another, each with its own
 Never assume the player knows a technical term. Every new incident follows these steps.
 
 1. **Arrive.** The alert or email from the incident's "Arrives by" line appears. The player taps "Investigate".
-2. **Show.** The Incident window opens. The diagram plays the incident's "Sees" animation from CHALLENGES.md. The failing part glows red.
+2. **Show.** The player opens the Incident window. The diagram plays the incident's "Sees" animation from CHALLENGES.md. The failing part glows red.
 3. **Explain.** Maya's one-sentence explanation appears in a speech bubble.
 4. **Choose.** Three option cards appear in a shuffled order. Each card shows the plain description in large text and the industry label in small text beneath.
 5. **Result.** The diagram animates the outcome and the Result sentence appears.
@@ -235,7 +254,7 @@ A refresher shows the pattern's icon, its name, its "Use this when" line and its
 A Build asks the player to put patterns together, the way a real design is drawn on a whiteboard. Every part in a Build is something the player has already met.
 
 1. **Arrive.** The alert or email from the Build's "Arrives by" line appears. The player taps "Investigate".
-2. **Brief.** Maya says: "We need a new design for this. Open Blueprint." The Blueprint app opens. The Build's Goal is on a sticky note.
+2. **Brief.** Maya says: "We need a new design for this. Open Blueprint." The player opens Blueprint. The Build's Goal is on a sticky note.
 3. **Build.** The tray on the left holds the Build's parts and decoys, shuffled. The player puts parts on the canvas and joins them with arrows to show which way traffic flows.
 4. **Deploy.** The player taps "Deploy and test". Dots of traffic travel along the arrows.
 5. **Result.**
@@ -265,21 +284,28 @@ There is no timer in either step. Nothing scrolls or moves until the player acts
 
 ### Triage, in Terminal
 
-1. After the player taps "Investigate", Terminal opens with the step's six log lines in a shuffled order.
-   - Above the lines: "Find the line that caused this. Not just a symptom."
-   - Under it: "What happened:" and the incident's "Arrives by" text.
+Triage is a short typing lesson, in the style of an online coding course. Each step teaches one real command (see EXTRA_STEPS.md > Terminal lessons).
+
+1. After the player taps "Investigate", the game says to open Terminal. Terminal shows two panels: the lesson on the left and the prompt on the right. On a phone the lesson sits above the prompt.
+   - The lesson shows the goal "Find the line that caused this. Not just a symptom.", then "What happened:" and the incident's "Arrives by" text.
+   - Then the step's Learn text and its numbered Tasks, each with a box that ticks when done.
    - Then: "Wrong taps cost nothing. Right first time: +£50 bonus.", with the Triage bonus for the stage.
    - In the first Triage step of the play order, Maya speaks first, in two bubbles: "Logs are the servers' diary. Every action writes a line." and "A symptom is what you notice. The cause is why it happened."
-2. The player taps the line that shows the real cause.
-   - The cause: the "Why" sentence appears. If it was the first tap, "Triage bonus: +£50" appears too, with the Triage bonus for the stage. A "Now pick a fix" button opens the Incident window, and the incident carries on.
+2. **Task 1: run the command.** The player types the step's command at the prompt and taps "Run", or presses Enter.
+   - On a phone, word tiles under the prompt hold the command's words, shuffled, plus two that do not belong. Tapping a tile adds it to the prompt. "Delete" takes the last word off. The keyboard also works.
+   - The command types itself into the log, then its output prints line by line. The output is the step's log lines that the command keeps, in the shuffled order.
+   - A command that is not right prints a short error and costs nothing (see EXTRA_STEPS.md > Terminal lessons). After two wrong commands, "Hint" shows the command.
+   - "Hint" can be tapped at any time. It costs nothing.
+3. **Task 2: tap the cause.** Each line of output is a button. The player taps the line that shows the real cause.
+   - The cause: the "Why" sentence appears. If it was the first tap, "Triage bonus: +£50" appears too, with the Triage bonus for the stage. Then "Now open the Incident window and pick a fix.", and the incident carries on.
    - The symptom: "That is a symptom. Look for what causes it." The line greys out. Try again.
    - A routine line: "That line is routine. Look for what changed." The line greys out. Try again.
-3. Finding the cause on the first tap pays the Triage bonus.
-4. Each line has an info button. It says what the line's source and level mean (see EXTRA_STEPS.md > Log sources). Tapping it is not a tap on the line, and costs nothing.
+4. Finding the cause on the first tap pays the Triage bonus. Typing mistakes never cost the bonus.
+5. Each line has an info button. It says what the line's source and level mean (see EXTRA_STEPS.md > Log sources). Tapping it is not a tap on the line, and costs nothing.
 
 ### Tune, in SysDash
 
-1. After the fix is chosen, SysDash opens with the step's dial and Fact.
+1. After the fix is chosen, the game says to open SysDash. It shows the step's dial and Fact.
 2. For each of the three waves: the wave's text appears, the player sets the dial to a stop and taps "Run wave".
    - On the Right stop: the "Just right" sentence.
    - Below it: the "Too low" sentence. Above it: the "Too high" sentence. The Right stop is then shown.
@@ -349,7 +375,7 @@ Cash is spent in the Shop. All items, prices and effects are in UPGRADES.md.
 
 ## The Shop in brief
 
-There are four kinds of item. Full details are in UPGRADES.md.
+There are five kinds of item. Full details are in UPGRADES.md.
 
 | Kind | What it does | Example |
 |---|---|---|
@@ -357,18 +383,19 @@ There are four kinds of item. Full details are in UPGRADES.md.
 | Nice-to-have features | Bring in extra users. Customers ask for them | Dark mode |
 | Servers | Prepare Blip in advance. Each one changes how certain incidents unfold | Monitoring halves outage damage |
 | Your setup | The player's own gear. Each one gives a helping hand | Engineering handbook gives a free call to Dana |
+| New computers | The computer for the next stage's bigger place. Needed to move on | The computer for the First office |
 
 Prices are not flat. An item costs more when it is a bigger change and when it brings in more users. Every Shop card shows both.
 
-The Shop also sells Victor's lifeline. It is not one of the four kinds, and it can be bought again once used (see UPGRADES.md > Victor's lifeline).
+The Shop also sells Victor's lifeline. It is not one of the five kinds, and it can be bought again once used (see UPGRADES.md > Victor's lifeline).
 
-The Shop can be opened at any time, even during an incident. An item bought during an incident only changes incidents that start after it. A must-have feature that the waiting incident needs is the one exception: buying it lets that incident arrive.
+The Shop can be opened at any time, even during an incident. An item bought during an incident only changes incidents that start after it. A must-have feature that the waiting incident needs is the one exception: buying it lets that incident arrive. A new computer only matters once the stage's last incident is solved.
 
 ## The game must never get stuck
 
-The must-have feature that the next incident needs can always be bought. Its Buy button works even when the player is short of cash.
+The must-have feature that the next incident needs, and the new computer that the next stage needs, can always be bought. Its Buy button works even when the player is short of cash.
 
-If the player taps Buy and is short, Maya says: "An investor believes in us." The investor lends exactly the shortfall and the feature is bought at once. The loan money can never be spent on anything else.
+If the player taps Buy and is short, Maya says: "An investor believes in us." The investor lends exactly the shortfall and the item is bought at once. The loan money can never be spent on anything else.
 
 The top-up is a loan, so spending everything on optional items is not a free ride. Cash from later incidents pays the loan back first, before the player receives any.
 
@@ -419,11 +446,12 @@ The tutorial runs inside incident 1.1. It uses a spotlight: the screen dims exce
 1. "Open your Inbox." (Inbox icon)
 2. "Maya has a problem for you." (her email)
 3. "Tap Investigate." (the button in her email)
-4. "Red means something is breaking." (the failing part)
-5. "Pick the fix you think is best." (option cards)
-6. "Stuck? Call Dana. Today it is free." (Call Dana button)
-7. "Fixed. Users and cash go up." (taskbar counters)
-8. "Spend cash in the Shop." (Shop icon)
+4. "Now open the Incident window." (Incident icon)
+5. "Red means something is breaking." (the failing part)
+6. "Pick the fix you think is best." (option cards)
+7. "Stuck? Call Dana. Today it is free." (Call Dana button)
+8. "Fixed. Users and cash go up." (taskbar counters)
+9. "Spend cash in the Shop." (Shop icon)
 
 The player can skip the tutorial. It can be replayed from Settings.
 
@@ -436,7 +464,8 @@ Each tip is shown once, with the same spotlight.
 | First server alert (1.2) | "Alerts pop up by themselves. Tap Investigate." |
 | First request email | "This email asks for something. Open the Shop." |
 | First repeat incident (R1) | "You have seen this before. Pick the pattern." |
-| First Triage step (1.2) | "Tap the line that shows the cause." |
+| First time an app must be opened | "Open it from its icon or Start menu." |
+| First Triage step (1.2) | "Type the command. Then tap the cause." |
 | First Build incident (B1) | "Drag parts in. Join them with arrows." |
 | First Tune step (3.1) | "Set the dial. Then run the wave." |
 
@@ -463,7 +492,7 @@ Each tip is shown once, with the same spotlight.
 
 ## Win screen
 
-Shown when incident 5.3 is solved. It opens by itself as its own window over the desktop, titled "You did it". It can be closed and opened again from the Incident window.
+Shown when incident 5.3 is solved. It is its own window, titled "You did it". A trophy icon called "You did it" then appears on the desktop and in the Start menu, and pulses until the player opens it (see "Opening apps"). It can be closed and opened again.
 
 - Maya's win message
 - The full System Map

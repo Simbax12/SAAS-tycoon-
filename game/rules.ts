@@ -8,17 +8,16 @@ import { incidentById, isBuild, type IncidentData } from "../data/incidents";
 import { playOrder, playOrderRow, type IncidentKind, type PlayOrderRow } from "../data/playOrder";
 import { callPrices, penalties, progressMarkers, REPEAT_PAY_SHARE, stageByNumber, starMultiplier, type StageNumber } from "../data/stages";
 import { TUTORIAL_INCIDENT } from "../data/tutorial";
-import { FASTER_PC_TIMES, itemEffects, LIFELINE_TIMES, MONITORING_SHARE, upgradeById, upgrades, type Upgrade } from "../data/upgrades";
+import { computerFor, itemEffects, LIFELINE_TIMES, MONITORING_SHARE, upgradeById, upgrades, type Upgrade } from "../data/upgrades";
 import type { GameState, Run, Stars } from "./types";
 
 export const baseCash = (stage: StageNumber) => stageByNumber(stage).baseCash;
 
 // docs/GAME_LOGIC.md > Cash coming in: base cash, halved for a repeat, times the star multiplier,
-// plus the Triage and Tune bonuses, times the Faster PC's share when it counts, rounded once.
-export function payFor(kind: IncidentKind, stage: StageNumber, stars: Stars, run?: Run, fasterPc = false): number {
+// plus the Triage and Tune bonuses, rounded once.
+export function payFor(kind: IncidentKind, stage: StageNumber, stars: Stars, run?: Run): number {
   const base = baseCash(stage) * (kind === "repeat" ? REPEAT_PAY_SHARE : 1);
-  const pay = base * starMultiplier[stars] + (run ? bonusFor(stage, run) : 0);
-  return Math.round(pay * (fasterPc ? FASTER_PC_TIMES : 1));
+  return Math.round(base * starMultiplier[stars] + (run ? bonusFor(stage, run) : 0));
 }
 
 // The Triage bonus, for finding the cause on the first tap, and the Tune bonus for each wave set right.
@@ -31,8 +30,7 @@ export function bonusFor(stage: StageNumber, run: Run): number {
 // What the current incident pays when it is solved with the run as it is.
 export function incidentPay(state: GameState): number {
   const row = currentRow(state)!;
-  const fasterPc = hasEffect(state, itemEffects.fasterPc);
-  return payFor(row.kind, row.stage, state.run.stars, state.run, fasterPc);
+  return payFor(row.kind, row.stage, state.run.stars, state.run);
 }
 
 export const partialPenalty = (stage: StageNumber) => Math.round(baseCash(stage) * penalties.partialCash);
@@ -116,7 +114,18 @@ export const itemsOnShow = (state: GameState): Upgrade[] => upgrades.filter((u) 
 // The current incident's "Needs" feature, if it is not owned.
 export function neededNext(state: GameState): string | undefined {
   const needs = currentRow(state)?.needs;
-  return needs && !state.owned.includes(needs) ? needs : undefined;
+  if (needs && !state.owned.includes(needs)) return needs;
+  return computerNeeded(state)?.id;
+}
+
+// Once the last incident of a stage is solved, the next stage waits for its new computer
+// (docs/UPGRADES.md > New computers). Returns it while it is not owned.
+export function computerNeeded(state: GameState): Upgrade | undefined {
+  if (state.phase !== "solved" || state.won) return undefined;
+  const next = nextIncident(state);
+  if (!next || next.stage === currentStage(state)) return undefined;
+  const pc = computerFor(next.stage);
+  return pc && !state.owned.includes(pc.id) ? pc : undefined;
 }
 
 // On show, not owned, and either the cash covers it or it is Needed next.

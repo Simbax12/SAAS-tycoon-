@@ -2,7 +2,7 @@
 
 Some incidents have an extra step that uses one of the work apps on the desktop.
 
-- A **Triage** step comes before the fix. The player opens Terminal and finds the log line that shows the real cause.
+- A **Triage** step comes before the fix. The player opens Terminal, types the step's command to read the log, and finds the line that shows the real cause. Each step teaches one command (see "Terminal lessons").
 - A **Tune** step comes after the fix. The player opens SysDash and sets a dial for three waves of traffic.
 
 Copy these into a typed data file exactly as written. Do not add, remove or reword anything. If something looks wrong, ask.
@@ -165,6 +165,105 @@ Each log line has a level. The info button on a log line shows what its level me
   - **routine.** INFO node: "Health check passed"
   - **routine.** INFO worker: "Export ready for user 55"
 - **Why:** "The failures are the symptom. The cause is new code going to everyone at once. Look for what changed."
+
+---
+
+# Terminal lessons
+
+Each Triage step is also a short lesson that teaches one real command. The commands run for real on the step's six log lines, in a file called blip.log.
+
+## How a command runs
+
+A log line reads as its level, its source, a colon and its message, for example `ERROR postgres: Export of users table included readable passwords`.
+
+| Command | What it prints |
+|---|---|
+| `cat blip.log` | Every line |
+| `tail blip.log` | The newest lines. The file is short, so this is every line |
+| `grep WORD blip.log` | Only lines that contain WORD. Upper and lower case must match |
+| `grep -v WORD blip.log` | Only lines that do not contain WORD |
+| `grep -i WORD blip.log` | Lines that contain WORD in any case |
+| `grep -E "A\|B" blip.log` | Lines that contain A or B |
+| `journalctl -p warning` | The system's own log, warnings and worse: WARN and ERROR lines |
+| `ls` | The files here: blip.log |
+| `clear` | Clears the screen |
+| `help` | "Type the command in the task. Stuck? Tap Hint." |
+
+Messages for a command that is not right:
+
+| When | Message |
+|---|---|
+| The first word is not a command above | "COMMAND: command not found" |
+| The file is not blip.log | "FILE: No such file or directory" |
+| The command works but is not the task's | "That works, but the task asks for something else." |
+
+## How to read a lesson
+
+- **The heading** names the Triage step the lesson belongs to.
+- **Command:** the command Task 1 asks for. Spaces and either kind of quote marks do not matter.
+- **Learn:** what the command does, shown above the tasks.
+- **Task:** Task 1's words. Task 2 is always "Tap the line that caused this."
+- The command must keep the step's cause line.
+
+## Lesson for T1
+
+- **Command:** `cat blip.log`
+- **Learn:** "Servers write a log: one line for everything they do. cat prints a whole file to the screen."
+- **Task:** "Print the whole of blip.log."
+
+## Lesson for T6
+
+- **Command:** `tail blip.log`
+- **Learn:** "Logs grow all day long. tail shows only the newest lines, at the end of the file."
+- **Task:** "Show the newest lines of blip.log."
+
+## Lesson for T2
+
+- **Command:** `grep WARN blip.log`
+- **Learn:** "grep keeps only the lines that contain a word. Search for WARN to see what looks odd."
+- **Task:** "Keep only the WARN lines."
+
+## Lesson for T7
+
+- **Command:** `grep -v INFO blip.log`
+- **Learn:** "grep -v does the opposite: it hides lines with a word. INFO lines are normal news."
+- **Task:** "Hide every INFO line."
+
+## Lesson for T3
+
+- **Command:** `grep ERROR blip.log`
+- **Learn:** "When something is down, start with the errors. grep ERROR keeps only the failures."
+- **Task:** "Find the ERROR lines."
+
+## Lesson for T8
+
+- **Command:** `grep -i error blip.log`
+- **Learn:** "grep cares about upper and lower case. Add -i to match error, Error and ERROR."
+- **Task:** "Find the errors, in any case."
+
+## Lesson for T4
+
+- **Command:** `grep -E "WARN|ERROR" blip.log`
+- **Learn:** "grep -E can look for several words at once. The bar between them means or."
+- **Task:** "Show the WARN and ERROR lines together."
+
+## Lesson for T9
+
+- **Command:** `journalctl -p warning`
+- **Learn:** "journalctl reads the system's own log. -p warning shows warnings and anything worse."
+- **Task:** "Show warnings and worse from the system log."
+
+## Lesson for T10
+
+- **Command:** `grep node blip.log`
+- **Learn:** "To check one service, grep for its name. node runs Blip's code, so new releases land there."
+- **Task:** "Show only the node lines."
+
+## Lesson for T5
+
+- **Command:** `grep nginx blip.log`
+- **Learn:** "nginx is Blip's front door. Every visitor passes it, so attacks show up there first."
+- **Task:** "Show only the nginx lines."
 
 ---
 

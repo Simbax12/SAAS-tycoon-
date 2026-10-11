@@ -6,12 +6,30 @@ import { roomByStage, roomFiles } from "@/data/rooms";
 import { stageByNumber, type StageNumber } from "@/data/stages";
 import Desktop from "@/components/desktop/Desktop";
 import LoadingBar from "@/components/desktop/LoadingBar";
+import MilestoneBanner from "@/components/desktop/MilestoneBanner";
+import OsUpdate from "@/components/desktop/OsUpdate";
 import { StandUpIcon } from "@/components/desktop/icons";
 import type { Windows } from "@/components/desktop/useWindows";
 import type { Screen } from "@/components/useScreen";
 import DeskItems from "./DeskItems";
 import { boxStyle, placePicture } from "./placePicture";
 import { useZoom } from "./useZoom";
+import { useGameContext } from "@/components/useGame";
+import { itemEffects } from "@/data/upgrades";
+import { ROOM_PICTURE, type Box } from "@/data/rooms";
+
+// Zoomed in with the Second monitor: two screens side by side, each the shape of this room's
+// screen but no wider than 4 by 3, so two fit with room to read, in a plain frame (docs/ROOM.md > During play).
+const PAIR_FRAME = 10;
+const PAIR_GAP = 14;
+const PAIR_MARGIN = 24;
+function pairBox(vw: number, vh: number, box: Box): React.CSSProperties {
+  const aspect = Math.min((box.width * ROOM_PICTURE.width) / (box.height * ROOM_PICTURE.height), 4 / 3);
+  const w = Math.min((vw - 2 * PAIR_MARGIN - 2 * PAIR_FRAME - PAIR_GAP) / 2, (vh - 2 * PAIR_MARGIN - 2 * PAIR_FRAME) * aspect);
+  const width = 2 * w + PAIR_GAP + 2 * PAIR_FRAME;
+  const height = w / aspect + 2 * PAIR_FRAME;
+  return { left: (vw - width) / 2, top: (vh - height) / 2, width, height };
+}
 
 // Where the player is in the room (docs/ROOM.md > Part 1: What the player sees).
 // walk: the walk-in clip. desk: the desk still, waiting for a tap. sit: the sit-down clip.
@@ -23,13 +41,11 @@ type Props = {
   screen: Screen;
   windows: Windows;
   firstVisit: boolean;
-  // The Faster PC makes the BlipOS loading bar quicker (docs/UI_THEME.md > The player's setup).
-  fastPc: boolean;
 };
 
 const pill = "rounded-full bg-cream px-5 py-2 text-[18px] text-ink shadow-[0_2px_10px_rgba(0,0,0,0.5)]";
 
-export default function RoomFrame({ stage, screen, windows, firstVisit, fastPc }: Props) {
+export default function RoomFrame({ stage, screen, windows, firstVisit }: Props) {
   const { isPhone, reducedMotion } = screen;
   const room = roomByStage(stage);
   const files = roomFiles(stage);
@@ -39,19 +55,29 @@ export default function RoomFrame({ stage, screen, windows, firstVisit, fastPc }
   // The loading bar shows the first time the player sits down in this visit.
   const [booted, setBooted] = useState(false);
 
-  const afterSit = useCallback(() => setPhase(booted ? "seated" : "loading"), [booted]);
-
-  // When a new stage starts during play, BlipOS upgrades: the loading bar says "Upgrading to
-  // BlipOS 2", then the desktop shows in its new look (docs/UI_THEME.md > The upgrade). The desktop
-  // stays underneath, so the new stage's emails wait and then rise one by one.
-  // The room clips for a new stage come first once they are built in Milestone 8 (docs/START_HERE.md > Build order).
-  const [upgrading, setUpgrading] = useState(false);
+  // When a new stage starts during play, the player walks into the new room and sits down
+  // (docs/ROOM.md > When a new stage starts). Then BlipOS updates and the milestone banner shows
+  // (docs/UI_THEME.md > The upgrade). The new stage's emails wait until the banner has gone.
+  const [moving, setMoving] = useState(false);
+  const [arrival, setArrival] = useState<"update" | "banner" | null>(null);
   const lastStage = useRef(stage);
   useEffect(() => {
-    if (stage > lastStage.current && phase === "seated") setUpgrading(true);
+    if (stage > lastStage.current && phase === "seated") {
+      setMoving(true);
+      setPhase(reducedMotion ? "desk" : "walk");
+    }
     lastStage.current = stage;
-  }, [stage, phase]);
-  const upgraded = useCallback(() => setUpgrading(false), []);
+  }, [stage, phase, reducedMotion]);
+
+  const afterSit = useCallback(() => {
+    if (moving) {
+      setMoving(false);
+      setArrival("update");
+      setPhase("seated");
+    } else setPhase(booted ? "seated" : "loading");
+  }, [booted, moving]);
+  const updated = useCallback(() => setArrival("banner"), []);
+  const bannerGone = useCallback(() => setArrival(null), []);
   const sitDown = () => (reducedMotion ? afterSit() : setPhase("sit"));
   const booted_ = useCallback(() => {
     setBooted(true);
@@ -59,7 +85,7 @@ export default function RoomFrame({ stage, screen, windows, firstVisit, fastPc }
   }, []);
 
   // Zoom only applies to the desktop on the computer layout (docs/ROOM.md > During play).
-  const { zoomed: zoomChoice, toggle: toggleZoom } = useZoom();
+  const { view: zoomChoice, next: nextZoom } = useZoom();
   // The view slides only when the player zooms, never while the browser window is resized.
   const [sliding, setSliding] = useState(false);
   const slideTimer = useRef<ReturnType<typeof setTimeout> | undefined>(undefined);
@@ -70,15 +96,23 @@ export default function RoomFrame({ stage, screen, windows, firstVisit, fastPc }
       clearTimeout(slideTimer.current);
       slideTimer.current = setTimeout(() => setSliding(false), 550);
     }
-    toggleZoom();
-  }, [reducedMotion, toggleZoom]);
+    nextZoom();
+  }, [reducedMotion, nextZoom]);
 
   const clip = phase === "walk" || phase === "sit";
   const onDesktop = phase === "loading" || phase === "seated";
-  const fullScreenDesktop = isPhone && onDesktop;
-  const zoomed = zoomChoice && onDesktop && !isPhone;
+  const view = onDesktop && !isPhone ? zoomChoice : "out";
+  const zoomed = view !== "out";
+  // The Second monitor's screen shows beside the main one when zoomed in or full screen
+  // (docs/UPGRADES.md > Your setup). Not during the loading bar.
+  const { state } = useGameContext();
+  const dual = zoomed && phase === "seated" && state.owned.includes(itemEffects.secondMonitor);
+  // Full screen, and the phone, show no room and no monitor frame. So does zoomed in with two screens,
+  // which draws its own frames over the darkened room.
+  const fullScreenDesktop = (isPhone && onDesktop) || view === "full";
+  const framedPair = view === "in" && dual;
 
-  const pic = placePicture(screen.width, screen.height, room, isPhone, zoomed);
+  const pic = placePicture(screen.width, screen.height, room, isPhone, zoomed && !framedPair);
   const picStyle: React.CSSProperties = {
     position: "absolute",
     left: pic.left,
@@ -90,23 +124,25 @@ export default function RoomFrame({ stage, screen, windows, firstVisit, fastPc }
 
   const desktop =
     phase === "loading" ? (
-      <LoadingBar version={osForStage(stage).version} onDone={booted_} reducedMotion={reducedMotion} fast={fastPc} />
+      <LoadingBar version={osForStage(stage).version} onDone={booted_} reducedMotion={reducedMotion} />
     ) : (
       <>
         <Desktop
           isPhone={isPhone}
           reducedMotion={reducedMotion}
           windows={windows}
-          paused={upgrading}
+          paused={arrival !== null}
           onStandUp={() => setPhase("desk")}
           standUpInMenu={isPhone || zoomed}
-          zoom={isPhone ? undefined : { zoomed, onToggle: onZoom }}
+          zoom={isPhone ? undefined : { view, onNext: onZoom }}
+          dual={dual}
         />
-        {upgrading && (
+        {arrival === "update" && (
           <div className="absolute inset-0 z-[2000]">
-            <LoadingBar version={osForStage(stage).version} upgrade onDone={upgraded} reducedMotion={reducedMotion} fast={fastPc} />
+            <OsUpdate os={osForStage(stage)} onDone={updated} reducedMotion={reducedMotion} />
           </div>
         )}
+        {arrival === "banner" && <MilestoneBanner os={osForStage(stage)} stage={stage} onDone={bannerGone} reducedMotion={reducedMotion} />}
       </>
     );
 
@@ -119,8 +155,8 @@ export default function RoomFrame({ stage, screen, windows, firstVisit, fastPc }
         e.currentTarget.scrollTop = 0;
       }}
     >
-      {!fullScreenDesktop && (
-        <div style={picStyle}>
+      {(!fullScreenDesktop || framedPair) && (
+        <div style={picStyle} className={framedPair ? "brightness-[0.35]" : undefined}>
           {clip ? (
             <video
               key={phase}
@@ -150,7 +186,7 @@ export default function RoomFrame({ stage, screen, windows, firstVisit, fastPc }
 
           {phase === "desk" && <div className="monitor-pulse rounded-sm" style={boxStyle(room.deskBox)} aria-hidden="true" />}
 
-          {onDesktop && !isPhone && (
+          {onDesktop && !isPhone && !framedPair && !fullScreenDesktop && (
             <div className="overflow-hidden" style={boxStyle(room.screenBox)}>
               {desktop}
             </div>
@@ -158,7 +194,15 @@ export default function RoomFrame({ stage, screen, windows, firstVisit, fastPc }
         </div>
       )}
 
-      {fullScreenDesktop && <div className="absolute inset-0">{desktop}</div>}
+      {fullScreenDesktop && !framedPair && <div className="absolute inset-0">{desktop}</div>}
+      {framedPair && (
+        <div
+          className="absolute overflow-hidden rounded-lg"
+          style={{ ...pairBox(screen.width, screen.height, room.screenBox), border: `${PAIR_FRAME}px solid ${osForStage(stage).colours.taskbar}` }}
+        >
+          <div className="relative h-full w-full">{desktop}</div>
+        </div>
+      )}
 
       {/* Tap anywhere on the desk still to sit down. */}
       {phase === "desk" && (

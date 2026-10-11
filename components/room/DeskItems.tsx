@@ -32,17 +32,6 @@ const drawings: Record<string, { label: string; picture: React.ReactNode }> = {
       </svg>
     ),
   },
-  // A newer tower PC with a small light.
-  "gear-pc": {
-    label: "Faster PC",
-    picture: (
-      <svg width="64" height="120" viewBox="0 0 64 120" aria-hidden="true">
-        <rect x="6" y="4" width="52" height="112" rx="5" fill="#2B2F36" stroke={INK} strokeWidth="3" />
-        <path d="M16 20 H48 M16 30 H48" stroke="#5A6270" strokeWidth="3" />
-        <circle cx="32" cy="96" r="5" fill="#4AD0FF" />
-      </svg>
-    ),
-  },
 };
 
 export default function DeskItems() {

@@ -29,7 +29,7 @@ A visual learner who is new to backend architecture. The game must be dyslexia-f
 | GAME_LOGIC.md | The engine: game state, player actions, the order things happen in, open questions | Writing the reducer or any game logic |
 | ROOM.md | The room around the computer: the intro, sitting down, the five rooms, the desk, and how to make the clips | Building the intro, the room frame or anything outside the screen |
 | EXTRA_STEPS.md | The 10 Triage steps and 5 Tune steps | Building Terminal, SysDash or either extra step |
-| UPGRADES.md | The 19 Shop items with prices, users gained, effects and request emails | Building the Shop, request emails or any upgrade effect |
+| UPGRADES.md | The 22 Shop items with prices, users gained, effects and request emails | Building the Shop, request emails or any upgrade effect |
 | UI_THEME.md | Desktop look, icons, windows, alerts, sender badges, the three work apps, readability rules | Building anything on screen |
 
 ## Rules for the AI building this

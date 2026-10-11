@@ -173,7 +173,7 @@ const points = Object.fromEntries(all(U, /^\| (Small|Medium|Big|None|Some|Lots|H
 const starPay = Object.fromEntries(all(G, /^\| ([123]) \| ([\d.]+) \|$/gm).map((m) => [m[1], Number(m[2])]));
 const items = {};
 const unlocks = {};
-for (const m of all(U, /^\| ((?:feat|srv|gear)-[a-z]+) \| (.*?) \| (\d) \| (Small|Medium|Big) \| (None|Some|Lots|Huge) \| ([\d,]+) \| £([\d,]+) \|(.*)$/gm)) {
+for (const m of all(U, /^\| ((?:feat|srv|gear|pc)-[a-z]+) \| (.*?) \| (\d) \| (Small|Medium|Big) \| (None|Some|Lots|Huge) \| ([\d,]+) \| £([\d,]+) \|(.*)$/gm)) {
   const [, id, name, st, change, users, gain, price, rest] = m;
   items[id] = { id, name, stage: Number(st), change, users, gain: num(gain), price: num(price), rest };
   const expected = Math.round(baseCash[st] * (points[change] + points[users]));
@@ -218,12 +218,39 @@ for (const d of Object.values(items)) {
   if (tier !== d.users) problem(`${d.id}: brings ${(share * 100).toFixed(1)}% of its stage's growth, which is "${tier}", not "${d.users}"`);
 }
 
+// ---------------------------------------------------------------- new computers
+// UPGRADES.md > New computers: one per stage after the first, sold in the stage before it, and
+// asked for right after that stage's last incident.
+const computers = {};
+for (const d of Object.values(items).filter((i) => i.id.startsWith("pc-"))) {
+  const to = Number((d.rest.match(/Needed to move to Stage (\d)/) ?? [])[1]);
+  if (!to) { problem(`${d.id}: its effect should say "Needed to move to Stage <n>"`); continue; }
+  if (d.stage !== to - 1) problem(`${d.id}: moves to Stage ${to}, so it should be sold in Stage ${to - 1}`);
+  if (computers[to]) problem(`Stage ${to} has more than one new computer`);
+  computers[to] = d;
+}
+const stages = [...new Set(order.map((id) => incidents[id]?.stage).filter(Boolean))];
+for (const st of stages.slice(1)) {
+  const pc = computers[st];
+  if (!pc) { problem(`UPGRADES.md: no new computer moves the player to Stage ${st}`); continue; }
+  const lastOfStage = order.filter((id) => incidents[id]?.stage === st - 1).at(-1);
+  const req = all(U, new RegExp(`^\\| ${pc.id} \\| \\w+ \\| After (\\S+) \\|`, "gm"))[0];
+  if (!req || req[1] !== lastOfStage) problem(`${pc.id}: its request email should arrive after ${lastOfStage}, the last incident of Stage ${st - 1}`);
+}
+
 // ---------------------------------------------------------------- money
-// A two-star player who buys only must-have features should never need a loan.
+// A two-star player who buys only must-have features and the new computers should never need a loan.
 let cash = 0;
+let cashStage = 1;
 for (const id of order) {
   const d = incidents[id];
   if (!d) continue;
+  if (d.stage !== cashStage && computers[d.stage]) {
+    const pc = computers[d.stage];
+    if (cash < pc.price) problem(`${pc.id}: a two-star player is £${fmt(pc.price - cash)} short when it is needed`);
+    cash = Math.max(0, cash - pc.price);
+  }
+  cashStage = d.stage;
   if (d.starts !== "automatic" && items[d.starts]) {
     if (cash < items[d.starts].price) problem(`${d.starts}: a two-star player is £${fmt(items[d.starts].price - cash)} short when it is needed`);
     cash = Math.max(0, cash - items[d.starts].price);
@@ -282,7 +309,7 @@ for (const d of Object.values(incidents)) {
 const tutorial = [...all(G, /^\d\. "([^"]+)" \(/gm), ...all(G, /^\| First .*? \| "([^"]+)" \|$/gm)];
 for (const [, text] of tutorial) if (words(text) > MAX_TUTORIAL_WORDS) problem(`Tutorial text is over ${MAX_TUTORIAL_WORDS} words: "${text}"`);
 
-const requests = Object.fromEntries(all(U, /^\| ((?:feat|srv|gear)-[a-z]+) \| (\w+) \| (.*?) \| "(.*)" \|$/gm).map((m) => [m[1], { from: m[2], when: m[3] }]));
+const requests = Object.fromEntries(all(U, /^\| ((?:feat|srv|gear|pc)-[a-z]+) \| (\w+) \| (.*?) \| "(.*)" \|$/gm).map((m) => [m[1], { from: m[2], when: m[3] }]));
 for (const id of Object.keys(items)) {
   if (id.startsWith("gear-")) { if (requests[id]) problem(`${id}: "Your setup" items have no request email`); }
   else if (!requests[id]) problem(`${id}: has no request email in UPGRADES.md`);
@@ -392,6 +419,7 @@ for (const level of ["INFO", "WARN", "ERROR"]) {
 }
 const triaged = [];
 const tuned = [];
+const triageLines = {};
 for (const { m, body } of sections(E, /^## ([TU])(\d+) on (\S+) (.*)$/gm)) {
   const sid = m[1] + m[2];
   const inc = incidents[m[3]];
@@ -401,6 +429,7 @@ for (const { m, body } of sections(E, /^## ([TU])(\d+) on (\S+) (.*)$/gm)) {
   if (m[1] === "T") {
     triaged.push(m[3]);
     const lines = all(body, /^  - \*\*(routine|symptom|cause)\.\*\* (INFO|WARN|ERROR) ([a-z]+): "(.*)"$/gm);
+    triageLines[sid] = lines;
     if (lines.length !== 6) problem(`${sid}: needs exactly 6 log lines, found ${lines.length}`);
     for (const kind of ["cause", "symptom"]) if (lines.filter((l) => l[1] === kind).length !== 1) problem(`${sid}: needs exactly one ${kind} line`);
     for (const l of lines) {
@@ -423,8 +452,42 @@ for (const { m, body } of sections(E, /^## ([TU])(\d+) on (\S+) (.*)$/gm)) {
 for (const [label, ids] of [["Triage", triaged], ["Tune", tuned]]) {
   if (new Set(ids).size !== ids.length) problem(`EXTRA_STEPS.md: an incident has more than one ${label} step`);
 }
+
+// EXTRA_STEPS.md > Terminal lessons: one lesson per Triage step, and its command must keep the cause line.
+// This runs each command the way the game does (see "How a command runs").
+function runCommand(command, lines) {
+  const words = command.replace(/[\u201c\u201d]/g, '"').trim().split(/\s+/);
+  const text = (l) => `${l[2]} ${l[3]}: ${l[4]}`;
+  if (words[0] === "cat" || words[0] === "tail") return lines;
+  if (words[0] === "journalctl" && words[1] === "-p" && words[2] === "warning") return lines.filter((l) => l[2] !== "INFO");
+  if (words[0] === "grep") {
+    const flags = words.filter((w) => w.startsWith("-"));
+    const pattern = words.filter((w) => !w.startsWith("-"))[1]?.replace(/^"|"$/g, "");
+    if (!pattern) return null;
+    const terms = flags.includes("-E") ? pattern.split("|") : [pattern];
+    const has = (l) => terms.some((p) => (flags.includes("-i") ? text(l).toLowerCase().includes(p.toLowerCase()) : text(l).includes(p)));
+    return lines.filter((l) => (flags.includes("-v") ? !has(l) : has(l)));
+  }
+  return null;
+}
+const lessons = {};
+for (const { m, body } of sections(cut(E, "# Terminal lessons", "# Tune steps"), /^## Lesson for (T\d+)$/gm)) {
+  const sid = m[1];
+  lessons[sid] = true;
+  if (!triageLines[sid]) { problem(`EXTRA_STEPS.md: a lesson is for ${sid}, which is not a Triage step`); continue; }
+  const command = (body.match(/\*\*Command:\*\* `(.*)`/) ?? [])[1];
+  const learn = (body.match(/\*\*Learn:\*\* "(.*)"/) ?? [])[1];
+  const task = (body.match(/\*\*Task:\*\* "(.*)"/) ?? [])[1];
+  if (!command || !learn || !task) { problem(`EXTRA_STEPS.md: the lesson for ${sid} needs a Command, Learn and Task`); continue; }
+  if (words(learn) > 25) problem(`EXTRA_STEPS.md: the lesson for ${sid} has a Learn text over 25 words`);
+  if (words(task) >= 12) problem(`EXTRA_STEPS.md: the lesson for ${sid} has a Task of 12 words or more`);
+  const kept = runCommand(command, triageLines[sid]);
+  if (!kept) problem(`EXTRA_STEPS.md: the lesson for ${sid} uses a command the game cannot run: ${command}`);
+  else if (!kept.some((l) => l[1] === "cause")) problem(`EXTRA_STEPS.md: the command for ${sid} hides the cause line`);
+}
+for (const sid of Object.keys(triageLines)) if (!lessons[sid]) problem(`EXTRA_STEPS.md: Triage step ${sid} has no lesson`);
 // UI_THEME.md > Shop item icons: one row for every Shop item, with the same name, and one for the lifeline.
-const itemIcons = Object.fromEntries(all(cut(UI, "## Shop item icons", "## Test first"), /^\| ((?:feat|srv|gear)-[a-z]+|lifeline) \| ([^|]+) \| [^|]+ \|$/gm).map((m) => [m[1], m[2].trim()]));
+const itemIcons = Object.fromEntries(all(cut(UI, "## Shop item icons", "## Test first"), /^\| ((?:feat|srv|gear|pc)-[a-z]+|lifeline) \| ([^|]+) \| [^|]+ \|$/gm).map((m) => [m[1], m[2].trim()]));
 for (const d of Object.values(items)) {
   if (!itemIcons[d.id]) problem(`UI_THEME.md: Shop item icons has no row for ${d.id}`);
   else if (itemIcons[d.id] !== d.name.trim()) problem(`UI_THEME.md: Shop item icons calls ${d.id} "${itemIcons[d.id]}", but UPGRADES.md calls it "${d.name.trim()}"`);

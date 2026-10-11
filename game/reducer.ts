@@ -25,6 +25,7 @@ import {
   badPenalty,
   callButton,
   canBuy,
+  computerNeeded,
   canBuyLifeline,
   canTestFirst,
   currentBuild,
@@ -45,9 +46,9 @@ import {
 } from "./rules";
 import type { Action, Canvas, GameState, Run, Settings } from "./types";
 
-// Version 2 places each part on the Blueprint canvas. Version 3 adds the Standby server and Faster PC
-// fields to the run (game/save.ts has the migrations).
-export const SAVE_VERSION = 3;
+// Version 2 places each part on the Blueprint canvas. Version 3 adds the Standby server and late item
+// fields to the run. Version 4 removes the Faster PC (game/save.ts has the migrations).
+export const SAVE_VERSION = 4;
 
 export const defaultSettings: Settings = {
   textSize: "normal",
@@ -221,6 +222,9 @@ function solve(state: GameState): GameState {
     s = { ...s, refreshersDue: [...s.refreshersDue, row.id] };
   }
   s = receiveCash(s, incidentPay(state));
+  // The last incident of a stage: Maya asks for the new computer now, so it can be bought before "Next".
+  const pc = computerNeeded(s);
+  if (pc) s = sendEmail(s, `request:${pc.id}`);
 
   // The player wins when the final incident in the play order is solved.
   if (row.id === playOrder[playOrder.length - 1].id) s = sendEmail({ ...s, won: true }, "opener:win");
@@ -389,7 +393,7 @@ function useLifeline(state: GameState): GameState {
 
 // docs/GAME_LOGIC.md > After the player taps Next.
 function next(state: GameState): GameState {
-  if (state.phase !== "solved" || state.won) return state;
+  if (state.phase !== "solved" || state.won || computerNeeded(state)) return state;
   const incident = currentIncident(state)!;
   let s = state;
   // The tutorial runs inside its incident only, so it ends when the player moves on.

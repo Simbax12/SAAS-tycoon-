@@ -4,6 +4,7 @@ import { useEffect, useRef, useState } from "react";
 import { tips, TUTORIAL_INCIDENT, tutorialSteps, type TipId, type TourTarget } from "@/data/tutorial";
 import { useGameContext } from "@/components/useGame";
 import { currentIncident, currentRow } from "@/game/rules";
+import { neededApp } from "./neededApp";
 import type { GameState } from "@/game/types";
 import { scrollWithin } from "./scrollWithin";
 import type { OpenWindow } from "./useWindows";
@@ -44,17 +45,24 @@ const LAST_STEP = tutorialSteps.length;
 // The tutorial step the player has already reached by their own actions, so skipping ahead
 // with the mouse never leaves the spotlight behind.
 function reachedStep(state: GameState, windows: OpenWindow[]): number {
-  if (state.phase === "solved") return 7;
-  if (state.phase === "choosing" || state.phase === "guided") return state.run.calls > 0 ? 7 : 4;
+  if (state.phase === "solved") return 8;
+  if (state.phase === "choosing" || state.phase === "guided") {
+    if (state.run.calls > 0) return 8;
+    return windows.some((w) => w.id === "incident") ? 5 : 4;
+  }
   if (state.emails.some((e) => e.key === `arrive:${TUTORIAL_INCIDENT}` && e.read)) return 3;
   if (windows.some((w) => w.id === "inbox")) return 2;
   return 1;
 }
 
 // Whether a tip's moment is happening now (docs/GAME_DESIGN.md > First-time tips).
-function tipMoment(id: TipId, state: GameState): boolean {
+function tipMoment(id: TipId, state: GameState, windows: OpenWindow[]): boolean {
   const kind = currentRow(state)?.kind;
   switch (id) {
+    case "openApp": {
+      const app = neededApp(state);
+      return app !== null && !windows.some((w) => w.id === app);
+    }
     case "alert":
       return state.phase === "arrived" && currentIncident(state)?.arrives.by === "alert";
     case "request":
@@ -113,7 +121,7 @@ export default function Guide({ root, windows, isPhone, tourStep, onTourStep, on
     if (live !== null && live !== state.tutorial) dispatch({ type: "tutorial", step: live });
   }, [live, state.tutorial, dispatch]);
 
-  // Step 8 is done once the player opens the Shop.
+  // The last step is done once the player opens the Shop.
   const shopOpen = windows.some((w) => w.id === "shop");
   useEffect(() => {
     if (live === LAST_STEP && shopOpen) dispatch({ type: "tutorial", step: "done" });
@@ -142,29 +150,30 @@ export default function Guide({ root, windows, isPhone, tourStep, onTourStep, on
     };
   } else if (live !== null) {
     const s = tutorialSteps[live - 1];
-    // Steps 1 to 3 wait for the incident to arrive. Step 7 waits until the fix is in.
-    const ready = live <= 3 ? state.phase === "arrived" : live <= 6 ? state.phase === "choosing" : state.phase === "solved";
+    // Steps 1 to 3 wait for the incident to arrive. Step 8 waits until the fix is in.
+    const ready = live <= 3 ? state.phase === "arrived" : live <= 7 ? state.phase === "choosing" : state.phase === "solved";
     if (ready) {
       shown = {
         key: `tutorial-${s.step}`,
         title: "Tutorial",
         text: s.text,
         target: s.target,
-        // The failing part, the cards and the counters are for looking. Step 5 shows the cards
-        // before step 6 teaches the call, so the cards wait until the spotlight moves on.
-        tappable: ![4, 5, 7].includes(s.step),
+        // The failing part, the cards and the counters are for looking. Step 6 shows the cards
+        // before step 7 teaches the call, so the cards wait until the spotlight moves on.
+        tappable: ![5, 6, 8].includes(s.step),
         buttons: [liveNext(s.step), skip],
       };
     }
   }
 
-  const tipNow = tips.find((t) => !state.tipsSeen.includes(t.id) && tipMoment(t.id, state));
+  const tipNow = tips.find((t) => !state.tipsSeen.includes(t.id) && tipMoment(t.id, state, windows));
   if (!shown && tipNow && live === null) {
     shown = {
       key: `tip-${tipNow.id}`,
       title: "Tip",
       text: tipNow.text,
-      target: tipNow.target,
+      // The open-app tip lights up the icon of the app to open.
+      target: tipNow.target === "openApp" ? ((`${neededApp(state)}Icon` as TourTarget)) : tipNow.target,
       tappable: true,
       buttons: [{ label: "OK", onClick: () => dispatch({ type: "tipSeen", id: tipNow.id }) }],
     };
@@ -195,7 +204,11 @@ export default function Guide({ root, windows, isPhone, tourStep, onTourStep, on
       const el = root.current;
       if (el) {
         const box = el.getBoundingClientRect();
-        const r = findTarget(el, target, overlay.current);
+        // An app's icon can be hidden under a window. Then light up the Start button, and once the
+        // Start menu is open, the app's row in it.
+        const r =
+          findTarget(el, target, overlay.current) ??
+          (target.endsWith("Icon") ? findTarget(el, "startButton", overlay.current) : null);
         const key = [box.width, box.height, ...(r ? [r.left, r.top, r.width, r.height] : [])].map(Math.round).join(",");
         if (key !== last) {
           last = key;

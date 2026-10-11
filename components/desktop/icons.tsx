@@ -187,6 +187,40 @@ export function CloseIcon({ size = 20 }: IconProps) {
   );
 }
 
+// Title bar buttons (docs/UI_THEME.md > Windows): minimise, maximise, restore, move to the other screen.
+export function MinimiseIcon({ size = 20 }: IconProps) {
+  return (
+    <svg width={size} height={size} viewBox="0 0 20 20" aria-hidden="true" focusable="false">
+      <path d="M5 15 H15" stroke="currentColor" strokeWidth="2.8" strokeLinecap="round" />
+    </svg>
+  );
+}
+
+export function MaximiseIcon({ size = 20, restore = false }: IconProps & { restore?: boolean }) {
+  return (
+    <svg width={size} height={size} viewBox="0 0 20 20" aria-hidden="true" focusable="false" fill="none" stroke="currentColor" strokeWidth="2.2">
+      {restore ? (
+        <>
+          <rect x="3.5" y="7" width="9.5" height="9.5" />
+          <path d="M7 7 V3.5 H16.5 V13 H13" />
+        </>
+      ) : (
+        <rect x="4" y="4" width="12" height="12" />
+      )}
+    </svg>
+  );
+}
+
+export function OtherScreenIcon({ size = 22 }: IconProps) {
+  return (
+    <svg width={size} height={size} viewBox="0 0 22 22" aria-hidden="true" focusable="false" fill="none" stroke="currentColor" strokeWidth="2" strokeLinejoin="round" strokeLinecap="round">
+      <rect x="1.5" y="4" width="8" height="7" />
+      <rect x="12.5" y="4" width="8" height="7" />
+      <path d="M5 15 H17 M14 12.5 L17 15 L14 17.5" />
+    </svg>
+  );
+}
+
 export function StandUpIcon({ size = 24 }: IconProps) {
   return (
     <svg width={size} height={size} viewBox="0 0 24 24" aria-hidden="true" focusable="false">
@@ -197,12 +231,21 @@ export function StandUpIcon({ size = 24 }: IconProps) {
 }
 
 // A magnifying glass: a plus to zoom in, a minus to zoom out (docs/UI_THEME.md > Desktop).
-export function ZoomIcon({ size = 26, zoomedIn = false }: IconProps & { zoomedIn?: boolean }) {
+// The zoom button's icon shows what it does next: a plus to zoom in, four corners for full screen,
+// a minus to zoom out (docs/UI_THEME.md > Desktop).
+export function ZoomIcon({ size = 26, next }: IconProps & { next: "in" | "full" | "out" }) {
+  if (next === "full") {
+    return (
+      <svg width={size} height={size} viewBox="0 0 24 24" aria-hidden="true" focusable="false" fill="none" stroke="currentColor" strokeWidth="2.4" strokeLinecap="round" strokeLinejoin="round">
+        <path d="M3 9 V3 H9 M15 3 H21 V9 M21 15 V21 H15 M9 21 H3 V15" />
+      </svg>
+    );
+  }
   return (
     <svg width={size} height={size} viewBox="0 0 24 24" aria-hidden="true" focusable="false">
       <circle cx="10" cy="10" r="6.5" stroke="currentColor" strokeWidth="2.2" fill="none" />
       <path d="M15 15 L21 21" stroke="currentColor" strokeWidth="2.6" strokeLinecap="round" />
-      <path d={zoomedIn ? "M7 10 H13" : "M7 10 H13 M10 7 V13"} stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" />
+      <path d={next === "out" ? "M7 10 H13" : "M7 10 H13 M10 7 V13"} stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" />
     </svg>
   );
 }

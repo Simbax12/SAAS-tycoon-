@@ -46,11 +46,13 @@ Blip has moved somewhere bigger. Before Maya's stage opening email, the new stag
 - Bottom left: items the player bought from "Your setup", drawn on the desk (see "The desk" below).
 - Bottom right: a "Stand up" button. It shows the desk still and "Tap the screen to sit down". This is the pause screen. The game state does not change.
 
-**Zoom:** on the computer layout, a zoom button in the taskbar tray switches between two views (see UI_THEME.md > Desktop).
+**Zoom:** on the computer layout, a zoom button in the taskbar tray steps through three views: zoomed out, zoomed in, full screen, then back to zoomed out (see UI_THEME.md > Desktop).
 
 - **Zoomed out**, the view above: the whole monitor, with the room around it.
 - **Zoomed in:** the screen box fills the window, with 20px of the room picture left showing on every side, so a thin strip of the monitor's frame is still visible. The stage name is hidden, and "Stand up" moves into the Start menu, as on a phone, so nothing covers the desktop.
-- The view slides smoothly from one to the other in half a second. With reduced motion it switches at once.
+- **Full screen:** the desktop fills the whole browser window. No room and no monitor frame show. "Stand up" stays in the Start menu.
+- With the Second monitor, zoomed in shows two screens side by side over the room picture, darkened, each in a plain frame drawn in the version's taskbar colour. Each screen has the shape of the room's screen box, but is never wider than 4 by 3, so both stay tall enough to read. Full screen splits the browser window between the two screens, with a thin bezel between them (see UPGRADES.md > Your setup).
+- The view slides smoothly from one to the next in half a second. With reduced motion it switches at once.
 - The choice is remembered on this device, the same way as a setting. It is not part of the game's save.
 - The phone layout has no zoom button, because the desktop already fills the screen.
 
@@ -88,7 +90,6 @@ Items from "Your setup" in the Shop appear in the room on the computer layout, s
 |---|---|
 | gear-monitor | A second monitor beside the main one |
 | gear-handbook | A thick book lying on the desk |
-| gear-pc | A newer tower PC with a small light |
 | gear-wallpapers | Nothing in the room. The wallpaper changes on the screen |
 
 These are small 2D pictures laid over the seat still, so no new clip is needed when one is bought.

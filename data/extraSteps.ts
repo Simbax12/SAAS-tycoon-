@@ -287,9 +287,38 @@ export const triageText = {
   whatHappened: "What happened:",
   bonusOffer: (bonus: string) => `Wrong taps cost nothing. Right first time: +${bonus} bonus.`,
   bonusEarned: (bonus: string) => `Triage bonus: +${bonus}`,
-  nextStep: "Now pick a fix",
+  nextStep: "Now open the Incident window and pick a fix.",
   // Maya's two bubbles, in the first Triage step of the play order.
   firstTime: ["Logs are the servers' diary. Every action writes a line.", "A symptom is what you notice. The cause is why it happened."],
+};
+
+// docs/EXTRA_STEPS.md > Terminal lessons: one lesson per Triage step, by the step's id.
+// `command` is what Task 1 asks for. `learn` shows above the tasks, and `task` is Task 1's words.
+export type Lesson = { stepId: string; command: string; learn: string; task: string };
+
+export const lessons: Lesson[] = [
+  { stepId: "T1", command: "cat blip.log", learn: "Servers write a log: one line for everything they do. cat prints a whole file to the screen.", task: "Print the whole of blip.log." },
+  { stepId: "T6", command: "tail blip.log", learn: "Logs grow all day long. tail shows only the newest lines, at the end of the file.", task: "Show the newest lines of blip.log." },
+  { stepId: "T2", command: "grep WARN blip.log", learn: "grep keeps only the lines that contain a word. Search for WARN to see what looks odd.", task: "Keep only the WARN lines." },
+  { stepId: "T7", command: "grep -v INFO blip.log", learn: "grep -v does the opposite: it hides lines with a word. INFO lines are normal news.", task: "Hide every INFO line." },
+  { stepId: "T3", command: "grep ERROR blip.log", learn: "When something is down, start with the errors. grep ERROR keeps only the failures.", task: "Find the ERROR lines." },
+  { stepId: "T8", command: "grep -i error blip.log", learn: "grep cares about upper and lower case. Add -i to match error, Error and ERROR.", task: "Find the errors, in any case." },
+  { stepId: "T4", command: 'grep -E "WARN|ERROR" blip.log', learn: "grep -E can look for several words at once. The bar between them means or.", task: "Show the WARN and ERROR lines together." },
+  { stepId: "T9", command: "journalctl -p warning", learn: "journalctl reads the system's own log. -p warning shows warnings and anything worse.", task: "Show warnings and worse from the system log." },
+  { stepId: "T10", command: "grep node blip.log", learn: "To check one service, grep for its name. node runs Blip's code, so new releases land there.", task: "Show only the node lines." },
+  { stepId: "T5", command: "grep nginx blip.log", learn: "nginx is Blip's front door. Every visitor passes it, so attacks show up there first.", task: "Show only the nginx lines." },
+];
+
+export const lessonFor = (stepId: string): Lesson | undefined => lessons.find((l) => l.stepId === stepId);
+
+// docs/EXTRA_STEPS.md > How a command runs: the file, and what the terminal says back.
+export const LOG_FILE = "blip.log";
+export const terminalText = {
+  task2: "Tap the line that caused this.",
+  help: "Type the command in the task. Stuck? Tap Hint.",
+  notFound: (command: string) => `${command}: command not found`,
+  noFile: (file: string) => `${file}: No such file or directory`,
+  notTask: "That works, but the task asks for something else.",
 };
 
 // Copied from docs/GAME_DESIGN.md > Triage, in Terminal: what a wrong tap says.

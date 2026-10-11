@@ -87,7 +87,7 @@ function OpenEmail({ view, onBack }: { view: EmailView; onBack: () => void }) {
           onClick={() => openShopAt(view.shopItem!)}
           className="min-h-12 rounded-md border-2 border-ink bg-[#FFE08A] px-5 text-[18px] font-bold hover:bg-[#FFD35C]"
         >
-          Open in Shop
+          Find in Shop
         </button>
       )}
     </article>

@@ -22,6 +22,7 @@ import { AppIcon } from "@/components/desktop/icons";
 import { useDesktop } from "@/components/desktop/DesktopContext";
 import type { AppId } from "@/data/desktopApps";
 import { appById } from "@/data/desktopApps";
+import { openHint } from "@/components/desktop/neededApp";
 import { useEffect, useRef, useState } from "react";
 import { ShopIcon } from "@/components/desktop/shopIcons";
 import { scrollWithin } from "@/components/desktop/scrollWithin";
@@ -30,6 +31,7 @@ import { alsoSeenAs, pipsFor, useWhenFor } from "@/game/patternBook";
 import {
   callButton,
   canTestFirst,
+  computerNeeded,
   cluesGiven,
   currentIncident,
   currentRow,
@@ -153,7 +155,7 @@ export default function Incident() {
       {phase === "triage" && (
         <>
           <p className="text-[18px]">{incident.arrives.text}</p>
-          <OpenAppButton id="terminal" />
+          <OpenAppHint id="terminal" />
         </>
       )}
 
@@ -161,7 +163,7 @@ export default function Incident() {
       {phase === "tune" && (
         <>
           <Fixed result={right.result} />
-          <OpenAppButton id="sysdash" />
+          <OpenAppHint id="sysdash" />
         </>
       )}
 
@@ -333,15 +335,14 @@ function StandbyLine() {
   return state.run.standbySaved && line ? <MayaSays>{line}</MayaSays> : null;
 }
 
-// A button that opens a work app, with its icon and name.
-// It is labelled with the app's name, unless the docs give it other words.
-export function OpenAppButton({ id, label }: { id: AppId; label?: string }) {
-  const { openApp } = useDesktop();
+// Apps never open by themselves. This says where to open one, with its icon
+// (docs/GAME_DESIGN.md > Opening apps). `text` replaces the usual words where the docs give others.
+export function OpenAppHint({ id, text }: { id: AppId; text?: string }) {
   return (
-    <button type="button" autoFocus onClick={() => openApp(id)} className={`${button} flex items-center gap-2 self-start bg-[#FFE08A] text-ink hover:bg-[#FFD35C]`}>
+    <p className="flex items-center gap-2 self-start rounded-md border-2 border-[#C9A400] bg-[#FFF3C4] px-3 py-2 text-[18px] font-bold text-ink" role="status">
       <AppIcon id={id} size={30} />
-      {label ?? appById(id).name}
-    </button>
+      {text ?? openHint(appById(id).name)}
+    </p>
   );
 }
 
@@ -377,7 +378,7 @@ function BuildIncident({ build }: { build: Build }) {
       {(phase === "choosing" || phase === "guided") && (
         <>
           <MayaSays>{phase === "guided" ? build.result : BUILD_BRIEF}</MayaSays>
-          <OpenAppButton id="blueprint" />
+          <OpenAppHint id="blueprint" />
         </>
       )}
       {phase === "solved" && <Solved result={build.result} />}
@@ -516,9 +517,15 @@ export function Solved({ result }: { result: string }) {
         <Stars stars={stars} />
       </div>
 
-      {/* Once the game is won, the win screen shows instead of Next (docs/GAME_DESIGN.md > Win screen). */}
+      {/* Once the game is won, the win screen shows instead of Next (docs/GAME_DESIGN.md > Win screen).
+          At the end of a stage, Next waits for the new computer (docs/GAME_DESIGN.md > Moving to a new stage). */}
       {state.won ? (
-        <OpenAppButton id="win" />
+        <OpenAppHint id="win" />
+      ) : computerNeeded(state) ? (
+        <p className="flex items-center gap-2 text-[18px] font-bold" role="status">
+          <ShopIcon id={computerNeeded(state)!.id} size={32} />
+          Buy the new computer in the Shop.
+        </p>
       ) : (
         <button type="button" autoFocus onClick={() => dispatch({ type: "next" })} className={`${button} self-start bg-[#FFE08A] hover:bg-[#FFD35C]`}>
           Next

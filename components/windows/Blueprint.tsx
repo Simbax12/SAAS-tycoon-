@@ -461,8 +461,10 @@ function Workbench({ build }: { build: Build }) {
     if (consumeClick() || !editable) return;
     setTrayPick(null);
     if (selected?.kind === "part" && selected.name !== name) {
-      // The second part tapped: an arrow from the first to the second.
-      dispatch({ type: "drawArrow", from: selected.name, to: name });
+      // The second part tapped: an arrow from the first to the second. If that arrow is already
+      // drawn, tapping the same two parts again removes it (docs/UI_THEME.md > Blueprint).
+      const joined = canvas.arrows.some((a) => sameArrow(a, { from: selected.name, to: name }));
+      dispatch({ type: joined ? "deleteArrow" : "drawArrow", from: selected.name, to: name });
       setSelected(null);
       return;
     }

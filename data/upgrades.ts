@@ -4,7 +4,7 @@
 import type { PersonId } from "./people";
 import type { StageNumber } from "./stages";
 
-export type ShopGroup = "must" | "nice" | "server" | "setup";
+export type ShopGroup = "must" | "nice" | "server" | "setup" | "computer";
 export type Change = "Small" | "Medium" | "Big";
 export type UsersSize = "None" | "Some" | "Lots" | "Huge";
 
@@ -19,6 +19,8 @@ export type Upgrade = {
   price: number;
   // The incident this feature unlocks.
   unlocks?: string;
+  // A new computer: the stage it moves the player to (docs/UPGRADES.md > New computers).
+  movesTo?: StageNumber;
   // The Effect column, for servers and "Your setup" items, without Maya's line.
   effect?: string;
   // What Maya says when the effect happens, from the end of the Effect column.
@@ -71,8 +73,8 @@ export const upgrades: Upgrade[] = [
 
   // Your setup
   {
-    id: "gear-monitor", name: "Second monitor", group: "setup", stage: 1, change: "Small", users: "None", usersGained: 0, price: 100,
-    effect: "The Pattern Book can stay open beside an incident. On a phone, a tab switches between them without closing either",
+    id: "gear-monitor", name: "Second monitor", group: "setup", stage: 2, change: "Small", users: "None", usersGained: 0, price: 400,
+    effect: "A second screen beside the main one. Any window can move to it, so the Pattern Book can stay open beside an incident",
   },
   {
     id: "gear-wallpapers", name: "Wallpaper pack", group: "setup", stage: 2, change: "Small", users: "None", usersGained: 0, price: 400,
@@ -82,11 +84,28 @@ export const upgrades: Upgrade[] = [
     id: "gear-handbook", name: "Engineering handbook", group: "setup", stage: 2, change: "Medium", users: "None", usersGained: 0, price: 800,
     effect: "The first call to Dana in each incident is free",
   },
+
+  // New computers (docs/UPGRADES.md > New computers)
   {
-    id: "gear-pc", name: "Faster PC", group: "setup", stage: 3, change: "Big", users: "None", usersGained: 0, price: 6_000,
-    effect: "10% more cash from every incident",
+    id: "pc-office", name: "New computer", group: "computer", stage: 1, change: "Big", users: "None", usersGained: 0, price: 300,
+    movesTo: 2, effect: "Needed to move to Stage 2, the First office",
+  },
+  {
+    id: "pc-loft", name: "New computer", group: "computer", stage: 2, change: "Big", users: "None", usersGained: 0, price: 1_200,
+    movesTo: 3, effect: "Needed to move to Stage 3, the Scale-up",
+  },
+  {
+    id: "pc-hall", name: "New computer", group: "computer", stage: 3, change: "Big", users: "None", usersGained: 0, price: 6_000,
+    movesTo: 4, effect: "Needed to move to Stage 4, Big tech",
+  },
+  {
+    id: "pc-tower", name: "New computer", group: "computer", stage: 4, change: "Big", users: "None", usersGained: 0, price: 30_000,
+    movesTo: 5, effect: "Needed to move to Stage 5, Planet scale",
   },
 ];
+
+// The new computer that moves the player to a stage, if that stage needs one.
+export const computerFor = (stage: StageNumber): Upgrade | undefined => upgrades.find((u) => u.movesTo === stage);
 
 export const upgradeById = (id: string): Upgrade | undefined => upgrades.find((u) => u.id === id);
 
@@ -124,6 +143,11 @@ export const requestEmails: RequestEmail[] = [
   { item: "feat-global", from: "sam", arrives: { after: "R8" }, text: "The board wants Blip in every country. Please fund a global launch. It is our biggest step yet, and it brings millions of users." },
   { item: "feat-translate", from: "customer", arrives: { after: "5.1" }, text: "My cousins abroad post in another language. Please add auto-translate, so I can read their posts and reply." },
   { item: "srv-drills", from: "sam", arrives: { after: "5.1" }, text: "What if a whole data centre goes down? Please let us run disaster drills, so we know what not to do when it happens." },
+  // A new computer's email is sent the moment the stage's last incident is solved, before "Next" (docs/GAME_LOGIC.md > When an incident is solved).
+  { item: "pc-office", from: "maya", arrives: { after: "B1" }, text: "Good news: we are moving into our first office. Please buy the new computer for it, so we can start work there." },
+  { item: "pc-loft", from: "maya", arrives: { after: "B2" }, text: "We are moving to a bigger loft. Please buy the new computer for it. We cannot start there without one." },
+  { item: "pc-hall", from: "maya", arrives: { after: "B3" }, text: "We are moving above a data centre. Please buy the new computer, so we can keep up with all this data." },
+  { item: "pc-tower", from: "maya", arrives: { after: "B4" }, text: "We are moving to the tower. Please buy the new computer for it. The whole planet is waiting." },
 ];
 
 export const requestFor = (item: string): RequestEmail | undefined => requestEmails.find((r) => r.item === item);
@@ -147,14 +171,8 @@ export const itemEffects = {
   wallpapers: "gear-wallpapers",
   // "The first bad choice in each stage causes no user dip".
   standby: "srv-standby",
-  // "10% more cash from every incident".
-  fasterPc: "gear-pc",
 };
 
 // Monitoring: "users dip 5% and cash loss is 5% of base", half the usual bad-choice penalties.
 // Its live numbers on the System Map come in Milestone 8 (see PROGRESS.md).
 export const MONITORING_SHARE = 0.5;
-
-// The Faster PC: "10% more cash from every incident", applied after the star multiplier and to the
-// Triage and Tune bonuses (docs/UPGRADES.md > Rules when effects combine).
-export const FASTER_PC_TIMES = 1.1;

@@ -9,7 +9,8 @@ import { emailView } from "./emails";
 import { freshState, reducer, SAVE_VERSION, startIncident } from "./reducer";
 import { repeatById } from "../data/repeats";
 import { alsoSeenAs, builtIn, patternBook, pipsFor } from "./patternBook";
-import { tuneFor, tuneSteps } from "../data/extraSteps";
+import { lessonFor, triageSteps, tuneFor, tuneSteps } from "../data/extraSteps";
+import { isTaskCommand, runCommand } from "./terminal";
 import { requestFor } from "../data/upgrades";
 import { everydayPatterns } from "../data/patterns";
 import { playOrder } from "../data/playOrder";
@@ -157,6 +158,12 @@ test("after 1.4 comes B1, then Stage 2 starts with 2.1", () => {
   assert.equal(s.cash, 3550);
   assert.equal(s.users, 1000);
   assert.equal(nextIncident(s)!.id, "2.1");
+  // Maya asks for the new computer at once. Next waits until it is bought.
+  assert.equal(s.emails.at(-1)?.key, "request:pc-office");
+  assert.equal(neededNext(s), "pc-office");
+  assert.equal(reducer(s, { type: "next" }), s);
+  s = reducer(s, buy("pc-office"));
+  assert.equal(s.cash, 3250);
   const before = s.emails.length;
   // A lifeline bought in Stage 1 is lost when Stage 2 starts.
   s = reducer({ ...s, lifeline: 1 }, { type: "next" });
@@ -331,16 +338,17 @@ test("the investor lends exactly the shortfall for the feature Needed next", () 
 
 test("optional items need the cash: no loan, and nothing from a later stage", () => {
   const s = { ...begun(), cash: 150 };
-  assert.ok(canBuy(s, "gear-monitor"));
   assert.ok(!canBuy(s, "srv-test"));
   assert.equal(reducer(s, buy("srv-test")), s);
   // Payments is on show in Stage 1 but is not Needed next while 1.1 is current.
   assert.ok(!canBuy(s, "feat-payments"));
-  // The Engineering handbook is a Stage 2 item.
+  // The Second monitor and the Engineering handbook are Stage 2 items.
   assert.ok(!canBuy({ ...s, cash: 10_000 }, "gear-handbook"));
-  assert.deepEqual(itemsOnShow(s).map((u) => u.id), ["feat-payments", "srv-test", "gear-monitor"]);
-  const bought = reducer(s, buy("gear-monitor"));
-  assert.equal(bought.cash, 50);
+  assert.ok(!canBuy({ ...s, cash: 10_000 }, "gear-monitor"));
+  assert.deepEqual(itemsOnShow(s).map((u) => u.id), ["feat-payments", "srv-test", "pc-office"]);
+  const rich = { ...s, cash: 400 };
+  const bought = reducer(rich, buy("pc-office"));
+  assert.equal(bought.cash, 100);
   assert.equal(bought.users, 0);
   assert.equal(bought.loanOwed, 0);
 });
@@ -437,6 +445,9 @@ function solveNext(s: GameState): GameState {
   let n = play(s, ...look);
   n = buildById(n.currentId) ? play(n, ...drawRight(n.currentId), deploy) : reducer(n, pick(rightChoice(n)));
   n = runTune(n);
+  // The last incident of a stage waits for the new computer.
+  const computer = neededNext(n);
+  if (computer) n = reducer(n, buy(computer));
   n = reducer(n, { type: "next" });
   const needs = neededNext(n);
   return needs ? reducer(n, buy(needs)) : n;
@@ -504,7 +515,7 @@ test("the Bigger server removes the bigger-server option in 2.1, and Maya says w
   let s = { ...playTo("B1"), cash: 5_000 };
   // It is a Stage 2 item, so it cannot be bought in Stage 1.
   assert.equal(reducer(s, buy("srv-bigger")), s);
-  s = play(s, ...look, ...drawRight("B1"), deploy, { type: "next" }, buy("srv-bigger"));
+  s = play(s, ...look, ...drawRight("B1"), deploy, buy("pc-office"), { type: "next" }, buy("srv-bigger"));
   assert.equal(s.currentId, "2.1");
   assert.ok(s.owned.includes("srv-bigger"));
   // Bought while 2.1 is open, so 2.1 keeps all three options.
@@ -754,7 +765,7 @@ test("Example 6: B2 with Test first and two calls", () => {
   assert.deepEqual(builtIn(s, "Caching"), ["The Fast Front Page"]);
   assert.deepEqual(builtIn(s, "CDN"), ["The Fast Front Page"]);
   assert.deepEqual(patternBook(s).find((p) => p.name === "Caching")?.builtIn, ["The Fast Front Page"]);
-  s = reducer(s, { type: "next" });
+  s = play(s, buy("pc-loft"), { type: "next" });
   assert.ok(s.emails.some((e) => e.key === "thanks:B2"));
 });
 
@@ -860,9 +871,8 @@ test("the whole game can be played from 0 to 1 billion users", () => {
   assert.equal(again.users, 0);
 });
 
-test("Example 3: R7 with a wrong card, two of three Tune waves and the Faster PC", () => {
+test("Example 3: R7 with a wrong card, and two of three Tune waves", () => {
   let s = playTo("R7");
-  s = { ...s, owned: [...s.owned, "gear-pc"], run: { ...s.run, lateItems: [] } };
   const cash = s.cash;
   s = play(s, { type: "investigate" }, pick("Sharding"));
   assert.equal(s.run.stars, 2);
@@ -878,29 +888,14 @@ test("Example 3: R7 with a wrong card, two of three Tune waves and the Faster PC
     { type: "runWave", stop: (waves[2].right + 1) % tuneFor("R7")!.stops.length },
   );
   assert.equal(s.phase, "solved");
-  // £50,000 / 2 x 1 = £25,000, plus 2 x 5% of £50,000 = £5,000, times 1.1 = £33,000.
-  assert.equal(s.cash, cash + 33_000);
+  // £50,000 / 2 x 1 = £25,000, plus 2 x 5% of £50,000 = £5,000.
+  assert.equal(s.cash, cash + 30_000);
   assert.deepEqual(s.results.R7, { stars: 2, firstTry: false });
   assert.deepEqual(pipsFor(s, "Caching"), ["gold", "gold", "silver"]);
   assert.ok(s.refreshersDue.includes("R7"));
   s = reducer(s, { type: "next" });
   assert.ok(s.emails.some((e) => e.key === "thanks:R7"));
   assert.ok(!s.emails.some((e) => e.key === "refresher:R7"));
-});
-
-test("a Faster PC bought during an incident pays more from the next one", () => {
-  let s = { ...playTo("3.2"), cash: 100_000 };
-  s = play(s, { type: "investigate" }, buy("gear-pc"));
-  assert.deepEqual(s.run.lateItems, ["gear-pc"]);
-  const cash = s.cash;
-  s = reducer(s, pick("best"));
-  // £10,000 x 1.5, with no Faster PC yet.
-  assert.equal(s.cash, cash + 15_000);
-  s = reducer(s, { type: "next" }); // R4
-  assert.deepEqual(s.run.lateItems, []);
-  s = play(s, { type: "investigate" }, pick("Database index"));
-  // £10,000 / 2 x 1.5 = £7,500, times 1.1.
-  assert.equal(s.cash, cash + 15_000 + 8_250);
 });
 
 test("Example 4: Standby saves the first outage in a stage, and Monitoring halves the penalties", () => {
@@ -971,4 +966,70 @@ test("Analytics and Disaster drills remove the bad option in their incidents", (
   s = playTo("5.2");
   s = startIncident({ ...s, owned: [...s.owned, "srv-drills"] });
   assert.deepEqual(s.run.removed, ["bad"]);
+});
+
+test("each new stage needs its new computer, and the investor lends for it", () => {
+  let s = playTo("B2");
+  s = play({ ...s, cash: 0, loanOwed: 2_800 }, { type: "investigate" }, ...drawRight("B2"), deploy);
+  // B2 paid £3,000. £2,800 went to the old loan, so £200 is left.
+  assert.equal(s.cash, 200);
+  assert.equal(neededNext(s), "pc-loft");
+  assert.ok(canBuy(s, "pc-loft"));
+  const cash = s.cash;
+  s = { ...s, topUps: 0 };
+  s = reducer(s, buy("pc-loft"));
+  // £1,200, so the investor lends the shortfall.
+  assert.equal(s.loanOwed, 1_200 - cash);
+  assert.equal(s.topUps, 1);
+  assert.equal(s.cash, 0);
+  s = reducer(s, { type: "next" });
+  assert.equal(s.currentId, "3.1");
+});
+
+test("a computer bought early lets Next move on, and its email is not sent", () => {
+  let s = playTo("B1");
+  s = play({ ...s, cash: 1_000 }, buy("pc-office"), { type: "investigate" }, ...drawRight("B1"), deploy);
+  assert.equal(neededNext(s), undefined);
+  assert.ok(!s.emails.some((e) => e.key === "request:pc-office"));
+  assert.equal(reducer(s, { type: "next" }).currentId, "2.1");
+});
+
+test("a version 3 save that owns the Faster PC gets its £6,000 back", () => {
+  const store = memoryStorage();
+  const s = playTo("3.2");
+  const old = { ...s, saveVersion: 3, owned: [...s.owned, "gear-pc"], run: { ...s.run, lateItems: ["gear-pc"] } };
+  store.setItem(saveKey(3), JSON.stringify(old));
+  const loaded = loadGame(store)!;
+  assert.equal(loaded.saveVersion, SAVE_VERSION);
+  assert.ok(!loaded.owned.includes("gear-pc"));
+  assert.deepEqual(loaded.run.lateItems, []);
+  assert.equal(loaded.cash, s.cash + 6_000);
+});
+
+test("an old save that finished a stage without the new computer gets Maya's email on load", () => {
+  const store = memoryStorage();
+  let s = playTo("B1");
+  s = play(s, { type: "investigate" }, ...drawRight("B1"), deploy);
+  const old = { ...s, saveVersion: 3, emails: s.emails.filter((e) => e.key !== "request:pc-office") };
+  store.setItem(saveKey(3), JSON.stringify(old));
+  const loaded = loadGame(store)!;
+  assert.ok(loaded.emails.some((e) => e.key === "request:pc-office"));
+});
+
+test("Terminal commands run on the step's lines, and each lesson's command keeps the cause", () => {
+  for (const step of triageSteps) {
+    const lesson = lessonFor(step.id)!;
+    assert.ok(lesson, `${step.id} has a lesson`);
+    const result = runCommand(lesson.command, step.lines);
+    assert.equal(result?.kind, "lines");
+    assert.ok(result?.kind === "lines" && result.lines.some((l) => l.kind === "cause"), `${step.id} keeps its cause`);
+  }
+  const t1 = triageSteps.find((s) => s.id === "T1")!;
+  assert.deepEqual(runCommand("pwd", t1.lines), { kind: "error", text: "pwd: command not found" });
+  assert.deepEqual(runCommand("cat notes.txt", t1.lines), { kind: "error", text: "notes.txt: No such file or directory" });
+  const errors = runCommand("grep ERROR blip.log", t1.lines);
+  assert.ok(errors?.kind === "lines" && errors.lines.every((l) => l.level === "ERROR"));
+  // Spaces and either kind of quote marks do not matter.
+  assert.ok(isTaskCommand("grep  -E 'WARN|ERROR'   blip.log", 'grep -E "WARN|ERROR" blip.log'));
+  assert.ok(!isTaskCommand("grep WARN blip.log", "grep -v INFO blip.log"));
 });

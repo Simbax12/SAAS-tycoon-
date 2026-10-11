@@ -39,7 +39,8 @@ BlipOS upgrades with each stage, so the computer feels older at the start and ne
 
 - The desktop shows the version for the current stage. Stage 1 is BlipOS 1.
 - At the very start, the loading bar shows "BlipOS 1".
-- When a new stage starts, BlipOS upgrades. After the room clips, the loading bar shows "Upgrading to BlipOS 2", with the new version's number. Then the desktop appears in its new look (see GAME_LOGIC.md > After the player taps Next).
+- When a new stage starts, BlipOS updates. After the room clips, an update screen fills the monitor in the new version's colours: "Updating to BlipOS 2", with the new version's number, a progress bar with a count from 0% to 100%, and "Please do not switch off your computer." It lasts 3 seconds, or shows at once at 100% with reduced motion. Then the desktop appears in its new look (see GAME_LOGIC.md > After the player taps Next).
+- Then the milestone banner drops in over the desktop (see GAME_DESIGN.md > Moving to a new stage). It is a wide card across the top third of the screen, in the new version's title bar colours, with a trophy icon, "Milestone reached" in small text and the stage number and name in large text. The users so far sit below. With reduced motion it appears without the drop.
 - Server alerts keep their red title bar in every version, so an alert always looks like an alert.
 
 ### Pop-ups and hint boxes
@@ -60,8 +61,9 @@ Every box that pops up over the desktop follows the version too, so the feel sta
 - **Taskbar:** a bar along the bottom, in the version's colours.
   - Left: a "Start" button. It opens a menu listing the same items as the desktop icons.
   - Middle: a tab for each open window.
-  - Right: the tray. It shows users, cash and a clock. On the computer layout it also has a zoom button: a magnifying glass with a plus to zoom in, or a minus to zoom out (see ROOM.md > During play).
+  - Right: the tray. It shows users, cash and a clock. On the computer layout it also has a zoom button that steps through three views: zoomed out, zoomed in and full screen (see ROOM.md > During play). Its icon is a magnifying glass with a plus to zoom in, four corner marks for full screen, or a minus to go back to zoomed out.
 - **Balloons:** small speech balloons rise from the tray, for example "New email from Sam" or "New in the Shop".
+- **An app to open:** when a step needs an app, its desktop icon and its row in the Start menu pulse with a soft yellow glow until it is opened (see GAME_DESIGN.md > Opening apps). With reduced motion the glow stays still.
 - **Start-up:** after the player sits down at the computer (see ROOM.md > The first time the game is opened), show a short BlipOS loading bar (2 seconds at most), then Maya's welcome email.
 
 ## Desktop icons
@@ -87,7 +89,11 @@ Icons that have something new show a small red dot. The Inbox icon shows the num
 
 ## Windows
 
-- A title bar in the version's colours, with the window's icon and name on the left and a close button on the right.
+- A title bar in the version's colours, with the window's icon and name on the left. On the right: minimise, maximise and close, in that order, each with a 48px tap area.
+  - **Minimise** hides the window. Its tab stays in the taskbar, and tapping the tab brings it back.
+  - **Maximise** makes the window fill the desktop above the taskbar. The button then shows two overlapping squares, "Restore", and puts the window back where it was. Double-tapping the title bar does the same.
+  - On a phone every window already fills the screen, so there is no maximise button. Minimise shows the desktop.
+  - With the Second monitor, a "Move to other screen" button sits left of minimise (see UPGRADES.md > Your setup).
 - A body in the version's window body colour, never pure white.
 - On a computer: windows can be dragged by the title bar and overlap. Clicking a window brings it to the front.
 - On a computer, a window grows to fit what is inside, up to the bottom of the desktop. Only then does its body scroll. Its width grows with the desktop, from 600 to 760 pixels. Blueprint opens larger, and two windows side by side share the desktop.
@@ -166,7 +172,10 @@ Each Shop card shows its item's icon. Original drawings, like every other icon.
 | gear-monitor | Second monitor | Two screens side by side |
 | gear-wallpapers | Wallpaper pack | Framed picture of a hill |
 | gear-handbook | Engineering handbook | Thick book |
-| gear-pc | Faster PC | Tower PC with a lightning mark |
+| pc-office | New computer | Beige desktop computer with a box screen |
+| pc-loft | New computer | Silver tower computer |
+| pc-hall | New computer | Black tower with a blue light |
+| pc-tower | New computer | Slim screen with the computer built in |
 | lifeline | Victor's lifeline | Life ring |
 
 ## Test first
@@ -221,7 +230,7 @@ A repeat incident card shows the pattern's icon large, its name, and a small "Re
 
 ## Blueprint
 
-The drawing app. It opens from its icon or from a Build incident.
+The drawing app. The player opens it from its icon or the Start menu.
 
 - **Tray** on the left. Each part is a card with its icon, its name and, beneath, "like" and its first familiar tool.
 - Each part in the tray has the same info button as a Terminal row. It opens a box with the part's "What it is" line (see BLUEPRINTS.md > The parts). It never places or picks the part.
@@ -229,6 +238,7 @@ The drawing app. It opens from its icon or from a Build incident.
 - **Sticky note** at the top of the canvas with the Build's Goal.
 - **Placing a part:** drag it from the tray to the canvas, or tap the part and then tap the canvas.
 - **Joining parts:** drag from one part to another, or tap the first part and then the second. An arrow appears, pointing from the first to the second.
+- **Disconnecting:** tapping the same two parts again, in the same order, removes that arrow.
 - **Removing:** tap a part or an arrow, then tap "Remove".
 - Every action works with taps alone and with the keyboard alone. Dragging is never required.
 - **"Deploy and test"** button at the bottom right. It is greyed out until at least one arrow is drawn.
@@ -239,20 +249,23 @@ The drawing app. It opens from its icon or from a Build incident.
 
 ## Terminal
 
-The log viewer. It opens from its icon or from a Triage step.
+The log viewer and command line. The player opens it from its icon or the Start menu.
 
-- A dark window with cream text, in the same font as everything else.
-- Six rows, one per log line. Each row is a button at least 48px tall.
+- A dark window with cream text, in the same font as everything else. Commands and output use a fixed-width font at the same size.
+- During a Triage step it has two panels, like an online coding course: the lesson on the left, the prompt on the right. On a phone the lesson sits above the prompt. The lesson shows the Learn text and the numbered Tasks, each with a box that ticks.
+- The prompt starts with "$ ". A "Run" button sits beside it, and "Hint" below. On a phone, word tiles sit under the prompt, each a button at least 48px tall, with "Delete" at the end.
+- A command types itself out at about 30 letters a second, then its output prints one line every 0.15 seconds. With reduced motion both appear at once.
+- The output of the task's command shows as rows, one per log line. Each row is a button at least 48px tall.
 - Each row shows a level badge, the source name and the message. The badge is an icon and a word: a circle for INFO, a triangle for WARN, a cross for ERROR.
 - Above the rows: the goal, "What happened" and the bonus line (see GAME_DESIGN.md > Triage, in Terminal).
 - Each row has an info button at its right end: the letter "i" in a circle, with a 48px tap area. It opens a box under the row with the source's tool name, its part and what the part is, and what the level means. Tapping it again closes the box.
-- Nothing scrolls and nothing blinks. The lines wait for the player.
+- Nothing blinks, not even the cursor. After the typing ends, the lines wait for the player.
 - A tapped line that is not the cause turns grey and stays on screen.
 - When no Triage step is waiting, Terminal shows the lines from past Triage steps with each cause marked.
 
 ## SysDash
 
-The live dashboard. It opens from its icon or from a Tune step.
+The live dashboard. The player opens it from its icon or the Start menu.
 
 - The step's Fact sits at the top.
 - One large gauge in the middle with three bands. Each band has an icon and its words: "Too low", "Just right", "Too high".
@@ -267,10 +280,9 @@ On the computer layout, these items also appear on the desk in the room (see ROO
 
 Items bought from "Your setup" should be visible, so spending feels real.
 
-- Second monitor: the Pattern Book can sit beside the Incident window. On a computer, opening one while the other is open puts the two side by side, each half the desktop wide. On a phone, a tab at the top of both windows switches between them. Without it, opening one closes the other (see UPGRADES.md > Your setup).
+- Second monitor: a second screen beside the main one, when zoomed in or full screen. It has the same wallpaper and no icons or taskbar, with a thin bezel between the two screens. On a phone, a "Screen 1" and "Screen 2" switch sits in the taskbar. Without it, opening the Incident window or the Pattern Book closes the other (see UPGRADES.md > Your setup).
 - Wallpaper pack: three more original wallpapers (sunset hill, night sky, snowy hill).
 - Engineering handbook: a small book icon sits on the taskbar tray.
-- Faster PC: the BlipOS loading bar becomes quicker and the tray shows a lightning mark.
 
 ## Maya
 

@@ -6,8 +6,20 @@ import type { AppId } from "@/data/desktopApps";
 // Which windows are open and where. This is screen state, not game state:
 // it is never saved (docs/GAME_LOGIC.md > The game state).
 
-// A window has the usual size unless it was placed side by side with another.
-export type OpenWindow = { id: AppId; x: number; y: number; z: number; width?: number; height?: number };
+// A window has the usual size unless it opens larger (OPEN_SIZE).
+// minimised: hidden, with its tab still in the taskbar. maximised: fills its screen above the taskbar.
+// screen: 0 is the main screen, 1 the Second monitor's screen (docs/UPGRADES.md > Your setup).
+export type OpenWindow = {
+  id: AppId;
+  x: number;
+  y: number;
+  z: number;
+  width?: number;
+  height?: number;
+  minimised?: boolean;
+  maximised?: boolean;
+  screen?: 0 | 1;
+};
 
 export type Area = { width: number; height: number };
 
@@ -25,6 +37,8 @@ export const WINDOW_MIN_HEIGHT = 240;
 const OPEN_SIZE: Partial<Record<AppId, { width: number; height?: number }>> = {
   blueprint: { width: 1000, height: Infinity },
   systemMap: { width: 1000 },
+  // Terminal's lesson and prompt sit side by side.
+  terminal: { width: 1000 },
   win: { width: 1000 },
 };
 const CASCADE = 32;
@@ -52,7 +66,8 @@ export function useWindows() {
   const open = useCallback((id: AppId, area: Area) => {
     setWindows((list) => {
       const z = topZ(list) + 1;
-      if (list.some((w) => w.id === id)) return list.map((w) => (w.id === id ? { ...w, z } : w));
+      // Opening a window that is already open brings it back and to the front.
+      if (list.some((w) => w.id === id)) return list.map((w) => (w.id === id ? { ...w, z, minimised: false } : w));
       // Each new window sits a little lower and further right than the last.
       const size = OPEN_SIZE[id];
       if (size) {
@@ -68,12 +83,29 @@ export function useWindows() {
     setWindows((list) => list.filter((w) => w.id !== id));
   }, []);
 
+  // Brings a window to the front, and back from minimised.
   const focus = useCallback((id: AppId) => {
     setWindows((list) => {
       const z = topZ(list);
       const w = list.find((v) => v.id === id);
-      if (!w || w.z === z) return list;
-      return list.map((v) => (v.id === id ? { ...v, z: z + 1 } : v));
+      if (!w || (w.z === z && !w.minimised)) return list;
+      return list.map((v) => (v.id === id ? { ...v, z: w.z === z ? z : z + 1, minimised: false } : v));
+    });
+  }, []);
+
+  // docs/UI_THEME.md > Windows: minimise hides a window and keeps its tab. Maximise fills the screen.
+  const minimise = useCallback((id: AppId) => {
+    setWindows((list) => list.map((w) => (w.id === id ? { ...w, minimised: true } : w)));
+  }, []);
+  const toggleMaximise = useCallback((id: AppId) => {
+    setWindows((list) => list.map((w) => (w.id === id ? { ...w, maximised: !w.maximised } : w)));
+  }, []);
+
+  // Moves a window to the other screen, at a place on that screen.
+  const toScreen = useCallback((id: AppId, screen: 0 | 1, x: number, y: number, area: Area) => {
+    setWindows((list) => {
+      const z = topZ(list) + 1;
+      return list.map((w) => (w.id === id ? { ...w, screen, z, ...clampPosition(x, y, area) } : w));
     });
   }, []);
 
@@ -81,21 +113,10 @@ export function useWindows() {
     setWindows((list) => list.map((w) => (w.id === id ? { ...w, ...clampPosition(x, y, area) } : w)));
   }, []);
 
-  // Two windows side by side, each half the desktop wide (docs/UI_THEME.md > The player's setup).
-  // The right one comes to the front.
-  const sideBySide = useCallback((left: AppId, right: AppId, area: Area) => {
-    setWindows((list) => {
-      const z = topZ(list);
-      const width = Math.floor(area.width / 2);
-      const height = area.height;
-      const rest = list.filter((w) => w.id !== left && w.id !== right);
-      return [...rest, { id: left, x: 0, y: 0, z: z + 1, width, height }, { id: right, x: width, y: 0, z: z + 2, width, height }];
-    });
-  }, []);
+  // The front window that is not minimised.
+  const front = windows.reduce<OpenWindow | null>((m, w) => (w.minimised ? m : !m || w.z > m.z ? w : m), null);
 
-  const front = windows.reduce<OpenWindow | null>((m, w) => (!m || w.z > m.z ? w : m), null);
-
-  return { windows, front, open, close, focus, move, sideBySide };
+  return { windows, front, open, close, focus, move, minimise, toggleMaximise, toScreen };
 }
 
 export type Windows = ReturnType<typeof useWindows>;

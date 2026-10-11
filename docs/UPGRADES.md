@@ -1,6 +1,6 @@
 # Upgrades: the Shop
 
-The Shop icon on the desktop opens the store. There are 19 items in four groups. An item appears in the Shop when the player reaches its stage. Each item can be bought once. The Shop also sells Victor's lifeline, which is not one of the 19 items (see "Victor's lifeline" below).
+The Shop icon on the desktop opens the store. There are 22 items in five groups. An item appears in the Shop when the player reaches its stage. Each item can be bought once. The Shop also sells Victor's lifeline, which is not one of the 19 items (see "Victor's lifeline" below).
 
 Do not change prices, user numbers or effects. If something is unclear, ask.
 
@@ -73,12 +73,28 @@ Optional. The player's own gear. They bring in no users. Each item bought also s
 
 | Id | Name | Stage | Change | Users | Users gained | Price | Effect |
 |---|---|---|---|---|---|---|---|
-| gear-monitor | Second monitor | 1 | Small | None | 0 | £100 | The Pattern Book can stay open beside an incident. On a phone, a tab switches between them without closing either |
+| gear-monitor | Second monitor | 2 | Small | None | 0 | £400 | A second screen beside the main one. Any window can move to it, so the Pattern Book can stay open beside an incident |
 | gear-wallpapers | Wallpaper pack | 2 | Small | None | 0 | £400 | Three extra wallpapers in Settings. No effect on play |
 | gear-handbook | Engineering handbook | 2 | Medium | None | 0 | £800 | The first call to Dana in each incident is free |
-| gear-pc | Faster PC | 3 | Big | None | 0 | £6,000 | 10% more cash from every incident |
 
 Without the Second monitor, the Incident window and the Pattern Book cannot be open at the same time. Opening one closes the other.
+
+The second screen shows when the view is zoomed in or full screen on a computer (see ROOM.md > During play). The two screens sit side by side, and the taskbar stays on the main one. A window moves across when it is dragged past the edge, or with the "Move to other screen" button in its title bar. On a phone, a "Screen 1" and "Screen 2" switch in the taskbar changes which screen shows.
+
+## New computers
+
+Each stage happens in a bigger place with a newer computer. To move to the next stage, the player must buy that place's computer. They bring in no users, and they show in the "Your setup" tab.
+
+| Id | Name | Stage | Change | Users | Users gained | Price | Effect |
+|---|---|---|---|---|---|---|---|
+| pc-office | New computer | 1 | Big | None | 0 | £300 | Needed to move to Stage 2, the First office |
+| pc-loft | New computer | 2 | Big | None | 0 | £1,200 | Needed to move to Stage 3, the Scale-up |
+| pc-hall | New computer | 3 | Big | None | 0 | £6,000 | Needed to move to Stage 4, Big tech |
+| pc-tower | New computer | 4 | Big | None | 0 | £30,000 | Needed to move to Stage 5, Planet scale |
+
+- Maya's request email arrives the moment the last incident of the stage is solved, before "Next". The computer then shows "Needed next".
+- "Next" stays locked until the computer is bought. If the player cannot afford it, the investor top-up rule in GAME_DESIGN.md applies, the same as for a must-have feature.
+- If the player buys it early, Maya's email is not sent, and "Next" moves on at once.
 
 ## Request emails
 
@@ -107,6 +123,10 @@ If the player already owns the item, its request email is not sent.
 | feat-global | Sam | After R8 | "The board wants Blip in every country. Please fund a global launch. It is our biggest step yet, and it brings millions of users." |
 | feat-translate | Customer | After 5.1 | "My cousins abroad post in another language. Please add auto-translate, so I can read their posts and reply." |
 | srv-drills | Sam | After 5.1 | "What if a whole data centre goes down? Please let us run disaster drills, so we know what not to do when it happens." |
+| pc-office | Maya | After B1 | "Good news: we are moving into our first office. Please buy the new computer for it, so we can start work there." |
+| pc-loft | Maya | After B2 | "We are moving to a bigger loft. Please buy the new computer for it. We cannot start there without one." |
+| pc-hall | Maya | After B3 | "We are moving above a data centre. Please buy the new computer, so we can keep up with all this data." |
+| pc-tower | Maya | After B4 | "We are moving to the tower. Please buy the new computer for it. The whole planet is waiting." |
 
 "Your setup" items have no email. When a stage starts, a balloon says "New in the Shop".
 
@@ -121,7 +141,6 @@ If the player already owns the item, its request email is not sent.
 - An upgrade bought during an incident does not change that incident. It changes incidents that start after it.
 - Monitoring and Standby server only change new incidents. Builds and repeats have no outage.
 - Options are only removed by upgrades in new incidents. Repeat incidents always show three cards.
-- The Faster PC bonus is applied after the star multiplier. It applies to every incident, and to Triage and Tune bonuses.
 
 ## Victor's lifeline
 
@@ -157,13 +176,13 @@ Each item is a card with:
   - Users: 0 dots for None, 1 for Some, 2 for Lots, 3 for Huge
 - "Users gained" as a number, for example "+15,000 users". Items with none show "No new users"
 - One line saying what it does:
-  - Servers and "Your setup" items show their Effect.
+  - Servers, "Your setup" items and new computers show their Effect.
   - A must-have feature says "Unlocks:" and the title of the incident it unlocks.
   - A nice-to-have feature says "Optional. Brings in extra users."
   - Victor's lifeline says "Gives the answer once every call is used."
 - Who asked for it, shown as a small sender badge
 - A Buy button
 
-Items the player cannot afford show the price in grey with the words "Not enough cash". The one exception is a must-have feature marked "Needed next": its Buy button always works (see the investor rule in GAME_DESIGN.md). Items already bought show a tick and the word "Owned".
+Items the player cannot afford show the price in grey with the words "Not enough cash". The one exception is an item marked "Needed next": its Buy button always works (see the investor rule in GAME_DESIGN.md). Items already bought show a tick and the word "Owned".
 
-A must-have feature that is needed for the next incident shows a "Needed next" badge.
+A must-have feature that is needed for the next incident, or a new computer that is needed to move to the next stage, shows a "Needed next" badge.

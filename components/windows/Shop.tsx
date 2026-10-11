@@ -29,7 +29,8 @@ const tabs: { id: Tab; name: string; groups: ShopGroup[] }[] = [
   // Must-have features first, then nice-to-have features.
   { id: "features", name: "Features", groups: ["must", "nice"] },
   { id: "servers", name: "Servers", groups: ["server"] },
-  { id: "setup", name: "Your setup", groups: ["setup"] },
+  // New computers sit with the player's own gear (docs/UPGRADES.md > New computers).
+  { id: "setup", name: "Your setup", groups: ["computer", "setup"] },
 ];
 
 const tabOf = (group: ShopGroup): Tab => tabs.find((t) => t.groups.includes(group))!.id;
@@ -40,7 +41,11 @@ const card = "flex flex-col gap-2 rounded-lg border-2 bg-white px-4 py-3";
 export default function Shop() {
   const { state, dispatch } = useGameContext();
   const { shopFocus } = useDesktop();
-  const [tab, setTab] = useState<Tab>("features");
+  // The Shop opens on the tab of the item Needed next, if there is one.
+  const [tab, setTab] = useState<Tab>(() => {
+    const needed = itemsOnShow(state).find((u) => u.id === neededNext(state));
+    return needed ? tabOf(needed.group) : "features";
+  });
   // Maya's investor line shows after a top-up, until the Shop is closed.
   const [investor, setInvestor] = useState(false);
   const focusRef = useRef<HTMLLIElement>(null);

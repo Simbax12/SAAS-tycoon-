@@ -1,10 +1,13 @@
 "use client";
 
 import { useEffect, useRef } from "react";
-import { desktopApps, type AppId } from "@/data/desktopApps";
+import type { AppId, DesktopApp } from "@/data/desktopApps";
 import { AppIcon, StandUpIcon } from "./icons";
 
 type Props = {
+  apps: DesktopApp[];
+  // The app the player should open now. Its row glows.
+  pulse: AppId | null;
   isPhone: boolean;
   showStandUp: boolean;
   onOpen: (id: AppId) => void;
@@ -14,7 +17,7 @@ type Props = {
 
 // The Start menu lists the same items as the desktop icons (docs/UI_THEME.md > Desktop).
 // On a phone, and when zoomed in, it also holds "Stand up" (docs/ROOM.md > During play).
-export default function StartMenu({ isPhone, showStandUp, onOpen, onStandUp, onClose }: Props) {
+export default function StartMenu({ apps, pulse, isPhone, showStandUp, onOpen, onStandUp, onClose }: Props) {
   const first = useRef<HTMLButtonElement>(null);
 
   useEffect(() => {
@@ -36,13 +39,15 @@ export default function StartMenu({ isPhone, showStandUp, onOpen, onStandUp, onC
           isPhone ? "w-[min(300px,100%)]" : "w-[280px]"
         }`}
       >
-        {desktopApps.map((app, i) => (
+        {apps.map((app, i) => (
           <button
             key={app.id}
             ref={i === 0 ? first : undefined}
             type="button"
             role="menuitem"
-            className={item}
+            // The same spotlight name as the desktop icon, so a hidden icon can be found here instead.
+            data-tour={`${app.id}Icon`}
+            className={`${item} ${pulse === app.id ? "app-glow" : ""}`}
             onClick={() => onOpen(app.id)}
           >
             <AppIcon id={app.id} size={32} />

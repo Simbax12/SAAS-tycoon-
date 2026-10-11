@@ -1,14 +1,22 @@
-import { desktopApps, type AppId } from "@/data/desktopApps";
+import type { AppId, DesktopApp } from "@/data/desktopApps";
 import { AppIcon } from "./icons";
 
 // A number on an icon, or "dot" for a red badge with no number. 0 shows nothing.
 export type IconBadges = Partial<Record<AppId, number | "dot">>;
 
-type Props = { isPhone: boolean; badges: IconBadges; onOpen: (id: AppId) => void };
+type Props = {
+  apps: DesktopApp[];
+  isPhone: boolean;
+  badges: IconBadges;
+  // The app the player should open now. Its icon glows (docs/UI_THEME.md > Desktop).
+  pulse: AppId | null;
+  reducedMotion: boolean;
+  onOpen: (id: AppId) => void;
+};
 
 // The icon grid on the left side of the desktop. One tap opens a window
 // (docs/UI_THEME.md > Desktop icons). On a phone, 3 per row (docs/UI_THEME.md > Phone layout).
-export default function DesktopIcons({ isPhone, badges, onOpen }: Props) {
+export default function DesktopIcons({ apps, isPhone, badges, pulse, reducedMotion, onOpen }: Props) {
   return (
     <nav
       aria-label="Desktop"
@@ -18,7 +26,7 @@ export default function DesktopIcons({ isPhone, badges, onOpen }: Props) {
           : "grid h-full auto-cols-[112px] grid-flow-col grid-rows-[repeat(auto-fill,100px)] content-start justify-start gap-1 overflow-auto p-2"
       }
     >
-      {desktopApps.map((app) => {
+      {apps.map((app) => {
         const badge = badges[app.id];
         const label = badge === "dot" ? `${app.name}, waiting` : badge ? `${app.name}, ${badge} unread` : app.name;
         return (
@@ -28,7 +36,9 @@ export default function DesktopIcons({ isPhone, badges, onOpen }: Props) {
             onClick={() => onOpen(app.id)}
             aria-label={label}
             data-tour={`${app.id}Icon`}
-            className="flex min-h-[48px] flex-col items-center justify-start gap-1 rounded-md p-1 text-center hover:bg-white/25 focus-visible:bg-white/25"
+            className={`flex min-h-[48px] flex-col items-center justify-start gap-1 rounded-md p-1 text-center hover:bg-white/25 focus-visible:bg-white/25 ${
+              pulse === app.id ? (reducedMotion ? "app-glow" : "app-glow app-pulse") : ""
+            }`}
           >
             <span className="relative">
               <AppIcon id={app.id} size={40} />

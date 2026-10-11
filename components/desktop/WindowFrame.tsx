@@ -2,7 +2,7 @@
 
 import { useRef } from "react";
 import { appById } from "@/data/desktopApps";
-import { AppIcon, CloseIcon } from "./icons";
+import { AppIcon, CloseIcon, MaximiseIcon, MinimiseIcon, OtherScreenIcon } from "./icons";
 import { type Area, type OpenWindow, WINDOW_MIN_HEIGHT, clampPosition, windowWidth } from "./useWindows";
 
 type Props = {
@@ -12,23 +12,26 @@ type Props = {
   onClose: () => void;
   onFocus: () => void;
   onMove: (x: number, y: number) => void;
-  // Shown above the body, for example the tabs that switch between two windows on a phone.
-  tabs?: React.ReactNode;
+  onMinimise: () => void;
+  onMaximise: () => void;
+  // With the Second monitor's screen showing: moves the window to the other screen.
+  onOtherScreen?: () => void;
   children: React.ReactNode;
 };
 
 const KEY_STEP = 24;
+const control = "os-close os-ctl flex h-12 w-12 shrink-0 items-center justify-center";
 
-// A window: blue title bar with icon, name and close button, and a cream body
+// A window: a title bar with icon, name, and minimise, maximise and close buttons, and a cream body
 // (docs/UI_THEME.md > Windows). On a computer it can be dragged by the title bar.
-export default function WindowFrame({ win, area, isPhone, onClose, onFocus, onMove, tabs, children }: Props) {
+export default function WindowFrame({ win, area, isPhone, onClose, onFocus, onMove, onMinimise, onMaximise, onOtherScreen, children }: Props) {
   const app = appById(win.id);
   const drag = useRef<{ px: number; py: number; x: number; y: number } | null>(null);
   const titleId = `window-title-${win.id}`;
 
   const onPointerDown = (e: React.PointerEvent) => {
     onFocus();
-    if (isPhone || (e.target as HTMLElement).closest("button")) return;
+    if (isPhone || win.maximised || (e.target as HTMLElement).closest("button")) return;
     drag.current = { px: e.clientX, py: e.clientY, x: pos.x, y: pos.y };
     (e.currentTarget as HTMLElement).setPointerCapture(e.pointerId);
   };
@@ -43,7 +46,7 @@ export default function WindowFrame({ win, area, isPhone, onClose, onFocus, onMo
 
   // Arrow keys move a window too, so dragging is never required.
   const onKeyDown = (e: React.KeyboardEvent) => {
-    if (isPhone) return;
+    if (isPhone || win.maximised) return;
     const moves: Record<string, [number, number]> = {
       ArrowLeft: [-KEY_STEP, 0],
       ArrowRight: [KEY_STEP, 0],
@@ -63,7 +66,7 @@ export default function WindowFrame({ win, area, isPhone, onClose, onFocus, onMo
   // Only then does its body scroll (docs/UI_THEME.md > Windows).
   const room = Math.max(area.height - pos.y, 48);
   const height = win.height === undefined ? undefined : Math.min(win.height, area.height);
-  const place: React.CSSProperties = isPhone
+  const place: React.CSSProperties = isPhone || win.maximised
     ? { left: 0, top: 0, right: 0, bottom: 0, zIndex: win.z }
     : height !== undefined
       ? { left: pos.x, top: pos.y, width, height, zIndex: win.z }
@@ -86,6 +89,7 @@ export default function WindowFrame({ win, area, isPhone, onClose, onFocus, onMo
         onPointerUp={endDrag}
         onPointerCancel={endDrag}
         onKeyDown={onKeyDown}
+        onDoubleClick={(e) => !isPhone && !(e.target as HTMLElement).closest("button") && onMaximise()}
         tabIndex={isPhone ? undefined : 0}
         aria-label={isPhone ? undefined : app.name}
       >
@@ -93,16 +97,35 @@ export default function WindowFrame({ win, area, isPhone, onClose, onFocus, onMo
         <h2 id={titleId} className="min-w-0 flex-1 truncate text-[18px] font-bold leading-none">
           {app.name}
         </h2>
+        {onOtherScreen && (
+          <button type="button" onClick={onOtherScreen} aria-label="Move to other screen" title="Move to other screen" className={control}>
+            <OtherScreenIcon />
+          </button>
+        )}
+        <button type="button" onClick={onMinimise} aria-label={`Minimise ${app.name}`} title="Minimise" className={control}>
+          <MinimiseIcon />
+        </button>
+        {!isPhone && (
+          <button
+            type="button"
+            onClick={onMaximise}
+            aria-label={`${win.maximised ? "Restore" : "Maximise"} ${app.name}`}
+            title={win.maximised ? "Restore" : "Maximise"}
+            className={control}
+          >
+            <MaximiseIcon restore={win.maximised} />
+          </button>
+        )}
         <button
           type="button"
           onClick={onClose}
           aria-label={`Close ${app.name}`}
+          title="Close"
           className="os-close flex h-12 w-12 shrink-0 items-center justify-center"
         >
           <CloseIcon />
         </button>
       </header>
-      {tabs}
       <div className="min-h-0 flex-1 overflow-auto p-4">{children}</div>
     </section>
   );

@@ -82,6 +82,43 @@ body {
   animation: balloon-rise 300ms ease-out;
 }
 
+/* The app to open next glows, and gently pulses (docs/UI_THEME.md > Desktop). */
+.app-glow {
+  background: rgba(255, 211, 92, 0.45);
+  box-shadow: 0 0 0 3px #ffd35c;
+}
+
+@keyframes app-pulse {
+  0%,
+  100% {
+    box-shadow: 0 0 0 3px #ffd35c;
+  }
+  50% {
+    box-shadow: 0 0 0 7px rgba(255, 211, 92, 0.55);
+  }
+}
+
+.app-pulse {
+  animation: app-pulse 1.4s ease-in-out infinite;
+}
+
+/* The milestone banner drops in from the top (docs/UI_THEME.md > The upgrade). */
+@keyframes banner-drop {
+  0% {
+    transform: translateY(-140%);
+  }
+  70% {
+    transform: translateY(6%);
+  }
+  100% {
+    transform: translateY(0);
+  }
+}
+
+.banner-drop {
+  animation: banner-drop 600ms ease-out;
+}
+
 /* A failing box pulses gently (docs/UI_THEME.md > The System Map and incident diagram). */
 @keyframes box-pulse {
   0%,
@@ -324,6 +361,19 @@ body {
   border: 1px solid #b9b4a8;
   border-radius: 12px;
   box-shadow: 0 10px 30px rgba(0, 0, 0, 0.25);
+}
+
+/* Minimise, maximise and "Move to other screen" share the close button's shape, without its red. */
+:is([data-os-style="rounded"], [data-os-style="glass"]) .os-close.os-ctl {
+  background: rgba(255, 255, 255, 0.16);
+  color: var(--os-title-text);
+}
+:is([data-os-style="rounded"], [data-os-style="glass"]) .os-close.os-ctl:hover {
+  background: rgba(255, 255, 255, 0.3);
+}
+[data-os-style="flat"] .os-close.os-ctl:hover {
+  background: #d4d0c4;
+  color: #1e1e1e;
 }
 
 /* classic: square and grey with raised 3D edges, BlipOS 1 and 2. */

@@ -143,11 +143,37 @@ const drawings: Record<string, React.ReactNode> = {
       <path d="M8 7.5 H16" stroke="#FFFFFF" strokeWidth="1.6" />
     </>
   ),
-  // Tower PC with a lightning mark
-  "gear-pc": (
+  // Beige desktop computer with a box screen
+  "pc-office": (
     <>
-      <rect x="5.5" y="2" width="13" height="20" rx="1.5" fill="#9AA4B2" {...s} />
-      <path d="M13 5.5 L9 12.5 H12 L10.5 18.5 L15 10.5 H12 Z" fill="#F2B632" {...s} strokeWidth="1" />
+      <rect x="4" y="2.5" width="16" height="12" rx="1" fill="#E3DAC2" {...s} />
+      <rect x="6.5" y="4.5" width="11" height="8" fill="#2B7F7A" {...s} strokeWidth="1" />
+      <rect x="2.5" y="16" width="19" height="5.5" rx="1" fill="#E3DAC2" {...s} />
+      <path d="M5 18.75 H12" stroke="#1E1E1E" strokeWidth="1.2" />
+    </>
+  ),
+  // Silver tower computer
+  "pc-loft": (
+    <>
+      <rect x="7" y="2" width="10" height="20" rx="1.5" fill="#C9CED6" {...s} />
+      <path d="M9.5 5.5 H14.5 M9.5 8 H14.5" stroke="#1E1E1E" strokeWidth="1.2" />
+      <circle cx="12" cy="17.5" r="1.4" fill="#2E8B3D" {...s} strokeWidth="1" />
+    </>
+  ),
+  // Black tower with a blue light
+  "pc-hall": (
+    <>
+      <rect x="7" y="2" width="10" height="20" rx="1.5" fill="#2B2F36" {...s} />
+      <path d="M9.5 5.5 H14.5 M9.5 8 H14.5" stroke="#5A6270" strokeWidth="1.2" />
+      <path d="M12 11 V19" stroke="#4AD0FF" strokeWidth="1.8" />
+    </>
+  ),
+  // Slim screen with the computer built in
+  "pc-tower": (
+    <>
+      <rect x="2" y="3" width="20" height="13.5" rx="1.5" fill="#E4E1D8" {...s} />
+      <rect x="3.75" y="4.75" width="16.5" height="10" rx="0.5" fill="#9EC5E8" {...s} strokeWidth="1" />
+      <path d="M10 16.5 L9 20.5 H15 L14 16.5" fill="#C9C5BA" {...s} />
     </>
   ),
   // Life ring

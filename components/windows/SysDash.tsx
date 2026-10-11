@@ -8,7 +8,7 @@ import { fullNumber } from "@/components/desktop/format";
 import { useDesktop } from "@/components/desktop/DesktopContext";
 import { useGameContext } from "@/components/useGame";
 import { baseCash, currentStage, progressShare, usersOnScreen } from "@/game/rules";
-import { OpenAppButton } from "./Incident";
+import { OpenAppHint } from "./Incident";
 
 type Band = "low" | "right" | "high";
 
@@ -101,7 +101,7 @@ function Tune({ step }: { step: TuneStep }) {
           <p className="rounded-md border-2 border-ok bg-[#E4F3E2] px-3 py-2 font-bold" role="status">
             {step.lesson}
           </p>
-          <OpenAppButton id="incident" />
+          <OpenAppHint id="incident" />
         </>
       ) : (
         <>
