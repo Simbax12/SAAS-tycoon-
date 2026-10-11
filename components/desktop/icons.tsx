@@ -132,6 +132,15 @@ const drawings: Record<AppId, React.ReactNode> = {
       <path d="M19 20 V38 M24 20 V38 M29 20 V38" stroke="#5F6B78" strokeWidth="2" />
     </>
   ),
+  // Trophy, for the win screen
+  win: (
+    <>
+      <path d="M14 8 H34 V18 A10 10 0 0 1 14 18 Z" fill="#F2B632" stroke={OUTLINE} strokeWidth="2" />
+      <path d="M14 11 H8 A6 6 0 0 0 15 21 M34 11 H40 A6 6 0 0 1 33 21" fill="none" stroke={OUTLINE} strokeWidth="2" />
+      <path d="M21 28 H27 L28 35 H20 Z" fill="#F2B632" stroke={OUTLINE} strokeWidth="2" />
+      <rect x="14" y="35" width="20" height="6" rx="1.5" fill="#8A5A2B" stroke={OUTLINE} strokeWidth="2" />
+    </>
+  ),
 };
 
 export function AppIcon({ id, size, className }: IconProps & { id: AppId }) {
@@ -155,8 +164,8 @@ export function BlipLogo({ size = 24 }: IconProps) {
 export function UsersIcon({ size = 22 }: IconProps) {
   return (
     <svg width={size} height={size} viewBox="0 0 24 24" aria-hidden="true" focusable="false">
-      <circle cx="12" cy="8" r="4.5" fill="#FFFFFF" />
-      <path d="M3 22 C3 15 21 15 21 22 Z" fill="#FFFFFF" />
+      <circle cx="12" cy="8" r="4.5" fill="currentColor" />
+      <path d="M3 22 C3 15 21 15 21 22 Z" fill="currentColor" />
     </svg>
   );
 }
@@ -164,7 +173,7 @@ export function UsersIcon({ size = 22 }: IconProps) {
 export function CashIcon({ size = 22 }: IconProps) {
   return (
     <svg width={size} height={size} viewBox="0 0 24 24" aria-hidden="true" focusable="false">
-      <circle cx="12" cy="12" r="10" fill="#F2B632" stroke="#FFFFFF" strokeWidth="1.5" />
+      <circle cx="12" cy="12" r="10" fill="#F2B632" stroke="currentColor" strokeWidth="1.5" />
       <path d="M15 8.5 C14 6.5 9.5 6.5 9.5 10 V16.5 M7.5 12.5 H13 M7.5 16.5 H16" fill="none" stroke="#1E1E1E" strokeWidth="1.8" strokeLinecap="round" />
     </svg>
   );

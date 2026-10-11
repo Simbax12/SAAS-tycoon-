@@ -72,6 +72,8 @@ A fresh run is made each time a new incident becomes current.
 | `triageTaps` | Triage only: lines tapped, in order |
 | `tuneWaves` | Tune only: the stop set for each wave, and whether it was right |
 | `paid` | Cash lost to penalties and spent on calls in this incident, for the Stats window |
+| `standbySaved` | Whether the Standby server saved this incident's outage, so Maya's Standby line shows |
+| `lateItems` | Items bought while this incident was open. Their effects start with the next incident |
 
 ## Email keys
 
@@ -193,7 +195,7 @@ The Shop, Inbox, Pattern Book and every other window can be opened in any phase 
 
 - **best:** show its Result. Move to `tune`, or to `solved`.
 - **partial:** take 1 star. Take the partial cash penalty. Add the option to `tried` and to the Recycle Bin. Show the Result.
-- **bad:** take 1 star. Take the bad cash penalty and set `dip`, both changed by Monitoring (see UPGRADES.md > Servers). If the Standby server is owned and the current stage is not in `standbyStages`, there is no dip: add the stage to `standbyStages` and show Maya's Standby line. Add the option to `tried` and to the Recycle Bin. Show the Result.
+- **bad:** take 1 star. Take the bad cash penalty and set `dip`, both changed by Monitoring unless it is in `lateItems` (see UPGRADES.md > Servers). If the Standby server is owned, is not in `lateItems`, and the current stage is not in `standbyStages`, there is no dip: add the stage to `standbyStages`, set `standbySaved` to true and show Maya's Standby line. Add the option to `tried` and to the Recycle Bin. Show the Result.
 
 **In a repeat**:
 
@@ -257,7 +259,7 @@ When an incident is solved, work out its pay in this order (see GAME_DESIGN.md >
 2. Times the star multiplier for the run's final stars.
 3. Plus the Triage bonus, if the cause was the first line tapped.
 4. Plus the Tune bonus for each wave set right.
-5. Times 1.1 if the Faster PC is owned.
+5. Times 1.1 if the Faster PC is owned and not in `lateItems`.
 6. Round once, to the nearest whole pound.
 
 Triage and Tune bonuses are paid here, with the rest of the pay, not the moment they are earned.
@@ -268,7 +270,7 @@ All cash coming in pays the loan first: the smaller of the pay and `loanOwed` co
 
 - **Penalties:** taken from `cash`, rounded to whole pounds. `cash` stops at £0. Penalties never add to the loan.
 - **Calls and lifelines:** taken from `cash`. They can only be bought when `cash` covers them, so they never add to the loan.
-- **Buying:** the price comes off `cash`. The item goes into `owned`. Its "Users gained" are added to `users` at once (see UPGRADES.md > Upgrades: the Shop). If it is the feature the current incident is waiting for, move that incident to `arrived`. If an incident is open, from `arrived` to `tune`, the item does not change it (see GAME_DESIGN.md > The Shop in brief): buying the Test environment sets `testUsed` to true, and buying the Engineering handbook sets `handbookUsed` to true, so each one starts working with the next incident.
+- **Buying:** the price comes off `cash`. The item goes into `owned`. Its "Users gained" are added to `users` at once (see UPGRADES.md > Upgrades: the Shop). If it is the feature the current incident is waiting for, move that incident to `arrived`. If an incident is open, from `arrived` to `tune`, the item does not change it (see GAME_DESIGN.md > The Shop in brief): the item goes into `lateItems`, buying the Test environment sets `testUsed` to true, and buying the Engineering handbook sets `handbookUsed` to true, so each one starts working with the next incident.
 
 ## The investor top-up
 

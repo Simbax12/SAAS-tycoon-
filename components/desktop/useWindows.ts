@@ -20,8 +20,12 @@ export const WINDOW_MIN_HEIGHT = 240;
 
 // Blueprint needs room for its tray and canvas side by side, so it opens up to 1000 pixels wide and
 // as tall as the desktop. Its height follows the desktop, so zooming in gives it more room.
-const OPEN_SIZE: Partial<Record<AppId, { width: number; height: number }>> = {
+// The System Map and the win screen grow wide by Stage 4, so they open up to 1000 pixels wide and
+// grow to fit what is inside.
+const OPEN_SIZE: Partial<Record<AppId, { width: number; height?: number }>> = {
   blueprint: { width: 1000, height: Infinity },
+  systemMap: { width: 1000 },
+  win: { width: 1000 },
 };
 const CASCADE = 32;
 const EDGE = 8;

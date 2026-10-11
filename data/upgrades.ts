@@ -145,8 +145,16 @@ export const itemEffects = {
   halfPenalties: "srv-monitoring",
   // "Three extra wallpapers in Settings".
   wallpapers: "gear-wallpapers",
+  // "The first bad choice in each stage causes no user dip".
+  standby: "srv-standby",
+  // "10% more cash from every incident".
+  fasterPc: "gear-pc",
 };
 
 // Monitoring: "users dip 5% and cash loss is 5% of base", half the usual bad-choice penalties.
 // Its live numbers on the System Map come in Milestone 8 (see PROGRESS.md).
 export const MONITORING_SHARE = 0.5;
+
+// The Faster PC: "10% more cash from every incident", applied after the star multiplier and to the
+// Triage and Tune bonuses (docs/UPGRADES.md > Rules when effects combine).
+export const FASTER_PC_TIMES = 1.1;

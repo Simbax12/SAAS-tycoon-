@@ -4,7 +4,7 @@ import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import type { AppId } from "@/data/desktopApps";
 import WindowBody from "@/components/windows/WindowBody";
 import { useGameContext } from "@/components/useGame";
-import { drawnStyle, osForStage, wallpaperFor } from "@/data/blipOs";
+import { osForStage, wallpaperFor } from "@/data/blipOs";
 import { appById } from "@/data/desktopApps";
 import { itemEffects } from "@/data/upgrades";
 import { currentBuild, currentIncident, currentStage, currentTriage, incidentOpen, usersOnScreen } from "@/game/rules";
@@ -106,6 +106,15 @@ export default function Desktop({ isPhone, reducedMotion, windows, paused, onSta
     // Only when the step begins, so closing SysDash keeps it closed.
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [tuning]);
+  // The win screen opens by itself when the final incident is solved, and closes after "Play again"
+  // (docs/GAME_DESIGN.md > Win screen). A reload of a won game does not open it again.
+  const wonBefore = useRef(state.won);
+  useEffect(() => {
+    if (state.won && !wonBefore.current && area.width > 0) openApp("win");
+    // "Play again" starts a fresh game, so every window from the old one closes.
+    if (!state.won && windows.windows.some((w) => w.id === "win")) windows.windows.forEach((w) => windows.close(w.id));
+    if (area.width > 0) wonBefore.current = state.won;
+  }, [state.won, area.width, openApp, windows]);
   const closeStart = useCallback(() => setStartOpen(false), []);
   const startTour = useCallback(() => {
     windows.close("settings");
@@ -144,7 +153,7 @@ export default function Desktop({ isPhone, reducedMotion, windows, paused, onSta
     <DesktopContext.Provider value={tools}>
       <div
         ref={rootRef}
-        data-os-style={drawnStyle(os)}
+        data-os-style={os.style}
         style={osVars}
         className="absolute inset-0 flex flex-col overflow-hidden bg-[var(--os-desktop)] text-ink"
       >
@@ -208,6 +217,8 @@ export default function Desktop({ isPhone, reducedMotion, windows, paused, onSta
           users={usersOnScreen(state)}
           cash={state.cash}
           zoom={zoom}
+          centred={os.style === "flat"}
+          marks={{ handbook: state.owned.includes(itemEffects.freeFirstCall), fasterPc: state.owned.includes(itemEffects.fasterPc) }}
           onStart={() => setStartOpen((v) => !v)}
           onTab={(w) => windows.focus(w.id)}
         />

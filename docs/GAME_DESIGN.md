@@ -463,7 +463,7 @@ Each tip is shown once, with the same spotlight.
 
 ## Win screen
 
-Shown when incident 5.3 is solved.
+Shown when incident 5.3 is solved. It opens by itself as its own window over the desktop, titled "You did it". It can be closed and opened again from the Incident window.
 
 - Maya's win message
 - The full System Map
@@ -473,7 +473,7 @@ Shown when incident 5.3 is solved.
 - Patterns mastered, out of 5
 - Cash in the bank
 - Number of investor top-ups, and any loan still owed
-- "Play again" button
+- "Play again" button. It asks to confirm first, like "Reset game"
 
 ## Ideas for later (do not build yet)
 

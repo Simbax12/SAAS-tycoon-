@@ -34,6 +34,7 @@ import {
   currentStage,
   currentTriage,
   currentTune,
+  hasEffect,
   incidentOpen,
   incidentPay,
   lifelinePrice,
@@ -44,8 +45,9 @@ import {
 } from "./rules";
 import type { Action, Canvas, GameState, Run, Settings } from "./types";
 
-// Version 2 places each part on the Blueprint canvas (game/save.ts has the migration).
-export const SAVE_VERSION = 2;
+// Version 2 places each part on the Blueprint canvas. Version 3 adds the Standby server and Faster PC
+// fields to the run (game/save.ts has the migrations).
+export const SAVE_VERSION = 3;
 
 export const defaultSettings: Settings = {
   textSize: "normal",
@@ -69,6 +71,8 @@ export const freshRun = (): Run => ({
   triageTaps: [],
   tuneWaves: [],
   paid: 0,
+  standbySaved: false,
+  lateItems: [],
 });
 
 // docs/GAME_LOGIC.md > The game state, the "At the start" column.
@@ -159,10 +163,11 @@ function buy(state: GameState, id: string): GameState {
   }
   s = { ...s, cash: s.cash - item.price, owned: [...s.owned, id], users: s.users + item.usersGained };
   // An item bought during an incident does not change that incident: its once-per-incident help
-  // counts as used until the next one starts.
+  // counts as used, and its other effects wait in lateItems, until the next one starts.
   if (incidentOpen(s)) {
     if (id === itemEffects.testFirst) s = { ...s, run: { ...s.run, testUsed: true } };
     if (id === itemEffects.freeFirstCall) s = { ...s, run: { ...s.run, handbookUsed: true } };
+    s = { ...s, run: { ...s.run, lateItems: [...s.run.lateItems, id] } };
   }
   // Buying the feature the current incident waits for lets that incident arrive.
   if (s.phase === "waiting" && s.emails.length > 0 && currentRow(s)?.needs === id) s = arrive(s);
@@ -313,18 +318,24 @@ function pick(state: GameState, optionId: string): GameState {
   const option = incident.options.find((o) => o.id === optionId)!;
   if (option.type === "best") return fixChosen(state);
 
-  const wrong = option.type === "partial" ? partialPenalty(currentStage(state)) : badPenalty(state);
-  // An outage: users dip by a share of the users on screen until the incident is solved.
-  const dip = option.type === "bad" ? badDip(state) : 0;
+  const stage = currentStage(state);
+  const wrong = option.type === "partial" ? partialPenalty(stage) : badPenalty(state);
+  // An outage: users dip by a share of the users on screen until the incident is solved. The Standby
+  // server saves the first one in each stage (docs/UPGRADES.md > Servers).
+  const standby =
+    option.type === "bad" && hasEffect(state, itemEffects.standby) && !state.standbyStages.includes(stage);
+  const dip = option.type === "bad" && !standby ? badDip(state) : 0;
   const [s, taken] = takeCash(state, wrong);
   return afterWrongPick({
     ...s,
+    standbyStages: standby ? [...s.standbyStages, stage] : s.standbyStages,
     run: {
       ...s.run,
       stars: loseStar(s.run.stars),
       tried: [...s.run.tried, option.id],
       dip: s.run.dip + dip,
       paid: s.run.paid + taken,
+      standbySaved: s.run.standbySaved || standby,
     },
     recycleBin: [...s.recycleBin, { incidentId: incident.id, choice: option.id }],
   });
@@ -393,12 +404,11 @@ function next(state: GameState): GameState {
   // 3. Request emails that arrive after this incident.
   s = sendRequests(s, (r) => "after" in r.arrives && r.arrives.after === incident.id);
 
-  // 4. Move on, unless the next incident is not built yet. Then play stops here, and tapping
-  // Next again once it is built carries on from the same place.
+  // 4. Move on to the next incident in the play order.
   const upNext = nextIncident(s);
-  if (!upNext || upNext.blocked) return s;
+  if (!upNext) return s;
   const oldStage = currentStage(s);
-  s = { ...s, currentId: upNext.row.id };
+  s = { ...s, currentId: upNext.id };
 
   // 5. A new stage: drop an unused lifeline from an earlier stage, then Maya's opener, request
   // emails for the start of the stage, and any other email.

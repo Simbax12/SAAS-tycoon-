@@ -21,6 +21,11 @@ const migrations: Record<number, (old: Record<string, unknown>) => Record<string
     const placed = parts.map((p, i) => (typeof p === "string" ? { name: p, x: (i + 0.5) / parts.length, y: 0.5 } : p));
     return { ...old, run: { ...run, canvas: { ...run.canvas, parts: placed } } };
   },
+  // Version 3 adds two run fields for the Stage 3 items. No save could reach Stage 3 before, so both start empty.
+  2: (old) => {
+    const run = old.run as Record<string, unknown> | undefined;
+    return run ? { ...old, run: { ...run, standbySaved: false, lateItems: [] } } : old;
+  },
 };
 
 export function saveGame(storage: Storage, state: GameState) {

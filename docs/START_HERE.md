@@ -61,7 +61,7 @@ CLAUDE.md        the hub: map, links, rules
   /desktop       wallpaper, icons, taskbar, window frame, server alert, balloon
   /room          the intro, the room frame, sit down and stand up
   /windows       Inbox, Incident, SystemMap, Shop, PatternBook, Stats, HowToPlay, Settings, RecycleBin,
-                 Blueprint, Terminal, SysDash
+                 Blueprint, Terminal, SysDash, Win
 /app             the single page
 /public/room     the room clips and stills, one set per stage
 PROGRESS.md

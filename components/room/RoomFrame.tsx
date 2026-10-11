@@ -23,11 +23,13 @@ type Props = {
   screen: Screen;
   windows: Windows;
   firstVisit: boolean;
+  // The Faster PC makes the BlipOS loading bar quicker (docs/UI_THEME.md > The player's setup).
+  fastPc: boolean;
 };
 
 const pill = "rounded-full bg-cream px-5 py-2 text-[18px] text-ink shadow-[0_2px_10px_rgba(0,0,0,0.5)]";
 
-export default function RoomFrame({ stage, screen, windows, firstVisit }: Props) {
+export default function RoomFrame({ stage, screen, windows, firstVisit, fastPc }: Props) {
   const { isPhone, reducedMotion } = screen;
   const room = roomByStage(stage);
   const files = roomFiles(stage);
@@ -88,7 +90,7 @@ export default function RoomFrame({ stage, screen, windows, firstVisit }: Props)
 
   const desktop =
     phase === "loading" ? (
-      <LoadingBar version={osForStage(stage).version} onDone={booted_} reducedMotion={reducedMotion} />
+      <LoadingBar version={osForStage(stage).version} onDone={booted_} reducedMotion={reducedMotion} fast={fastPc} />
     ) : (
       <>
         <Desktop
@@ -102,7 +104,7 @@ export default function RoomFrame({ stage, screen, windows, firstVisit }: Props)
         />
         {upgrading && (
           <div className="absolute inset-0 z-[2000]">
-            <LoadingBar version={osForStage(stage).version} upgrade onDone={upgraded} reducedMotion={reducedMotion} />
+            <LoadingBar version={osForStage(stage).version} upgrade onDone={upgraded} reducedMotion={reducedMotion} fast={fastPc} />
           </div>
         )}
       </>

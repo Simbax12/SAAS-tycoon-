@@ -17,8 +17,8 @@ function Svg({ size = 24, className, children }: Props & { children: React.React
   );
 }
 
-// docs/UI_THEME.md > Pattern Book and pattern cards. Patterns not yet in play show a plain disc until their stage is built.
-const patternDrawings: Partial<Record<PatternIconId, React.ReactNode>> = {
+// docs/UI_THEME.md > Pattern Book and pattern cards.
+const patternDrawings: Record<PatternIconId, React.ReactNode> = {
   shield: <path d="M12 2 L20 5 V11 C20 16 16.5 20 12 22 C7.5 20 4 16 4 11 V5 Z" fill="#7FB8F0" stroke={INK} strokeWidth="1.6" />,
   padlock: (
     <>
@@ -66,10 +66,108 @@ const patternDrawings: Partial<Record<PatternIconId, React.ReactNode>> = {
       <path d="M8.5 13 V18 M12 13 V18 M15.5 13 V18" stroke={INK} strokeWidth="1.3" />
     </>
   ),
+  // Signpost with arrows
+  signpost: (
+    <>
+      <path d="M11 2 H13 V22 H11 Z" fill="#8A5A2B" stroke={INK} strokeWidth="1.2" />
+      <path d="M4 4 H17 L20.5 7 L17 10 H4 Z" fill="#F2B632" stroke={INK} strokeWidth="1.4" />
+      <path d="M20 11.5 H7 L3.5 14.5 L7 17.5 H20 Z" fill="#7FB8F0" stroke={INK} strokeWidth="1.4" />
+    </>
+  ),
+  // Name badge
+  badge: (
+    <>
+      <path d="M9 2 H15 L14 6 H10 Z" fill="#2A5FD0" stroke={INK} strokeWidth="1.2" />
+      <rect x="3" y="6" width="18" height="15" rx="2" fill="#F4F0E0" stroke={INK} strokeWidth="1.4" />
+      <circle cx="8.5" cy="12.5" r="2.5" fill="#F2B632" stroke={INK} strokeWidth="1.2" />
+      <path d="M5 18.5 C5 15.5 12 15.5 12 18.5 M14 11 H18.5 M14 14.5 H18.5" fill="none" stroke={INK} strokeWidth="1.2" />
+    </>
+  ),
+  // To-do list
+  todo: (
+    <>
+      <rect x="4" y="2.5" width="16" height="19" rx="1.5" fill="#F4F0E0" stroke={INK} strokeWidth="1.4" />
+      <path d="M7 7.5 L8.5 9 L11 6 M7 13 H9.5 M7 18 H9.5" fill="none" stroke={INK} strokeWidth="1.4" />
+      <path d="M12.5 7.5 H17 M12.5 13 H17 M12.5 18 H17" stroke={INK} strokeWidth="1.4" />
+    </>
+  ),
+  // Two stacked copies
+  copies: (
+    <>
+      <rect x="8" y="2.5" width="13" height="15" rx="1.5" fill="#BFE3FF" stroke={INK} strokeWidth="1.4" />
+      <rect x="3" y="6.5" width="13" height="15" rx="1.5" fill="#7FB8F0" stroke={INK} strokeWidth="1.4" />
+      <path d="M6 11 H13 M6 14.5 H13 M6 18 H11" stroke={INK} strokeWidth="1.2" />
+    </>
+  ),
+  // Pie cut in slices
+  pie: (
+    <>
+      <circle cx="11" cy="13" r="8.5" fill="#E0A458" stroke={INK} strokeWidth="1.4" />
+      <path d="M11 13 V4.5 M11 13 L18.4 17.2 M11 13 L3.6 17.2" stroke={INK} strokeWidth="1.4" />
+      <path d="M14 2 A8.5 8.5 0 0 1 21.5 9.5 H14 Z" fill="#F2B632" stroke={INK} strokeWidth="1.4" />
+    </>
+  ),
+  // Megaphone
+  megaphone: (
+    <>
+      <path d="M3 9 H8 L18 3.5 V20.5 L8 15 H3 Z" fill="#C83232" stroke={INK} strokeWidth="1.4" />
+      <path d="M5.5 15 L7.5 21 H10.5 L9 15" fill="#F4F0E0" stroke={INK} strokeWidth="1.2" />
+      <path d="M20.5 9.5 C22 11 22 13 20.5 14.5" fill="none" stroke={INK} strokeWidth="1.4" />
+    </>
+  ),
+  // World map with pins
+  worldMap: (
+    <>
+      <rect x="1.5" y="4" width="21" height="16" rx="1.5" fill="#7FB8F0" stroke={INK} strokeWidth="1.4" />
+      <path d="M4 8 C6 6.5 8 7 9 9 C8.5 11 6.5 12 7 15 C5 14 4 11 4 8 Z M12 7 C14 6 18 6.5 20 8.5 C19 10 17 10 16.5 12.5 C15 13 13 11.5 12.5 9.5 Z M16 14.5 C17.5 14 19.5 15 19 17 C17.5 17.5 16 16.5 16 14.5 Z" fill="#8FD07A" stroke={INK} strokeWidth="1" />
+      <path d="M6 9.5 V6.5 M14.5 9 V6 M17.5 16 V13" stroke={INK} strokeWidth="1.2" />
+      <circle cx="6" cy="6" r="1.4" fill="#C83232" stroke={INK} strokeWidth="0.8" />
+      <circle cx="14.5" cy="5.5" r="1.4" fill="#C83232" stroke={INK} strokeWidth="0.8" />
+      <circle cx="17.5" cy="12.5" r="1.4" fill="#C83232" stroke={INK} strokeWidth="0.8" />
+    </>
+  ),
+  // Heartbeat line
+  heartbeat: (
+    <>
+      <rect x="1.5" y="3.5" width="21" height="17" rx="2" fill="#F4F0E0" stroke={INK} strokeWidth="1.4" />
+      <path d="M3.5 12.5 H8 L9.5 8 L12 17 L14 6.5 L15.5 12.5 H20.5" fill="none" stroke="#C83232" strokeWidth="1.8" />
+    </>
+  ),
+  // Turnstile gate
+  turnstile: (
+    <>
+      <rect x="3" y="4" width="4" height="17" rx="1" fill="#9AA4B2" stroke={INK} strokeWidth="1.4" />
+      <rect x="17" y="4" width="4" height="17" rx="1" fill="#9AA4B2" stroke={INK} strokeWidth="1.4" />
+      <circle cx="12" cy="10" r="2" fill="#F2B632" stroke={INK} strokeWidth="1.2" />
+      <path d="M7 10 H10 M14 10 H17 M12 12 V18" stroke={INK} strokeWidth="2" />
+    </>
+  ),
+  // Light switch
+  lightSwitch: (
+    <>
+      <rect x="5" y="2" width="14" height="20" rx="2" fill="#F4F0E0" stroke={INK} strokeWidth="1.4" />
+      <rect x="9" y="6" width="6" height="12" rx="1.5" fill="#9AA4B2" stroke={INK} strokeWidth="1.2" />
+      <rect x="9.5" y="6.5" width="5" height="5.5" rx="1" fill="#F2B632" stroke={INK} strokeWidth="1" />
+    </>
+  ),
+  // Magnifying glass
+  magnifier: (
+    <>
+      <circle cx="10" cy="10" r="6.5" fill="#BFE3FF" stroke={INK} strokeWidth="1.6" />
+      <path d="M14.8 14.8 L21 21" stroke={INK} strokeWidth="3" />
+    </>
+  ),
+  // Flag
+  flag: (
+    <>
+      <path d="M5 2 V22" stroke={INK} strokeWidth="2" />
+      <path d="M6 3.5 C10 1.5 13 6 19 3.5 V12.5 C13 15 10 10.5 6 12.5 Z" fill="#2E8B3D" stroke={INK} strokeWidth="1.4" />
+    </>
+  ),
 };
 
 export function PatternIcon({ id, size, className }: Props & { id: PatternIconId }) {
-  return <Svg size={size} className={className}>{patternDrawings[id] ?? <circle cx="12" cy="12" r="8" fill="#F2B632" stroke={INK} strokeWidth="1.6" />}</Svg>;
+  return <Svg size={size} className={className}>{patternDrawings[id]}</Svg>;
 }
 
 // Icons inside System Map boxes. Drawn into a 24 by 24 box at the given place, for use inside a bigger SVG.
@@ -120,6 +218,55 @@ const boxDrawings: Record<BoxIconId, React.ReactNode> = {
       <rect x="1.5" y="12" width="6" height="5" rx="1" fill="#7FB8F0" stroke={INK} strokeWidth="1.2" />
       <rect x="16.5" y="12" width="6" height="5" rx="1" fill="#7FB8F0" stroke={INK} strokeWidth="1.2" />
       <rect x="9" y="17.5" width="6" height="5" rx="1" fill="#7FB8F0" stroke={INK} strokeWidth="1.2" />
+    </>
+  ),
+  lb: (
+    <>
+      <rect x="2" y="9" width="7" height="6" rx="1" fill="#F2B632" stroke={INK} strokeWidth="1.4" />
+      <path d="M9 12 H13 M13 12 L20 5 M13 12 H20 M13 12 L20 19" fill="none" stroke={INK} strokeWidth="1.6" />
+      <path d="M17.5 4 L21 4.5 L20.5 8 M18 10.5 L21 12 L18 13.5 M20.5 16 L21 19.5 L17.5 20" fill="none" stroke={INK} strokeWidth="1.4" />
+    </>
+  ),
+  session: (
+    <>
+      <rect x="4" y="3" width="16" height="18" rx="2" fill="#F4F0E0" stroke={INK} strokeWidth="1.4" />
+      <rect x="9" y="1.5" width="6" height="3" rx="1" fill="#9AA4B2" stroke={INK} strokeWidth="1.2" />
+      <circle cx="12" cy="10" r="3" fill="#F2B632" stroke={INK} strokeWidth="1.2" />
+      <path d="M7 17.5 C7 13.5 17 13.5 17 17.5" fill="#2A5FD0" stroke={INK} strokeWidth="1.2" />
+    </>
+  ),
+  queue: patternDrawings.todo,
+  worker: (
+    <>
+      <circle cx="12" cy="12" r="6.5" fill="#9AA4B2" stroke={INK} strokeWidth="1.4" />
+      <path d="M12 2 V5 M12 19 V22 M2 12 H5 M19 12 H22 M4.9 4.9 L7 7 M17 17 L19.1 19.1 M4.9 19.1 L7 17 M17 7 L19.1 4.9" stroke={INK} strokeWidth="2.2" />
+      <circle cx="12" cy="12" r="2.5" fill="#F4F0E0" stroke={INK} strokeWidth="1.2" />
+    </>
+  ),
+  // A card being checked by a magnifying glass.
+  fraud: (
+    <>
+      <rect x="1.5" y="4" width="15" height="11" rx="1.5" fill="#8FD07A" stroke={INK} strokeWidth="1.4" />
+      <path d="M1.5 7.5 H16.5" stroke={INK} strokeWidth="2" />
+      <circle cx="15.5" cy="15" r="4.5" fill="#BFE3FF" stroke={INK} strokeWidth="1.4" />
+      <path d="M18.8 18.3 L22 21.5" stroke={INK} strokeWidth="2.4" />
+    </>
+  ),
+  replicas: patternDrawings.copies,
+  feed: (
+    <>
+      <rect x="3" y="2" width="18" height="20" rx="2" fill="#F4F0E0" stroke={INK} strokeWidth="1.4" />
+      <circle cx="7" cy="7" r="2" fill="#F2B632" stroke={INK} strokeWidth="1" />
+      <circle cx="7" cy="16" r="2" fill="#2E8B3D" stroke={INK} strokeWidth="1" />
+      <path d="M11 6 H18 M11 9 H16 M11 15 H18 M11 18 H16" stroke={INK} strokeWidth="1.3" />
+    </>
+  ),
+  search: patternDrawings.magnifier,
+  region: patternDrawings.globe,
+  edge: (
+    <>
+      <path d="M12 2 L21 5.5 V11 C21 16.5 17 20.5 12 22 C7 20.5 3 16.5 3 11 V5.5 Z" fill="#9AA4B2" stroke={INK} strokeWidth="1.4" />
+      <path d="M7 9 H17 M7 13 H17 M9.5 9 V17 M14.5 9 V17" stroke={INK} strokeWidth="1.3" />
     </>
   ),
 };

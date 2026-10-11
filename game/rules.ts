@@ -8,16 +8,17 @@ import { incidentById, isBuild, type IncidentData } from "../data/incidents";
 import { playOrder, playOrderRow, type IncidentKind, type PlayOrderRow } from "../data/playOrder";
 import { callPrices, penalties, progressMarkers, REPEAT_PAY_SHARE, stageByNumber, starMultiplier, type StageNumber } from "../data/stages";
 import { TUTORIAL_INCIDENT } from "../data/tutorial";
-import { itemEffects, LIFELINE_TIMES, MONITORING_SHARE, upgradeById, upgrades, type Upgrade } from "../data/upgrades";
+import { FASTER_PC_TIMES, itemEffects, LIFELINE_TIMES, MONITORING_SHARE, upgradeById, upgrades, type Upgrade } from "../data/upgrades";
 import type { GameState, Run, Stars } from "./types";
 
 export const baseCash = (stage: StageNumber) => stageByNumber(stage).baseCash;
 
 // docs/GAME_LOGIC.md > Cash coming in: base cash, halved for a repeat, times the star multiplier,
-// plus the Triage and Tune bonuses, rounded once. The Faster PC arrives with Stage 3.
-export function payFor(kind: IncidentKind, stage: StageNumber, stars: Stars, run?: Run): number {
+// plus the Triage and Tune bonuses, times the Faster PC's share when it counts, rounded once.
+export function payFor(kind: IncidentKind, stage: StageNumber, stars: Stars, run?: Run, fasterPc = false): number {
   const base = baseCash(stage) * (kind === "repeat" ? REPEAT_PAY_SHARE : 1);
-  return Math.round(base * starMultiplier[stars] + (run ? bonusFor(stage, run) : 0));
+  const pay = base * starMultiplier[stars] + (run ? bonusFor(stage, run) : 0);
+  return Math.round(pay * (fasterPc ? FASTER_PC_TIMES : 1));
 }
 
 // The Triage bonus, for finding the cause on the first tap, and the Tune bonus for each wave set right.
@@ -30,13 +31,17 @@ export function bonusFor(stage: StageNumber, run: Run): number {
 // What the current incident pays when it is solved with the run as it is.
 export function incidentPay(state: GameState): number {
   const row = currentRow(state)!;
-  return payFor(row.kind, row.stage, state.run.stars, state.run);
+  const fasterPc = hasEffect(state, itemEffects.fasterPc);
+  return payFor(row.kind, row.stage, state.run.stars, state.run, fasterPc);
 }
 
 export const partialPenalty = (stage: StageNumber) => Math.round(baseCash(stage) * penalties.partialCash);
 
+// An owned item's effect counts, unless it was bought during this incident (docs/GAME_LOGIC.md > Cash going out).
+export const hasEffect = (state: GameState, id: string) => state.owned.includes(id) && !state.run.lateItems.includes(id);
+
 // Monitoring halves bad-choice penalties: the cash loss and the user dip (docs/UPGRADES.md > Servers).
-const badShare = (state: GameState) => (state.owned.includes(itemEffects.halfPenalties) ? MONITORING_SHARE : 1);
+const badShare = (state: GameState) => (hasEffect(state, itemEffects.halfPenalties) ? MONITORING_SHARE : 1);
 export const badPenalty = (state: GameState) => Math.round(baseCash(currentStage(state)) * penalties.badCash * badShare(state));
 export const badDip = (state: GameState) => Math.round(usersOnScreen(state) * penalties.badDip * badShare(state));
 
@@ -163,14 +168,10 @@ export const currentBuild = (state: GameState): Build | undefined => buildById(s
 export const currentTriage = (state: GameState) => triageFor(state.currentId);
 export const currentTune = (state: GameState) => tuneFor(state.currentId);
 
-// Whether this milestone can play an incident: its data file has it.
-export const isPlayable = (row: PlayOrderRow) => incidentById(row.id) !== undefined;
-
-// The incident after the current one. "blocked" means it is not in the data files yet, so play stops here.
-export function nextIncident(state: GameState): { row: PlayOrderRow; blocked: boolean } | null {
+// The incident after the current one, or null after the final incident.
+export function nextIncident(state: GameState): PlayOrderRow | null {
   const at = playOrder.findIndex((r) => r.id === state.currentId);
-  const row = playOrder[at + 1];
-  return row ? { row, blocked: !isPlayable(row) } : null;
+  return playOrder[at + 1] ?? null;
 }
 
 // --- The fixed shuffle (docs/GAME_LOGIC.md > Derived values) ---

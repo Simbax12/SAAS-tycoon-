@@ -1,6 +1,7 @@
 // The BlipOS wallpaper, set by the version (docs/UI_THEME.md > BlipOS versions).
 // plain: one flat colour, the desktop colour of the version. hill: a rolling green hill under a
 // bright blue sky with a few soft clouds (docs/UI_THEME.md > Desktop), drawn with a CSS gradient and SVG shapes.
+// hillNight: the hill at night, for BlipOS 4. gradient: a soft gradient, for BlipOS 5.
 // The Wallpaper pack adds three more: sunset hill, night sky and snowy hill (docs/UI_THEME.md > The player's setup).
 
 import type { WallpaperId } from "@/data/blipOs";
@@ -12,10 +13,12 @@ type Look = {
   clouds?: string;
 };
 
-const looks: Record<Exclude<WallpaperId, "plain">, Look> = {
+const looks: Record<Exclude<WallpaperId, "plain" | "gradient">, Look> = {
   hill: { sky: ["var(--color-sky-top)", "var(--color-sky-bottom)"], hillBack: ["#7CC25A", "#4E9A35"], hill: ["#5DAA3C", "#3F8A2B"], clouds: "#FFFFFF" },
   sunset: { sky: ["#5B3A8C", "#F29E5C"], hillBack: ["#6E7A3A", "#4D5A26"], hill: ["#4E6A2E", "#33481C"], clouds: "#FFD9B8" },
   night: { sky: ["#0B1736", "#24406E"], hillBack: ["#24452E", "#17301F"], hill: ["#1B3A23", "#0F2415"] },
+  // The desktop colour of BlipOS 4 at the top of the sky, a calm moonlit hill below.
+  hillNight: { sky: ["var(--os-desktop)", "#2C4A72"], hillBack: ["#2F5A3A", "#1F3F28"], hill: ["#244A2D", "#16311D"] },
   snow: { sky: ["#9FB8CC", "#E4EEF5"], hillBack: ["#F4F7FA", "#D5E0EA"], hill: ["#FFFFFF", "#DCE6EE"], clouds: "#FFFFFF" },
 };
 
@@ -26,6 +29,18 @@ const stars = [
 
 export default function Wallpaper({ kind }: { kind: WallpaperId }) {
   if (kind === "plain") return <div className="absolute inset-0 bg-[var(--os-desktop)]" aria-hidden="true" />;
+  if (kind === "gradient") {
+    return (
+      <div
+        className="absolute inset-0"
+        style={{
+          background:
+            "radial-gradient(ellipse at 20% 85%, #F4D9C6 0%, transparent 55%), radial-gradient(ellipse at 85% 20%, #C9DDF2 0%, transparent 50%), linear-gradient(160deg, var(--os-desktop), #E6EEF6 60%, #F4F0E0)",
+        }}
+        aria-hidden="true"
+      />
+    );
+  }
   const look = looks[kind];
   return (
     <div
@@ -44,9 +59,9 @@ export default function Wallpaper({ kind }: { kind: WallpaperId }) {
             <stop offset="1" stopColor={look.hillBack[1]} />
           </linearGradient>
         </defs>
-        {kind === "night" && (
+        {(kind === "night" || kind === "hillNight") && (
           <g fill="#F4F0E0">
-            {stars.map(([x, y]) => (
+            {kind === "night" && stars.map(([x, y]) => (
               <circle key={`${x}-${y}`} cx={x} cy={y} r="1.3" />
             ))}
             {/* A crescent: the moon with a smaller circle cut out of it. */}

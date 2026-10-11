@@ -3,19 +3,21 @@
 import { useEffect } from "react";
 import { BlipLogo } from "./icons";
 
-// The BlipOS loading bar, 2 seconds at most (docs/UI_THEME.md > Desktop).
+// The BlipOS loading bar, 2 seconds at most (docs/UI_THEME.md > Desktop). Half as long with the Faster PC.
 export const LOADING_MS = 1600;
+const FAST_LOADING_MS = 800;
 
 // It names the BlipOS version. When a new stage starts it says "Upgrading to BlipOS 2" and so on
 // (docs/UI_THEME.md > The upgrade).
-type Props = { version: number; upgrade?: boolean; onDone: () => void; reducedMotion: boolean };
+type Props = { version: number; upgrade?: boolean; onDone: () => void; reducedMotion: boolean; fast?: boolean };
 
-export default function LoadingBar({ version, upgrade, onDone, reducedMotion }: Props) {
+export default function LoadingBar({ version, upgrade, onDone, reducedMotion, fast }: Props) {
   const words = `${upgrade ? "Upgrading to " : ""}BlipOS ${version}`;
+  const ms = fast ? FAST_LOADING_MS : LOADING_MS;
   useEffect(() => {
-    const t = setTimeout(onDone, LOADING_MS);
+    const t = setTimeout(onDone, ms);
     return () => clearTimeout(t);
-  }, [onDone]);
+  }, [onDone, ms]);
 
   return (
     <div className="absolute inset-0 flex flex-col items-center justify-center gap-6 bg-[#173A8A] text-white" role="status" aria-label={words}>
@@ -29,7 +31,7 @@ export default function LoadingBar({ version, upgrade, onDone, reducedMotion }: 
           style={
             reducedMotion
               ? { width: "100%" }
-              : { width: "0%", animation: `loading-fill ${LOADING_MS - 200}ms ease-in-out forwards` }
+              : { width: "0%", animation: `loading-fill ${ms - 200}ms ease-in-out forwards` }
           }
         />
       </div>

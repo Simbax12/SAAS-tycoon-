@@ -34,6 +34,10 @@ export type Run = {
   triageTaps: string[];
   tuneWaves: { stop: number; right: boolean }[];
   paid: number;
+  // The Standby server saved this incident's outage, so Maya's Standby line shows.
+  standbySaved: boolean;
+  // Items bought while this incident was open. Their effects start with the next incident.
+  lateItems: string[];
 };
 
 // An email is saved as a key, such as "arrive:1.4". Its words come from the data files.

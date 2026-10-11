@@ -12,7 +12,9 @@ export type AppId =
   | "stats"
   | "howToPlay"
   | "settings"
-  | "recycleBin";
+  | "recycleBin"
+  // Not a desktop icon: it opens by itself when the game is won.
+  | "win";
 
 export type DesktopApp = {
   id: AppId;
@@ -36,4 +38,7 @@ export const desktopApps: DesktopApp[] = [
   { id: "recycleBin", name: "Recycle Bin", opens: "Every wrong option the player tried, with why it failed" },
 ];
 
-export const appById = (id: AppId): DesktopApp => desktopApps.find((a) => a.id === id)!;
+// Windows with no desktop icon. The win screen opens by itself (docs/GAME_DESIGN.md > Win screen).
+export const otherWindows: DesktopApp[] = [{ id: "win", name: "You did it", opens: "The win screen" }];
+
+export const appById = (id: AppId): DesktopApp => [...desktopApps, ...otherWindows].find((a) => a.id === id)!;

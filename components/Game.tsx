@@ -4,6 +4,7 @@ import RoomFrame from "@/components/room/RoomFrame";
 import { useWindows } from "@/components/desktop/useWindows";
 import { GameContext, useGame } from "@/components/useGame";
 import { useScreen } from "@/components/useScreen";
+import { itemEffects } from "@/data/upgrades";
 import { currentStage } from "@/game/rules";
 
 // The single page. The walk-in clip plays only when there is no save yet
@@ -15,7 +16,7 @@ export default function Game() {
   if (!screen || hadSave === null) return null;
   return (
     <GameContext.Provider value={{ state, dispatch }}>
-      <RoomFrame stage={currentStage(state)} screen={screen} windows={windows} firstVisit={!hadSave} />
+      <RoomFrame stage={currentStage(state)} screen={screen} windows={windows} firstVisit={!hadSave} fastPc={state.owned.includes(itemEffects.fasterPc)} />
     </GameContext.Provider>
   );
 }

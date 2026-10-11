@@ -11,6 +11,8 @@ import { repeatById } from "../data/repeats";
 import { alsoSeenAs, builtIn, patternBook, pipsFor } from "./patternBook";
 import { tuneFor, tuneSteps } from "../data/extraSteps";
 import { requestFor } from "../data/upgrades";
+import { everydayPatterns } from "../data/patterns";
+import { playOrder } from "../data/playOrder";
 import { deployOutcome } from "./blueprint";
 import {
   callButton,
@@ -144,7 +146,7 @@ test("after 1.4 comes B1, then Stage 2 starts with 2.1", () => {
   assert.equal(s.users, 800);
   // Four incidents at £750, two Triage bonuses of £50, less £300 for Payments.
   assert.equal(s.cash, 2800);
-  assert.equal(nextIncident(s)!.row.id, "B1");
+  assert.equal(nextIncident(s)!.id, "B1");
   // B1 arrives as Maya's email and starts with an empty canvas.
   s = reducer(s, { type: "next" });
   assert.equal(s.currentId, "B1");
@@ -154,7 +156,7 @@ test("after 1.4 comes B1, then Stage 2 starts with 2.1", () => {
   // £500 x 1.5 = £750. Users +200.
   assert.equal(s.cash, 3550);
   assert.equal(s.users, 1000);
-  assert.equal(nextIncident(s)!.row.id, "2.1");
+  assert.equal(nextIncident(s)!.id, "2.1");
   const before = s.emails.length;
   // A lifeline bought in Stage 1 is lost when Stage 2 starts.
   s = reducer({ ...s, lifeline: 1 }, { type: "next" });
@@ -434,9 +436,16 @@ function drawRight(id: string): Action[] {
 function solveNext(s: GameState): GameState {
   let n = play(s, ...look);
   n = buildById(n.currentId) ? play(n, ...drawRight(n.currentId), deploy) : reducer(n, pick(rightChoice(n)));
+  n = runTune(n);
   n = reducer(n, { type: "next" });
   const needs = neededNext(n);
   return needs ? reducer(n, buy(needs)) : n;
+}
+
+// Sets every wave of a Tune step right.
+function runTune(s: GameState): GameState {
+  const tune = tuneFor(s.currentId);
+  return s.phase === "tune" && tune ? play(s, ...tune.waves.map((w): Action => ({ type: "runWave", stop: w.right }))) : s;
 }
 
 // Plays from the start up to an incident, solving each one first try.
@@ -450,21 +459,15 @@ function playTo(id: string): GameState {
   return s;
 }
 
-test("Stage 2 can be played: the four new incidents, R1 and R2, then play stops", () => {
+test("Stage 2 can be played: the four new incidents, R1 and R2, then Stage 3 starts", () => {
   let s = playTo("2.1");
   const seen: string[] = [];
-  for (;;) {
+  while (s.currentId !== "3.1") {
     seen.push(s.currentId);
-    const n = solveNext(s);
-    const stopped = n.currentId === s.currentId;
-    s = n;
-    if (stopped) break;
+    s = solveNext(s);
   }
-  // Stage 3 is not built yet, so play stops after B2.
   assert.deepEqual(seen, ["2.1", "R1", "2.2", "R2", "2.3", "2.4", "B2"]);
-  assert.equal(s.phase, "solved");
-  assert.equal(nextIncident(s)!.row.id, "3.1");
-  assert.equal(nextIncident(s)!.blocked, true);
+  assert.ok(s.emails.some((e) => e.key === "opener:3"));
   assert.deepEqual(pipsFor(s, "Role-based access control (RBAC)"), ["gold", "gold", "empty"]);
   assert.deepEqual(pipsFor(s, "Idempotency keys"), ["gold", "gold", "empty"]);
   assert.deepEqual(
@@ -519,8 +522,9 @@ test("the Bigger server removes the bigger-server option in 2.1, and Maya says w
 
 test("Monitoring halves bad-choice penalties: a 5% dip and 5% of base cash", () => {
   let s = { ...playTo("2.1"), cash: 3_000 };
-  s = reducer(s, buy("srv-monitoring"));
-  assert.equal(s.cash, 1_800);
+  // Bought during 2.1, it only changes the incidents after it: the full 10% of £2,000 is lost.
+  assert.equal(play(s, buy("srv-monitoring"), ...look, pick("bad")).cash, 1_600);
+  s = startIncident({ ...s, owned: [...s.owned, "srv-monitoring"], cash: 1_800 });
   const users = usersOnScreen(s);
   s = play(s, ...look, pick("bad"));
   assert.equal(s.cash, 1_700);
@@ -809,16 +813,162 @@ test("calls in a Build place parts in Tray order, and the lifeline draws the Sol
   assert.deepEqual(s.results.B1, { stars: 3, firstTry: false });
 });
 
-test("a version 1 save is carried forward to version 2", () => {
+test("a version 1 save is carried forward to the current version", () => {
   const store = memoryStorage();
   const s = play(begun(), ...look);
   const canvas = { parts: ["Users", "Cache"], arrows: [], locked: [], decoysRemoved: false };
   store.setItem(saveKey(1), JSON.stringify({ ...s, saveVersion: 1, run: { ...s.run, canvas } }));
   const loaded = loadGame(store)!;
-  assert.equal(loaded.saveVersion, 2);
+  assert.equal(loaded.saveVersion, SAVE_VERSION);
+  assert.equal(loaded.run.standbySaved, false);
+  assert.deepEqual(loaded.run.lateItems, []);
   assert.deepEqual(loaded.run.canvas!.parts, [
     { name: "Users", x: 0.25, y: 0.5 },
     { name: "Cache", x: 0.75, y: 0.5 },
   ]);
   assert.equal(loaded.currentId, s.currentId);
+});
+
+// --- Milestone 7: Stages 3 to 5 ---
+
+test("the whole game can be played from 0 to 1 billion users", () => {
+  let s = begun();
+  const seen: string[] = [];
+  while (!s.won) {
+    seen.push(s.currentId);
+    const n = solveNext(s);
+    if (n === s || (n.currentId === s.currentId && !n.won)) throw new Error(`Stuck on ${s.currentId}`);
+    s = n;
+  }
+  assert.deepEqual(seen, playOrder.map((r) => r.id));
+  // Only the features that were Needed next were bought, so the users are exactly 1 billion.
+  assert.equal(s.users, 1_000_000_000);
+  assert.equal(s.currentId, "5.3");
+  assert.equal(s.phase, "solved");
+  assert.equal(s.emails.at(-1)?.key, "opener:win");
+  for (const stage of [3, 4, 5]) assert.ok(s.emails.some((e) => e.key === `opener:${stage}`));
+  assert.ok(s.emails.some((e) => e.key === "other:4"));
+  // Next does nothing once the game is won.
+  assert.equal(reducer(s, { type: "next" }), s);
+  // Every result is 3 stars and first try, and all five everyday patterns are mastered.
+  assert.equal(Object.keys(s.results).length, playOrder.length);
+  assert.ok(Object.values(s.results).every((r) => r.stars === 3 && r.firstTry));
+  for (const p of everydayPatterns) assert.deepEqual(pipsFor(s, p.name), ["gold", "gold", "gold"]);
+  // "Play again" is a reset: a fresh game that keeps the settings.
+  const again = reducer(s, { type: "reset", seed: 7 });
+  assert.equal(again.won, false);
+  assert.equal(again.users, 0);
+});
+
+test("Example 3: R7 with a wrong card, two of three Tune waves and the Faster PC", () => {
+  let s = playTo("R7");
+  s = { ...s, owned: [...s.owned, "gear-pc"], run: { ...s.run, lateItems: [] } };
+  const cash = s.cash;
+  s = play(s, { type: "investigate" }, pick("Sharding"));
+  assert.equal(s.run.stars, 2);
+  assert.equal(s.cash, cash);
+  assert.equal(s.run.dip, 0);
+  s = reducer(s, pick("Caching"));
+  assert.equal(s.phase, "tune");
+  const waves = tuneFor("R7")!.waves;
+  s = play(
+    s,
+    { type: "runWave", stop: waves[0].right },
+    { type: "runWave", stop: waves[1].right },
+    { type: "runWave", stop: (waves[2].right + 1) % tuneFor("R7")!.stops.length },
+  );
+  assert.equal(s.phase, "solved");
+  // £50,000 / 2 x 1 = £25,000, plus 2 x 5% of £50,000 = £5,000, times 1.1 = £33,000.
+  assert.equal(s.cash, cash + 33_000);
+  assert.deepEqual(s.results.R7, { stars: 2, firstTry: false });
+  assert.deepEqual(pipsFor(s, "Caching"), ["gold", "gold", "silver"]);
+  assert.ok(s.refreshersDue.includes("R7"));
+  s = reducer(s, { type: "next" });
+  assert.ok(s.emails.some((e) => e.key === "thanks:R7"));
+  assert.ok(!s.emails.some((e) => e.key === "refresher:R7"));
+});
+
+test("a Faster PC bought during an incident pays more from the next one", () => {
+  let s = { ...playTo("3.2"), cash: 100_000 };
+  s = play(s, { type: "investigate" }, buy("gear-pc"));
+  assert.deepEqual(s.run.lateItems, ["gear-pc"]);
+  const cash = s.cash;
+  s = reducer(s, pick("best"));
+  // £10,000 x 1.5, with no Faster PC yet.
+  assert.equal(s.cash, cash + 15_000);
+  s = reducer(s, { type: "next" }); // R4
+  assert.deepEqual(s.run.lateItems, []);
+  s = play(s, { type: "investigate" }, pick("Database index"));
+  // £10,000 / 2 x 1.5 = £7,500, times 1.1.
+  assert.equal(s.cash, cash + 15_000 + 8_250);
+});
+
+test("Example 4: Standby saves the first outage in a stage, and Monitoring halves the penalties", () => {
+  let s = playTo("3.2");
+  s = { ...s, owned: [...s.owned, "srv-monitoring", "srv-standby"], cash: 10_000, users: 4_000_000 };
+  s = play(s, { type: "investigate" }, pick("bad"));
+  assert.equal(s.run.stars, 2);
+  assert.equal(s.cash, 9_500);
+  assert.equal(s.run.dip, 0);
+  assert.deepEqual(s.standbyStages, [3]);
+  assert.equal(s.run.standbySaved, true);
+  s = play(s, pick("best"), { type: "next" });
+  assert.equal(s.run.standbySaved, false);
+  // Play on to 3.3, buying Email notifications on the way.
+  while (s.currentId !== "3.3" || s.phase !== "arrived") s = solveNext(s);
+  const cash = s.cash;
+  const onScreen = usersOnScreen(s);
+  s = play(s, { type: "investigate" }, pick("bad"));
+  assert.equal(s.run.dip, Math.round(onScreen * 0.05));
+  assert.equal(s.cash, cash - 500);
+  assert.equal(s.run.standbySaved, false);
+  s = reducer(s, pick("best"));
+  assert.equal(s.run.dip, 0);
+});
+
+test("Standby bought during an incident does not save that incident's outage", () => {
+  let s = { ...playTo("3.2"), cash: 100_000 };
+  s = play(s, { type: "investigate" }, buy("srv-standby"), pick("bad"));
+  assert.ok(s.run.dip > 0);
+  assert.deepEqual(s.standbyStages, []);
+});
+
+test("Example 5: the investor tops up for Email notifications", () => {
+  let s = playTo("R4");
+  s = play(s, { type: "investigate" }, pick("Database index"), { type: "next" });
+  assert.equal(s.currentId, "3.3");
+  assert.equal(s.phase, "waiting");
+  s = { ...s, cash: 5_000, loanOwed: 0, topUps: 0 };
+  const users = s.users;
+  s = reducer(s, buy("feat-email"));
+  assert.equal(s.loanOwed, 3_000);
+  assert.equal(s.topUps, 1);
+  assert.equal(s.cash, 0);
+  assert.equal(s.users, users + 1_500_000);
+  assert.equal(s.phase, "arrived");
+  s = play(s, { type: "investigate" }, pick("best"));
+  assert.equal(s.loanOwed, 0);
+  assert.equal(s.cash, 12_000);
+});
+
+test("Example 7: 4.2 with the handbook and Victor's lifeline", () => {
+  let s = playTo("4.2");
+  s = { ...s, owned: [...s.owned, "gear-handbook"], lifeline: 4, cash: 50_000 };
+  s = play(s, { type: "investigate" }, { type: "call" }, { type: "call" }, { type: "call" });
+  assert.equal(s.cash, 20_000);
+  assert.equal(callButton(s).kind, "lifeline");
+  s = play(s, { type: "useLifeline" }, { type: "applyGuided" });
+  assert.equal(s.lifeline, null);
+  assert.equal(s.cash, 95_000);
+  assert.deepEqual(s.results["4.2"], { stars: 3, firstTry: false });
+});
+
+test("Analytics and Disaster drills remove the bad option in their incidents", () => {
+  let s = playTo("4.2");
+  s = startIncident({ ...s, owned: [...s.owned, "srv-analytics"] });
+  assert.deepEqual(s.run.removed, ["bad"]);
+  assert.deepEqual(removalLines(s), ["The data already shows that one would not work."]);
+  s = playTo("5.2");
+  s = startIncident({ ...s, owned: [...s.owned, "srv-drills"] });
+  assert.deepEqual(s.run.removed, ["bad"]);
 });

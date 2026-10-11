@@ -1,5 +1,5 @@
 // Copied from docs/BLUEPRINTS.md. The docs win if the two disagree.
-// Copy Builds in exactly as written. Stages 3 to 5 are added in later milestones.
+// Copy Builds in exactly as written.
 
 import type { Arrival } from "./challenges";
 import type { StageNumber } from "./stages";
@@ -165,6 +165,129 @@ export const builds: Build[] = [
     nudge: "Two things must be fast: answers that repeat, and files that travel far.",
     result: "Repeat answers come from the cache. Photos come from the CDN. The server and database stay calm.",
     practises: ["Caching", "CDN"],
+  },
+
+  // Stage 3
+  {
+    id: "B3",
+    title: "The Secure Door",
+    stage: 3,
+    arrives: { by: "email", from: "zoe", text: "A big partner wants to sign up 50,000 staff. First they want to see how our login works." },
+    usersGained: 1_500_000,
+    goal: "Design a login that survives a server crash and keeps passwords safe.",
+    tray: ["Users", "Load balancer", "Web servers", "Session store", "Database"],
+    decoys: ["Plain-text password file", "One big server"],
+    solution: [
+      { from: "Users", to: "Load balancer" },
+      { from: "Load balancer", to: "Web servers" },
+      { from: "Web servers", to: "Session store" },
+      { from: "Web servers", to: "Database" },
+    ],
+    wrongMoves: [
+      {
+        trigger: { kind: "uses", part: "Plain-text password file" },
+        sees: "The file opens and every password can be read.",
+        says: "Data leak. Passwords must be stored as one-way scrambles in the database.",
+      },
+      {
+        trigger: { kind: "uses", part: "One big server" },
+        sees: "The big server flickers. Every user turns grey at once.",
+        says: "One crash logs everyone out and takes Blip down with it.",
+      },
+      {
+        trigger: { kind: "connects", from: "Users", to: "Web servers" },
+        sees: "Every visitor piles onto the same server while the others sit idle.",
+        says: "Nothing is sharing out the visitors. Put the load balancer in front.",
+      },
+      {
+        trigger: { kind: "missing", part: "Session store" },
+        sees: "A user logs in on one server. The next server shows a question mark.",
+        says: "Each server only remembers its own visitors. Logins need one shared place.",
+      },
+    ],
+    call1: "Load balancer",
+    nudge: "What happens to a login when the server holding it dies?",
+    result: "Any server can answer any user. Logins live in one shared place. Passwords are stored as one-way scrambles.",
+    practises: ["Load balancing", "Stateless servers", "Password hashing"],
+  },
+
+  // Stage 4
+  {
+    id: "B4",
+    title: "The Viral Like Button",
+    stage: 4,
+    arrives: { by: "alert", text: "Database writes are jammed. One post is getting 10,000 likes a second." },
+    usersGained: 10_000_000,
+    goal: "Design a like button that takes 10,000 taps a second without jamming the database.",
+    tray: ["Users", "Load balancer", "Web servers", "Message queue", "Background worker", "Primary database"],
+    decoys: ["Cache"],
+    solution: [
+      { from: "Users", to: "Load balancer" },
+      { from: "Load balancer", to: "Web servers" },
+      { from: "Web servers", to: "Message queue" },
+      { from: "Message queue", to: "Background worker" },
+      { from: "Background worker", to: "Primary database" },
+    ],
+    wrongMoves: [
+      {
+        trigger: { kind: "connects", from: "Web servers", to: "Primary database" },
+        sees: "The Primary database catches fire.",
+        says: "Every like is its own write. Ten thousand a second jam the database.",
+      },
+      {
+        trigger: { kind: "uses", part: "Cache" },
+        sees: "A server restarts and a pile of likes vanishes.",
+        says: "Likes lost. A cache can forget everything when it restarts. Likes must wait somewhere safe.",
+      },
+    ],
+    call1: "Message queue",
+    nudge: "Does the user need to wait for the like to be saved?",
+    result: "Likes join a queue in an instant. Workers write them to the database at a steady pace.",
+    practises: ["Message queue", "Load balancing"],
+  },
+
+  // Stage 5
+  {
+    id: "B5",
+    title: "The Edge Delivery",
+    stage: 5,
+    arrives: { by: "email", from: "sam", text: "Our users in Tokyo wait 4 seconds for images to load. Fix this before the global marketing push." },
+    usersGained: 50_000_000,
+    goal: "Get photos to Tokyo and New York fast. The originals stay in London.",
+    tray: ["Users (Tokyo)", "Users (New York)", "CDN (Tokyo)", "CDN (New York)", "File storage (London)"],
+    decoys: ["Web server (London)"],
+    solution: [
+      { from: "Users (Tokyo)", to: "CDN (Tokyo)" },
+      { from: "Users (New York)", to: "CDN (New York)" },
+      { from: "CDN (Tokyo)", to: "File storage (London)" },
+      { from: "CDN (New York)", to: "File storage (London)" },
+    ],
+    wrongMoves: [
+      {
+        trigger: { kind: "connects", from: "Users (Tokyo)", to: "File storage (London)" },
+        sees: "A timer over Tokyo counts up to 4 seconds.",
+        says: "Every photo crosses the world. Send Tokyo to a CDN near Tokyo first.",
+      },
+      {
+        trigger: { kind: "connects", from: "Users (New York)", to: "File storage (London)" },
+        sees: "A timer over New York counts up to 2 seconds.",
+        says: "Every photo crosses the ocean. Send New York to a CDN near New York first.",
+      },
+      {
+        trigger: { kind: "connects", from: "Users (Tokyo)", to: "CDN (New York)" },
+        sees: "An arrow from Tokyo stretches right around the globe.",
+        says: "Wrong side of the world. Each user should reach the CDN nearest to them.",
+      },
+      {
+        trigger: { kind: "uses", part: "Web server (London)" },
+        sees: "The London web server strains under a pile of photo files.",
+        says: "The web server should not be handing out photos. That is the CDN's job.",
+      },
+    ],
+    call1: "CDN (Tokyo)",
+    nudge: "Where should a photo be waiting when someone in Tokyo asks for it?",
+    result: "Each CDN keeps copies close by. It only asks London when it does not have the photo yet.",
+    practises: ["CDN", "Multi-region"],
   },
 ];
 

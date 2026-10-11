@@ -11,6 +11,7 @@ import Stats from "./Stats";
 import SysDash from "./SysDash";
 import SystemMap from "./SystemMap";
 import Terminal from "./Terminal";
+import Win from "./Win";
 
 // The body of each desktop window (docs/UI_THEME.md > Desktop icons).
 export default function WindowBody({ id }: { id: AppId }) {
@@ -39,5 +40,7 @@ export default function WindowBody({ id }: { id: AppId }) {
       return <Terminal />;
     case "sysdash":
       return <SysDash />;
+    case "win":
+      return <Win />;
   }
 }

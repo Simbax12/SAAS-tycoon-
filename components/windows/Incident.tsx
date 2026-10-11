@@ -1,9 +1,9 @@
 "use client";
 
 import { BUILD_BRIEF, type Build } from "@/data/blueprints";
-import { thanksText } from "@/data/emails";
 import { isBuild, isRepeat, type IncidentData } from "@/data/incidents";
 import { victorLine } from "@/data/people";
+import { itemEffects, upgradeById } from "@/data/upgrades";
 import { patternIcons } from "@/data/patterns";
 import {
   CrossIcon,
@@ -34,7 +34,6 @@ import {
   currentIncident,
   currentRow,
   incidentPay,
-  nextIncident,
   removalLines,
   shuffled,
 } from "@/game/rules";
@@ -199,6 +198,7 @@ export default function Incident() {
               </span>
             </p>
           )}
+          <StandbyLine />
 
           <div className="flex flex-col gap-3" data-tour={repeat ? "repeatCards" : "options"}>
             {showing.map((c) => {
@@ -312,6 +312,7 @@ export default function Incident() {
               </p>
             </div>
           )}
+          <StandbyLine />
           {repeat && <PatternName pattern={right.id} />}
           <MayaSays>{right.result}</MayaSays>
           <button type="button" autoFocus onClick={() => dispatch({ type: "applyGuided" })} className={`${button} self-start bg-[#FFE08A] hover:bg-[#FFD35C]`}>
@@ -323,6 +324,13 @@ export default function Incident() {
       {phase === "solved" && <Solved result={right.result} />}
     </div>
   );
+}
+
+// The Standby server saved this incident's outage (docs/UPGRADES.md > Servers).
+function StandbyLine() {
+  const { state } = useGameContext();
+  const line = upgradeById(itemEffects.standby)?.maya;
+  return state.run.standbySaved && line ? <MayaSays>{line}</MayaSays> : null;
 }
 
 // A button that opens a work app, with its icon and name.
@@ -476,13 +484,6 @@ export function Solved({ result }: { result: string }) {
   const { state, dispatch } = useGameContext();
   const incident = currentIncident(state)!;
   const stars = state.results[incident.id].stars;
-  const upNext = nextIncident(state);
-  // Next sends the thank-you email first. If the next incident is not built yet, play then stops here.
-  const thanksDue =
-    incident.arrives.by === "email" &&
-    !!thanksText(incident.arrives.from) &&
-    !state.emails.some((e) => e.key === `thanks:${incident.id}`);
-  const stopped = !!upNext?.blocked && !thanksDue;
 
   return (
     <>
@@ -515,8 +516,9 @@ export function Solved({ result }: { result: string }) {
         <Stars stars={stars} />
       </div>
 
-      {stopped ? (
-        <p className="text-[18px] font-bold">Stage {upNext!.row.stage} is coming soon. Thanks for playing!</p>
+      {/* Once the game is won, the win screen shows instead of Next (docs/GAME_DESIGN.md > Win screen). */}
+      {state.won ? (
+        <OpenAppButton id="win" />
       ) : (
         <button type="button" autoFocus onClick={() => dispatch({ type: "next" })} className={`${button} self-start bg-[#FFE08A] hover:bg-[#FFD35C]`}>
           Next
