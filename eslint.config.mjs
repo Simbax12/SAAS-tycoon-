@@ -7,6 +7,10 @@ import nextTs from "eslint-config-next/typescript";
 export default defineConfig([
   ...nextVitals,
   ...nextTs,
+  {
+    // Only matters with React Compiler, which this project does not use (owner, 2026-10-19).
+    rules: { "react-hooks/preserve-manual-memoization": "off" },
+  },
   globalIgnores([
     ".next/**",
     "out/**",
