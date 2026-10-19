@@ -9,6 +9,9 @@ Append-only, newest at the top. Format and rules: `CONTEXT.md` in this folder.
 
 ---
 
+## 2026-10-19 — TASK-0003 Split game/reducer.ts under 400 lines
+game/reducer.ts (512 lines after Milestone 7) is now 133 lines: its actions moved unchanged into game/flow.ts, choices.ts, spending.ts and drawing.ts, by action group
+
 ## 2026-10-19 — TASK-0002 Add Playwright and a smoke suite
 Playwright now plays the game in Chromium; 01-smoke proves a first visit reaches incident 1.1 at desktop and phone sizes, and the game has 27 named test signals.
 
@@ -95,6 +98,3 @@ The tray shows the handbook's book and the Faster PC's lightning mark on the com
 
 ## 2026-10-11 — The tray's users icon and the cash icon's edge now follow the …
 The tray's users icon and the cash icon's edge now follow the taskbar's text colour. Why: They were white, and disappeared on BlipOS 5's light taskbar
-
-## 2026-10-11 — BlipOS 4's wallpaper is the hill at night with a moon and no stars
-BlipOS 4's wallpaper is the hill at night with a moon and no stars. BlipOS 5's is a soft gradient from its desktop colour. Why: The pack's "Night sky" keeps its stars, so the two still look different
