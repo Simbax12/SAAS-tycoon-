@@ -216,6 +216,8 @@ export default function Desktop({ isPhone, reducedMotion, windows, paused, onSta
     <DesktopContext.Provider value={tools}>
       <div
         ref={rootRef}
+        // Tests wait for this: it appears once the desktop knows its size, so windows open in place.
+        data-tap={area.width > 0 ? "app.shell.ready" : undefined}
         data-os-style={os.style}
         style={osVars}
         className="absolute inset-0 flex overflow-hidden bg-[#111111] text-ink"

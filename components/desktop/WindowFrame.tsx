@@ -75,6 +75,7 @@ export default function WindowFrame({ win, area, isPhone, onClose, onFocus, onMo
   return (
     <section
       role="dialog"
+      data-tap={`app.window.${win.id.toLowerCase()}`}
       aria-labelledby={titleId}
       className={`os-window absolute flex flex-col overflow-hidden ${isPhone ? "" : "os-framed"}`}
       style={place}

@@ -36,6 +36,7 @@ export default function DesktopIcons({ apps, isPhone, badges, pulse, reducedMoti
             onClick={() => onOpen(app.id)}
             aria-label={label}
             data-tour={`${app.id}Icon`}
+            data-tap={`app.desktop.open-${app.id.toLowerCase()}`}
             className={`flex min-h-[48px] flex-col items-center justify-start gap-1 rounded-md p-1 text-center hover:bg-white/25 focus-visible:bg-white/25 ${
               pulse === app.id ? (reducedMotion ? "app-glow" : "app-glow app-pulse") : ""
             }`}

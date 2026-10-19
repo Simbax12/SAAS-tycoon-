@@ -2,7 +2,33 @@
 // Do not edit by hand: add the signal to TAP_SIGNALS.md and re-run.
 
 export const TAP = {
+  'app.desktop.open-blueprint': 'app.desktop.open-blueprint',
+  'app.desktop.open-howtoplay': 'app.desktop.open-howtoplay',
+  'app.desktop.open-inbox': 'app.desktop.open-inbox',
+  'app.desktop.open-incident': 'app.desktop.open-incident',
+  'app.desktop.open-patternbook': 'app.desktop.open-patternbook',
+  'app.desktop.open-recyclebin': 'app.desktop.open-recyclebin',
+  'app.desktop.open-settings': 'app.desktop.open-settings',
+  'app.desktop.open-shop': 'app.desktop.open-shop',
+  'app.desktop.open-stats': 'app.desktop.open-stats',
+  'app.desktop.open-sysdash': 'app.desktop.open-sysdash',
+  'app.desktop.open-systemmap': 'app.desktop.open-systemmap',
+  'app.desktop.open-terminal': 'app.desktop.open-terminal',
+  'app.guide.skip-tutorial': 'app.guide.skip-tutorial',
+  'app.room.sit-down': 'app.room.sit-down',
   'app.shell.ready': 'app.shell.ready',
+  'app.window.blueprint': 'app.window.blueprint',
+  'app.window.howtoplay': 'app.window.howtoplay',
+  'app.window.inbox': 'app.window.inbox',
+  'app.window.incident': 'app.window.incident',
+  'app.window.patternbook': 'app.window.patternbook',
+  'app.window.recyclebin': 'app.window.recyclebin',
+  'app.window.settings': 'app.window.settings',
+  'app.window.shop': 'app.window.shop',
+  'app.window.stats': 'app.window.stats',
+  'app.window.sysdash': 'app.window.sysdash',
+  'app.window.systemmap': 'app.window.systemmap',
+  'app.window.terminal': 'app.window.terminal',
 } as const;
 
 export type TapSignal = keyof typeof TAP;

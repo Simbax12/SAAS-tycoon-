@@ -34,7 +34,8 @@ type Shown = {
   target: TourTarget;
   // Whether the player can tap the lit-up thing itself. If not, the light is only for looking.
   tappable: boolean;
-  buttons: { label: string; onClick: () => void }[];
+  // `tap` is the button's test name (testing/TAP_SIGNALS.md).
+  buttons: { label: string; onClick: () => void; tap?: string }[];
 };
 
 type Rect = { left: number; top: number; width: number; height: number };
@@ -127,7 +128,7 @@ export default function Guide({ root, windows, isPhone, tourStep, onTourStep, on
     if (live === LAST_STEP && shopOpen) dispatch({ type: "tutorial", step: "done" });
   }, [live, shopOpen, dispatch]);
 
-  const skip = { label: "Skip tutorial", onClick: () => dispatch({ type: "tutorial", step: "skipped" }) };
+  const skip = { label: "Skip tutorial", tap: "app.guide.skip-tutorial", onClick: () => dispatch({ type: "tutorial", step: "skipped" }) };
   const liveNext = (step: number) => ({
     label: "Next",
     onClick: () => dispatch({ type: "tutorial", step: step >= LAST_STEP ? "done" : step + 1 }),
@@ -145,7 +146,7 @@ export default function Guide({ root, windows, isPhone, tourStep, onTourStep, on
       tappable: false,
       buttons: [
         { label: "Next", onClick: () => onTourStep(tourStep >= LAST_STEP ? null : tourStep + 1) },
-        { label: "Skip tutorial", onClick: () => onTourStep(null) },
+        { label: "Skip tutorial", tap: "app.guide.skip-tutorial", onClick: () => onTourStep(null) },
       ],
     };
   } else if (live !== null) {
@@ -281,6 +282,7 @@ export default function Guide({ root, windows, isPhone, tourStep, onTourStep, on
                 key={b.label}
                 type="button"
                 onClick={b.onClick}
+                data-tap={b.tap}
                 className={`os-button ${i === 0 ? "os-button-default" : ""} min-h-12 rounded-md border-2 border-ink px-4 text-[18px] ${
                   i === 0 ? "bg-[#FFE08A] font-bold hover:bg-[#FFD35C]" : "bg-white hover:bg-[#EEF3FD]"
                 }`}

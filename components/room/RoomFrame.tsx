@@ -209,6 +209,7 @@ export default function RoomFrame({ stage, screen, windows, firstVisit }: Props)
         <button
           type="button"
           onClick={sitDown}
+          data-tap="app.room.sit-down"
           className="absolute inset-0 flex items-end justify-center pb-[8vh]"
           autoFocus
         >
