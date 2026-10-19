@@ -6,7 +6,7 @@ domain: windows
 size: standard
 status: todo
 milestone: ""
-depends_on: [TASK-0001]
+depends_on: [TASK-0001, TASK-0009]
 plan: ""
 blocked_reason: ""
 outcome: ""
@@ -31,3 +31,5 @@ The Incident window can gain Stage 3 to 5 features without growing an oversized 
 ## Notes
 
 Pure refactor. Touched lines must use colour tokens (tokens guard).
+
+Waits on TASK-0009 (owner decision 2026-10-19): the moved helpers hold 23 hard-coded colours. New files must be token-clean, and the tokens can't be added while `app/globals.css` is over budget. After TASK-0009, add tokens with the same values and use them on the moved lines.

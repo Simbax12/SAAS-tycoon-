@@ -1,0 +1,275 @@
+/* ------------------------------------------------------------------
+   BlipOS versions (docs/UI_THEME.md > BlipOS versions).
+   The desktop root sets data-os-style and the --os-* colours from data/blipOs.ts.
+   Components use the os-* classes below and never name a version.
+   ------------------------------------------------------------------ */
+
+.os-window {
+  background: var(--os-body);
+}
+.os-titlebar {
+  background: linear-gradient(to right, var(--os-title), var(--os-title-end));
+  color: var(--os-title-text);
+}
+.os-taskbar {
+  background: var(--os-bar);
+  color: var(--os-bar-text);
+}
+.os-start {
+  background: var(--os-start);
+  color: var(--os-start-text);
+}
+.os-menu {
+  background: var(--os-body);
+}
+
+/* rounded: the early 2000s look, BlipOS 3. Glass and flat start from it and change what differs. */
+:is([data-os-style="rounded"], [data-os-style="glass"], [data-os-style="flat"]) .os-window.os-framed {
+  border: 2px solid var(--os-title);
+  border-top-left-radius: 8px;
+  border-top-right-radius: 8px;
+  box-shadow: 4px 6px 16px rgba(0, 0, 0, 0.35);
+}
+:is([data-os-style="rounded"], [data-os-style="glass"], [data-os-style="flat"]) .os-close {
+  background: #c83232;
+  color: #ffffff;
+}
+:is([data-os-style="rounded"], [data-os-style="glass"], [data-os-style="flat"]) .os-close:hover {
+  background: #a82828;
+}
+:is([data-os-style="rounded"], [data-os-style="glass"], [data-os-style="flat"]) .os-start {
+  border-radius: 6px 16px 16px 6px;
+  box-shadow: inset 0 -3px 0 rgba(0, 0, 0, 0.25);
+}
+:is([data-os-style="rounded"], [data-os-style="glass"], [data-os-style="flat"]) .os-start:hover {
+  filter: brightness(1.1);
+}
+:is([data-os-style="rounded"], [data-os-style="glass"], [data-os-style="flat"]) .os-tab {
+  border-radius: 6px;
+  background: #3b6fde;
+}
+:is([data-os-style="rounded"], [data-os-style="glass"], [data-os-style="flat"]) .os-tab:hover {
+  background: #4a7be6;
+}
+:is([data-os-style="rounded"], [data-os-style="glass"], [data-os-style="flat"]) .os-tab[aria-pressed="true"] {
+  background: #1a3f96;
+  box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.4);
+}
+:is([data-os-style="rounded"], [data-os-style="glass"], [data-os-style="flat"]) .os-tray {
+  border-radius: 6px;
+  background: #1e4bb0;
+}
+:is([data-os-style="rounded"], [data-os-style="glass"], [data-os-style="flat"]) button.os-tray:hover {
+  background: #2a5fd0;
+}
+:is([data-os-style="rounded"], [data-os-style="glass"], [data-os-style="flat"]) .os-menu {
+  border: 2px solid var(--os-title);
+  border-top-right-radius: 12px;
+  box-shadow: 4px -4px 16px rgba(0, 0, 0, 0.35);
+}
+
+/* glass: the 2009 look, BlipOS 4. Dark see-through title bars and taskbar, and a round Start button. */
+[data-os-style="glass"] .os-titlebar {
+  background: linear-gradient(to bottom, rgba(255, 255, 255, 0.18), rgba(255, 255, 255, 0) 55%),
+    linear-gradient(to right, var(--os-title), var(--os-title-end));
+}
+[data-os-style="glass"] .os-window.os-framed {
+  border: 2px solid rgba(20, 28, 40, 0.9);
+  border-radius: 10px;
+  overflow: hidden;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.45), inset 0 0 0 1px rgba(255, 255, 255, 0.25);
+}
+[data-os-style="glass"] .os-taskbar {
+  background: linear-gradient(to bottom, rgba(255, 255, 255, 0.14), rgba(255, 255, 255, 0) 50%), rgba(24, 33, 44, 0.88);
+  backdrop-filter: blur(8px);
+  border-top: 1px solid rgba(255, 255, 255, 0.3);
+}
+[data-os-style="glass"] .os-start {
+  border-radius: 9999px;
+  box-shadow: inset 0 2px 0 rgba(255, 255, 255, 0.35), 0 0 0 2px rgba(255, 255, 255, 0.35);
+}
+[data-os-style="glass"] .os-tab,
+[data-os-style="glass"] .os-tray {
+  background: rgba(255, 255, 255, 0.1);
+  border: 1px solid rgba(255, 255, 255, 0.25);
+}
+[data-os-style="glass"] .os-tab:hover,
+[data-os-style="glass"] button.os-tray:hover {
+  background: rgba(255, 255, 255, 0.2);
+}
+[data-os-style="glass"] .os-tab[aria-pressed="true"] {
+  background: rgba(255, 255, 255, 0.28);
+  box-shadow: none;
+}
+[data-os-style="glass"] .os-menu {
+  border: 2px solid rgba(20, 28, 40, 0.9);
+  border-radius: 10px;
+}
+
+/* flat: today's look, BlipOS 5. Light and flat with gently rounded corners. Start and the tabs sit in the middle. */
+[data-os-style="flat"] .os-titlebar {
+  border-bottom: 1px solid #c9c5ba;
+}
+[data-os-style="flat"] .os-window.os-framed {
+  border: 1px solid #b9b4a8;
+  border-radius: 12px;
+  overflow: hidden;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+}
+[data-os-style="flat"] .os-close {
+  background: transparent;
+  color: #1e1e1e;
+}
+[data-os-style="flat"] .os-close:hover {
+  background: #c83232;
+  color: #ffffff;
+}
+[data-os-style="flat"] .os-taskbar {
+  border-top: 1px solid #c9c5ba;
+}
+[data-os-style="flat"] .os-start {
+  border-radius: 10px;
+  box-shadow: none;
+}
+[data-os-style="flat"] .os-tab,
+[data-os-style="flat"] .os-tray {
+  border-radius: 10px;
+  background: transparent;
+}
+[data-os-style="flat"] .os-tab:hover,
+[data-os-style="flat"] button.os-tray:hover {
+  background: #dcd8cd;
+}
+[data-os-style="flat"] .os-tab[aria-pressed="true"] {
+  background: #d4d0c4;
+  box-shadow: inset 0 -3px 0 var(--os-start);
+}
+[data-os-style="flat"] .os-menu {
+  left: 50%;
+  transform: translateX(-50%);
+  border: 1px solid #b9b4a8;
+  border-radius: 12px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.25);
+}
+
+/* Minimise, maximise and "Move to other screen" share the close button's shape, without its red. */
+:is([data-os-style="rounded"], [data-os-style="glass"]) .os-close.os-ctl {
+  background: rgba(255, 255, 255, 0.16);
+  color: var(--os-title-text);
+}
+:is([data-os-style="rounded"], [data-os-style="glass"]) .os-close.os-ctl:hover {
+  background: rgba(255, 255, 255, 0.3);
+}
+[data-os-style="flat"] .os-close.os-ctl:hover {
+  background: #d4d0c4;
+  color: #1e1e1e;
+}
+
+/* classic: square and grey with raised 3D edges, BlipOS 1 and 2. */
+[data-os-style="classic"] .os-raised,
+[data-os-style="classic"] .os-window.os-framed,
+[data-os-style="classic"] .os-start,
+[data-os-style="classic"] .os-tab,
+[data-os-style="classic"] button.os-tray,
+[data-os-style="classic"] .os-close,
+[data-os-style="classic"] .os-menu {
+  border: 2px solid;
+  border-color: #ffffff #4a4a4a #4a4a4a #ffffff;
+  box-shadow: inset -1px -1px 0 #8a8780, inset 1px 1px 0 #f2f0ea;
+}
+[data-os-style="classic"] .os-window.os-framed {
+  box-shadow: inset -1px -1px 0 #8a8780, inset 1px 1px 0 #f2f0ea, 3px 4px 10px rgba(0, 0, 0, 0.3);
+}
+[data-os-style="classic"] .os-taskbar {
+  border-top: 2px solid #ffffff;
+}
+[data-os-style="classic"] .os-close,
+[data-os-style="classic"] .os-tab {
+  background: var(--os-bar);
+  color: var(--os-bar-text);
+}
+/* The close button keeps a 48px tap target, drawn as a smaller raised square inside it. */
+[data-os-style="classic"] .os-close {
+  margin: 4px;
+  height: 40px;
+  width: 40px;
+}
+[data-os-style="classic"] .os-start:active,
+[data-os-style="classic"] .os-tab[aria-pressed="true"],
+[data-os-style="classic"] .os-tray,
+[data-os-style="classic"] button.os-tray:active,
+[data-os-style="classic"] .os-close:active {
+  border-color: #4a4a4a #ffffff #ffffff #4a4a4a;
+  box-shadow: inset 1px 1px 0 #8a8780;
+}
+[data-os-style="classic"] .os-tab[aria-pressed="true"] {
+  background: #d8d5cd;
+  font-weight: bold;
+}
+[data-os-style="classic"] .os-tray {
+  border: 2px solid;
+  background: var(--os-bar);
+}
+[data-os-style="classic"] button.os-tray {
+  border-color: #ffffff #4a4a4a #4a4a4a #ffffff;
+  box-shadow: inset -1px -1px 0 #8a8780, inset 1px 1px 0 #f2f0ea;
+}
+[data-os-style="classic"] .os-alert {
+  border-radius: 0;
+}
+
+/* ------------------------------------------------------------------
+   Pop-ups and hint boxes (docs/UI_THEME.md > Pop-ups and hint boxes).
+   In the classic style they become dialog boxes. In the rounded style the
+   components' own classes draw them, and the dialog title bar is hidden.
+   ------------------------------------------------------------------ */
+
+:is([data-os-style="rounded"], [data-os-style="glass"], [data-os-style="flat"]) .os-dialog-title {
+  display: none;
+}
+.os-dialog-title {
+  background: linear-gradient(to right, var(--os-title), var(--os-title-end));
+  color: var(--os-title-text);
+}
+
+[data-os-style="classic"] .os-dialog {
+  background: var(--os-body);
+  border: 2px solid;
+  border-color: #ffffff #4a4a4a #4a4a4a #ffffff;
+  border-radius: 0;
+  box-shadow: inset -1px -1px 0 #8a8780, inset 1px 1px 0 #f2f0ea, 3px 4px 10px rgba(0, 0, 0, 0.35);
+}
+
+[data-os-style="classic"] .os-button {
+  background: var(--os-bar);
+  color: var(--os-bar-text);
+  border: 2px solid;
+  border-color: #ffffff #4a4a4a #4a4a4a #ffffff;
+  border-radius: 0;
+  box-shadow: inset -1px -1px 0 #8a8780, inset 1px 1px 0 #f2f0ea;
+  font-weight: normal;
+}
+[data-os-style="classic"] .os-button:hover {
+  background: #d0cdc4;
+}
+[data-os-style="classic"] .os-button:active {
+  border-color: #4a4a4a #ffffff #ffffff #4a4a4a;
+  box-shadow: inset 1px 1px 0 #8a8780;
+}
+/* The main button: a dark outline and bold text. */
+[data-os-style="classic"] .os-button-default {
+  outline: 2px solid #1e1e1e;
+  outline-offset: 0;
+  font-weight: bold;
+}
+
+/* Email balloons become square pale-yellow notes with a thin dark edge. */
+[data-os-style="classic"] .os-note {
+  background: #fff8d6;
+  border: 1px solid #1e1e1e;
+  border-radius: 0;
+  box-shadow: 2px 2px 0 rgba(0, 0, 0, 0.35);
+}
+[data-os-style="classic"] .os-note-tail {
+  display: none;
+}

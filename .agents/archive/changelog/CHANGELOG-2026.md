@@ -2,6 +2,9 @@
 
 Rolled out of the live files by `python scripts/gate.py archive`. Search it with `python scripts/gate.py search "<words>"`.
 
+## 2026-10-11 — The Faster PC halves the loading bar to 0.8 seconds
+The Faster PC halves the loading bar to 0.8 seconds. Why: UI_THEME.md says "quicker" without a number
+
 ## 2026-10-11 — The tray shows the handbook's book and the Faster PC's lightning mark …
 The tray shows the handbook's book and the Faster PC's lightning mark on the computer layout only. Why: There is no room at 375 pixels, the same reason the clock is left out
 

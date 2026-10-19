@@ -9,6 +9,9 @@ Append-only, newest at the top. Format and rules: `CONTEXT.md` in this folder.
 
 ---
 
+## 2026-10-19 — TASK-0009 Split app/globals.css under 400 lines
+Moved the BlipOS window styles out of app/globals.css (486 to 211 lines) into app/theme/blipos.css; all four looks are pixel-identical at 1440 and 375.
+
 ## 2026-10-19 — TASK-0004 Split game/reducer.test.ts under 400 lines
 game/reducer.test.ts (1,035 lines) is split by milestone into five test files with shared helpers in game/testHelpers.ts; the same 58 tests pass
 
@@ -95,6 +98,3 @@ Each new stage needs its new computer: pc-office, pc-loft, pc-hall and pc-tower,
 
 ## 2026-10-11 — "Stage 3 is coming soon" and the code that stopped play at a missing …
 "Stage 3 is coming soon" and the code that stopped play at a missing incident are gone. Why: Every incident is in the data files now
-
-## 2026-10-11 — The Faster PC halves the loading bar to 0.8 seconds
-The Faster PC halves the loading bar to 0.8 seconds. Why: UI_THEME.md says "quicker" without a number
