@@ -27,6 +27,8 @@ export function useGame(): Game & { hadSave: boolean | null } {
     const store = storage();
     const saved = store ? loadGame(store) : null;
     dispatch(saved ? { type: "load", state: saved } : { type: "reset", seed: newSeed() });
+    // The save is read after mount, so the server and first client render match.
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     setHadSave(saved !== null);
   }, []);
 

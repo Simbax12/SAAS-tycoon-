@@ -146,7 +146,7 @@ function Canvas({ parts, arrows, locked = [], selected = null, stopped = null, f
       // Each card is shifted back by half its size, so its offset point is its centre.
       if (el) next[p.name] = { x: el.offsetLeft, y: el.offsetTop, w: el.offsetWidth, h: el.offsetHeight };
     }
-    setRects((old) => (JSON.stringify(old) === JSON.stringify(next) ? old : next));
+    setRects((old) => (JSON.stringify(old) === JSON.stringify(next) ? old : next)); // eslint-disable-line react-hooks/set-state-in-effect -- stores DOM measurements; unchanged rects keep the old object, so no loop
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [partsKey, size.w, size.h]);
   useEffect(() => {

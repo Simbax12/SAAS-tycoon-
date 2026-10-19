@@ -118,6 +118,7 @@ export default function Desktop({ isPhone, reducedMotion, windows, paused, onSta
   const isShowing = (id: AppId) => open.some((w) => w.id === id && !w.minimised);
   const shopShowing = isShowing("shop");
   useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect -- clears the Shop pointer once the Shop shows
     if (shopShowing) setShopWanted(false);
   }, [shopShowing]);
   // "Investigate" starts the incident. The step's app is then pointed to, not opened.

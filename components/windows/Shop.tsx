@@ -54,6 +54,7 @@ export default function Shop() {
   const focusId = shopFocus?.id;
   useEffect(() => {
     const item = itemsOnShow(state).find((u) => u.id === focusId);
+    // eslint-disable-next-line react-hooks/set-state-in-effect -- switches tab once per "Open in Shop"
     if (item) setTab(tabOf(item.group));
     // Only when a new "Open in Shop" arrives, never when the state changes.
     // eslint-disable-next-line react-hooks/exhaustive-deps

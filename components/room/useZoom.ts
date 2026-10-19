@@ -16,7 +16,9 @@ export function useZoom() {
 
   useEffect(() => {
     try {
+      // Read after mount, so the server and first client render match.
       const saved = localStorage.getItem(KEY);
+      // eslint-disable-next-line react-hooks/set-state-in-effect
       if (saved && (ORDER as string[]).includes(saved)) setView(saved as ZoomView);
       else if (localStorage.getItem(OLD_KEY) === "1") setView("in");
     } catch {
