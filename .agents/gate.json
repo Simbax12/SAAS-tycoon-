@@ -25,6 +25,10 @@
       "cmd": "npm run typecheck"
     },
     {
+      "name": "lint",
+      "cmd": "npm run lint"
+    },
+    {
       "name": "test",
       "cmd": "npm test"
     },
