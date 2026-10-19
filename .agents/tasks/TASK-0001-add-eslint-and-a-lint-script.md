@@ -4,12 +4,13 @@ title: Add ESLint and a lint script
 zone: ""
 domain: project
 size: risky
-status: in-progress
+status: done
 milestone: ""
 depends_on: []
 plan: ".agents/plans/PLAN-TASK-0001-eslint.md"
 blocked_reason: ""
-outcome: ""
+outcome: "ESLint 9 with Next.js rules now checks the game code, and every task is gated on npm run lint; 21 first-run findings settled per the owner."
+done: 2026-10-19
 ---
 
 # TASK-0001 — Add ESLint and a lint script

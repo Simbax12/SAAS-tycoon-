@@ -9,6 +9,9 @@ Append-only, newest at the top. Format and rules: `CONTEXT.md` in this folder.
 
 ---
 
+## 2026-10-19 — TASK-0001 Add ESLint and a lint script
+ESLint 9 with Next.js rules now checks the game code, and every task is gated on npm run lint; 21 first-run findings settled per the owner.
+
 ## 2026-10-19 — No deadline; old branches deleted
 The owner set no deadline, so the roadmap will show milestones without dates. The four merged `claude/*` branches were deleted from GitHub; every commit was already in main.
 
@@ -95,6 +98,3 @@ BlipOS 4's wallpaper is the hill at night with a moon and no stars. BlipOS 5's i
 
 ## 2026-10-11 — The save is version 3
 The save is version 3. Version 2 saves get the two new run fields, both empty. Why: No save could reach Stage 3 before, so no item effect is lost
-
-## 2026-10-11 — The run remembers `standbySaved`, so Maya's Standby line shows for …
-The run remembers `standbySaved`, so Maya's Standby line shows for the rest of that incident. Why: The line must show after the bad pick, and the dip alone cannot tell

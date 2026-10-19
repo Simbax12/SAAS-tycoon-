@@ -2,7 +2,7 @@
 type: plan
 task: TASK-0001
 size: risky
-status: critiqued
+status: approved
 supersedes: ""
 last_updated: 2026-10-19
 ---
@@ -51,6 +51,13 @@ last_updated: 2026-10-19
 ## Decision and why
 
 ESLint 9 with Next's own flat config is the supported path for Next 16 and needs no peer-dep overrides. The gate only learns about lint once lint is green.
+
+Owner decisions on the 21 first-run findings (2026-10-19):
+- set-state-in-effect (5): deliberate; per-line disables with the reason.
+- refs (12, one block in Blueprint.tsx): disable pair now; TASK-0006 moves the maths into the drag handler.
+- preserve-manual-memoization (2): rule off; it only matters with React Compiler.
+- rules-of-hooks (1): private helper renamed useLifeline → applyLifeline.
+- npm audit: 5 high, one chain, braces <=3.0.3 (GHSA-vfj7-8cjw-p6xm), no patched version. Accepted as dev-only (`npm audit --omit=dev` is 0); recheck when braces is patched or Next is bumped.
 
 ## Revisions after critique
 
