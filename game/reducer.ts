@@ -383,7 +383,7 @@ function call(state: GameState): GameState {
 }
 
 // Victor gives the answer once every call is used (docs/UPGRADES.md > Victor's lifeline).
-function useLifeline(state: GameState): GameState {
+function applyLifeline(state: GameState): GameState {
   if (state.phase !== "choosing" || callButton(state).kind !== "lifeline") return state;
   // In a Build, Victor draws the Solution.
   const build = currentBuild(state);
@@ -486,7 +486,7 @@ export function reducer(state: GameState, action: Action): GameState {
       return call(state);
 
     case "useLifeline":
-      return useLifeline(state);
+      return applyLifeline(state);
 
     case "buy":
       return buy(state, action.itemId);
