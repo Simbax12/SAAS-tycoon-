@@ -2,6 +2,9 @@
 
 Rolled out of the live files by `python scripts/gate.py archive`. Search it with `python scripts/gate.py search "<words>"`.
 
+## 2026-10-11 — The tray's users icon and the cash icon's edge now follow the …
+The tray's users icon and the cash icon's edge now follow the taskbar's text colour. Why: They were white, and disappeared on BlipOS 5's light taskbar
+
 ## 2026-10-11 — BlipOS 4's wallpaper is the hill at night with a moon and no stars
 BlipOS 4's wallpaper is the hill at night with a moon and no stars. BlipOS 5's is a soft gradient from its desktop colour. Why: The pack's "Night sky" keeps its stars, so the two still look different
 

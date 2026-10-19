@@ -9,6 +9,9 @@ Append-only, newest at the top. Format and rules: `CONTEXT.md` in this folder.
 
 ---
 
+## 2026-10-19 — TASK-0007 Milestone 7: Stages 3 to 5
+Milestone 7 built on main before the Agent OS branch joined it: Stages 3 to 5, R3 to R10, B3 to B5, the System Map through Stage 5 and the win screen. The owner played it on 2026-10-19
+
 ## 2026-10-19 — TASK-0003 Split game/reducer.ts under 400 lines
 game/reducer.ts (512 lines after Milestone 7) is now 133 lines: its actions moved unchanged into game/flow.ts, choices.ts, spending.ts and drawing.ts, by action group
 
@@ -95,6 +98,3 @@ The Faster PC halves the loading bar to 0.8 seconds. Why: UI_THEME.md says "quic
 
 ## 2026-10-11 — The tray shows the handbook's book and the Faster PC's lightning mark …
 The tray shows the handbook's book and the Faster PC's lightning mark on the computer layout only. Why: There is no room at 375 pixels, the same reason the clock is left out
-
-## 2026-10-11 — The tray's users icon and the cash icon's edge now follow the …
-The tray's users icon and the cash icon's edge now follow the taskbar's text colour. Why: They were white, and disappeared on BlipOS 5's light taskbar

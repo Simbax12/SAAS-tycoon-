@@ -22,7 +22,6 @@ The full task DAG lives in `../.agents/tasks/` (`python scripts/gate.py status`)
 
 ## Waiting on the owner
 
-- TASK-0007 (Milestone 7) is already built on main. Close it once you have played it, or say what is left.
 - Play the game at https://zero-to-a-billion.vercel.app/, or locally with `npm run dev` and http://localhost:3000. An old save carries on. A save that finished a stage gets Maya's new computer email.
 - Check the new on-screen text listed at the end of `../PROGRESS.md`.
 - Set the deadline, what is due by then and the cadence in `5w.md`, then run `/roadmap`.

@@ -4,12 +4,13 @@ title: Milestone 7: Stages 3 to 5
 zone: ""
 domain: content
 size: risky
-status: todo
+status: done
 milestone: ""
 depends_on: [TASK-0003, TASK-0004, TASK-0005, TASK-0006]
-plan: ""
+plan: ".agents/plans/PLAN-TASK-0007-milestone-7.md"
 blocked_reason: ""
-outcome: ""
+outcome: "Milestone 7 built on main before the Agent OS branch joined it: Stages 3 to 5, R3 to R10, B3 to B5, the System Map through Stage 5 and the win screen. The owner played it on 2026-10-19"
+done: 2026-10-19
 ---
 
 # TASK-0007 — Milestone 7: Stages 3 to 5
