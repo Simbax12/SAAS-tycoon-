@@ -9,6 +9,9 @@ Append-only, newest at the top. Format and rules: `CONTEXT.md` in this folder.
 
 ---
 
+## 2026-10-19 — TASK-0005 Split Incident.tsx under 400 lines
+Split Incident.tsx (565 to 331 lines) into Calls.tsx, Solved.tsx and incidentBits.tsx, with the moved colours as same-value theme tokens; every Incident state looks the same at 1440 and 375.
+
 ## 2026-10-19 — TASK-0009 Split app/globals.css under 400 lines
 Moved the BlipOS window styles out of app/globals.css (486 to 211 lines) into app/theme/blipos.css; all four looks are pixel-identical at 1440 and 375.
 
@@ -95,6 +98,3 @@ A computer's request email is sent the moment the stage's last incident is solve
 
 ## 2026-10-11 — Each new stage needs its new computer: pc-office, pc-loft, pc-hall …
 Each new stage needs its new computer: pc-office, pc-loft, pc-hall and pc-tower, at £300, £1,200, £6,000 and £30,000 by the price rule. "Next" waits until it is bought, and the investor lends if needed. They replace the Faster PC. Why: Asked for after playing Milestone 7. One "PC" idea that matches each room's new computer
-
-## 2026-10-11 — "Stage 3 is coming soon" and the code that stopped play at a missing …
-"Stage 3 is coming soon" and the code that stopped play at a missing incident are gone. Why: Every incident is in the data files now

@@ -2,6 +2,9 @@
 
 Rolled out of the live files by `python scripts/gate.py archive`. Search it with `python scripts/gate.py search "<words>"`.
 
+## 2026-10-11 — "Stage 3 is coming soon" and the code that stopped play at a missing …
+"Stage 3 is coming soon" and the code that stopped play at a missing incident are gone. Why: Every incident is in the data files now
+
 ## 2026-10-11 — The Faster PC halves the loading bar to 0.8 seconds
 The Faster PC halves the loading bar to 0.8 seconds. Why: UI_THEME.md says "quicker" without a number
 

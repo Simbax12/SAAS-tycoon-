@@ -4,71 +4,32 @@ import { BUILD_BRIEF, type Build } from "@/data/blueprints";
 import { isBuild, isRepeat, type IncidentData } from "@/data/incidents";
 import { victorLine } from "@/data/people";
 import { triageText } from "@/data/extraSteps";
-import { itemEffects, upgradeById } from "@/data/upgrades";
 import { patternIcons } from "@/data/patterns";
-import {
-  CrossIcon,
-  DanaAvatar,
-  MayaAvatar,
-  PatternIcon,
-  PhoneIcon,
-  SenderBadge,
-  StarIcon,
-  TickIcon,
-  VictorAvatar,
-  WarningIcon,
-} from "@/components/desktop/gameIcons";
+import { CrossIcon, PatternIcon, VictorAvatar, WarningIcon } from "@/components/desktop/gameIcons";
 import { fullNumber } from "@/components/desktop/format";
-import { AppIcon } from "@/components/desktop/icons";
 import { useDesktop } from "@/components/desktop/DesktopContext";
-import type { AppId } from "@/data/desktopApps";
-import { appById } from "@/data/desktopApps";
-import { openHint } from "@/components/desktop/neededApp";
 import { useEffect, useRef, useState } from "react";
 import { ShopIcon } from "@/components/desktop/shopIcons";
 import { scrollWithin } from "@/components/desktop/scrollWithin";
 import { useGameContext } from "@/components/useGame";
-import { alsoSeenAs, pipsFor, useWhenFor } from "@/game/patternBook";
+import { useWhenFor } from "@/game/patternBook";
 import {
-  callButton,
   canTestFirst,
-  computerNeeded,
   incidentOpen,
-  cluesGiven,
   currentIncident,
   currentRow,
-  incidentPay,
   removalLines,
   shuffled,
 } from "@/game/rules";
-import type { Stars as StarCount } from "@/game/types";
 import Diagram from "./Diagram";
-import { AlsoSeenAs, Pips } from "./PatternBook";
+import { button, Fixed, MayaSays, OpenAppHint, PatternName, StandbyLine, Stars } from "./incidentBits";
+import { Calls } from "./Calls";
+import { Solved } from "./Solved";
 
-const button = "min-h-12 rounded-md border-2 border-ink px-5 text-[18px] font-bold";
-
-export function Stars({ stars }: { stars: StarCount }) {
-  return (
-    <span className="flex items-center gap-0.5" role="img" aria-label={`${stars} of 3 stars`}>
-      {[1, 2, 3].map((n) => (
-        <StarIcon key={n} filled={n <= stars} />
-      ))}
-    </span>
-  );
-}
-
-// Maya speaks in a speech bubble of 25 words or fewer (docs/UI_THEME.md > Maya).
-export function MayaSays({ children }: { children: React.ReactNode }) {
-  return (
-    <div className="flex items-start gap-3">
-      <MayaAvatar />
-      <p className="relative rounded-2xl border-2 border-[#2E7D32] bg-[#EAF5E4] px-4 py-2 text-[18px]">
-        <span className="sr-only">Maya: </span>
-        {children}
-      </p>
-    </div>
-  );
-}
+// Other windows import these from here, as before the split.
+export { MayaSays, OpenAppHint, Stars } from "./incidentBits";
+export { Calls } from "./Calls";
+export { Solved } from "./Solved";
 
 // One option card in a new incident, or one pattern card in a repeat, as the window shows it.
 type Choice = {
@@ -338,33 +299,6 @@ export default function Incident() {
   );
 }
 
-// The Standby server saved this incident's outage (docs/UPGRADES.md > Servers).
-function StandbyLine() {
-  const { state } = useGameContext();
-  const line = upgradeById(itemEffects.standby)?.maya;
-  return state.run.standbySaved && line ? <MayaSays>{line}</MayaSays> : null;
-}
-
-// Apps never open by themselves. This says where to open one, with its icon
-// (docs/GAME_DESIGN.md > Opening apps). `text` replaces the usual words where the docs give others.
-export function OpenAppHint({ id, text }: { id: AppId; text?: string }) {
-  return (
-    <p className="flex items-center gap-2 self-start rounded-md border-2 border-[#C9A400] bg-[#FFF3C4] px-3 py-2 text-[18px] font-bold text-ink" role="status">
-      <AppIcon id={id} size={30} />
-      {text ?? openHint(appById(id).name)}
-    </p>
-  );
-}
-
-function Fixed({ result }: { result: string }) {
-  return (
-    <p className="flex items-start gap-2 rounded-md border-2 border-ok bg-[#E4F3E2] px-3 py-2 text-[18px]" role="status">
-      <TickIcon />
-      <span>{result}</span>
-    </p>
-  );
-}
-
 // A Build is drawn in Blueprint. The Incident window says so and opens it
 // (docs/GAME_DESIGN.md > Build incident flow: draw the design).
 function BuildIncident({ build }: { build: Build }) {
@@ -392,174 +326,6 @@ function BuildIncident({ build }: { build: Build }) {
         </>
       )}
       {phase === "solved" && <Solved result={build.result} />}
-    </div>
-  );
-}
-
-function PatternName({ pattern }: { pattern: string }) {
-  const icon = patternIcons[pattern];
-  return (
-    <p className="flex items-center gap-3 text-[20px] font-bold">
-      {icon && <PatternIcon id={icon} size={44} />}
-      {pattern}
-    </p>
-  );
-}
-
-// Calls to Dana: her phone window with every clue so far, then the button for the next call
-// (docs/UI_THEME.md > Dana and Victor, and docs/GAME_DESIGN.md > Consultant calls).
-// `children` sits beside the call button: the "Test first" button (docs/UI_THEME.md > Test first).
-export function Calls({ children }: { children?: React.ReactNode }) {
-  const { state, dispatch } = useGameContext();
-  const clues = cluesGiven(state);
-  const next = callButton(state);
-  // Each new clue scrolls into view, so the player sees what they paid for.
-  const latest = useRef<HTMLLIElement>(null);
-  useEffect(() => scrollWithin(latest.current), [clues.length]);
-
-  return (
-    <>
-      {clues.length > 0 && (
-        <section aria-label="Call with Dana" className="os-dialog overflow-hidden rounded-lg border-2 border-[#A8431C] bg-white">
-          <header className="flex items-center gap-2 bg-[#A8431C] px-3 py-1.5 text-white">
-            <PhoneIcon size={22} />
-            <span className="text-[18px] font-bold">Dana</span>
-          </header>
-          <ol className="flex flex-col gap-3 p-3">
-            {clues.map((clue, i) => (
-              <li
-                key={i}
-                ref={i === clues.length - 1 ? latest : undefined}
-                className="flex items-start gap-3"
-                aria-live={i === clues.length - 1 ? "polite" : undefined}
-              >
-                <DanaAvatar size={40} />
-                <p className="flex flex-col items-start gap-1 text-[18px]">
-                  <SenderBadge from="dana" />
-                  {clue}
-                </p>
-              </li>
-            ))}
-          </ol>
-        </section>
-      )}
-
-      <div className="flex flex-wrap items-center gap-2">
-        {next.kind === "call" && (
-          <button
-            type="button"
-            data-tour="callDana"
-            disabled={!next.affordable}
-            onClick={() => dispatch({ type: "call" })}
-            className={`${button} flex items-center gap-2 ${
-              next.affordable ? "bg-white hover:bg-[#FBEDE6]" : "border-[#8A8A8A] bg-[#DDDAD0] text-[#4A4A4A]"
-            }`}
-          >
-            <PhoneIcon />
-            Call Dana
-            <span className="font-normal">{next.price === 0 ? "Free call" : `£${fullNumber(next.price)}`}</span>
-            {!next.affordable && <span className="font-normal">Not enough cash</span>}
-          </button>
-        )}
-        {next.kind === "lifeline" && (
-          <button
-            type="button"
-            data-tour="callDana"
-            onClick={() => dispatch({ type: "useLifeline" })}
-            className={`${button} flex items-center gap-2 self-start bg-white hover:bg-[#EEEEEE]`}
-          >
-            <VictorAvatar size={32} />
-            Use Victor&apos;s lifeline
-          </button>
-        )}
-        {next.kind === "noMore" && (
-          <button
-            type="button"
-            data-tour="callDana"
-            disabled
-            className={`${button} flex items-center gap-2 self-start border-[#8A8A8A] bg-[#DDDAD0] text-[#4A4A4A]`}
-          >
-            <PhoneIcon />
-            No more calls
-          </button>
-        )}
-        {children}
-      </div>
-    </>
-  );
-}
-
-// What was learned or strengthened and earned, then Next. A new incident adds a Pattern Book
-// entry. A repeat shows the "Seen before" stamp, fills a pip and adds its "Also seen as" line.
-export function Solved({ result }: { result: string }) {
-  const { state, dispatch } = useGameContext();
-  const incident = currentIncident(state)!;
-  const stars = state.results[incident.id].stars;
-
-  return (
-    <>
-      <Fixed result={result} />
-
-      {isBuild(incident) ? (
-        // Each pattern the Build practises gains a "Built in" line in the Pattern Book.
-        <ul className="flex flex-col gap-2 rounded-lg border-2 border-[#6B3FA0] bg-white px-4 py-3">
-          {incident.practises.map((p) => (
-            <li key={p}>
-              <PatternName pattern={p} />
-            </li>
-          ))}
-        </ul>
-      ) : isRepeat(incident) ? (
-        <Practised pattern={incident.pattern} />
-      ) : (
-        <div className="flex items-start gap-3 rounded-lg border-2 border-[#6B3FA0] bg-white px-4 py-3">
-          {patternIcons[incident.pattern.name] && <PatternIcon id={patternIcons[incident.pattern.name]} size={44} />}
-          <div>
-            <p className="text-[18px] font-bold">Pattern learned: {incident.pattern.name}</p>
-            <p className="text-[18px]">{incident.pattern.useWhen}</p>
-          </div>
-        </div>
-      )}
-
-      <div className="flex flex-wrap items-center gap-x-6 gap-y-2 text-[20px] font-bold">
-        <span>+{fullNumber(incident.usersGained)} users</span>
-        <span>+£{fullNumber(incidentPay(state))}</span>
-        <Stars stars={stars} />
-      </div>
-
-      {/* Once the game is won, the win screen shows instead of Next (docs/GAME_DESIGN.md > Win screen).
-          At the end of a stage, Next waits for the new computer (docs/GAME_DESIGN.md > Moving to a new stage). */}
-      {state.won ? (
-        <OpenAppHint id="win" />
-      ) : computerNeeded(state) ? (
-        <p className="flex items-center gap-2 text-[18px] font-bold" role="status">
-          <ShopIcon id={computerNeeded(state)!.id} size={32} />
-          Buy the new computer in the Shop.
-        </p>
-      ) : (
-        <button type="button" autoFocus onClick={() => dispatch({ type: "next" })} className={`${button} self-start bg-[#FFE08A] hover:bg-[#FFD35C]`}>
-          Next
-        </button>
-      )}
-    </>
-  );
-}
-
-// The pattern a repeat strengthened, with the "Seen before" stamp, its pips and "Also seen as" lines
-// (docs/GAME_DESIGN.md > Repeat incident flow: recall, not recognition).
-function Practised({ pattern }: { pattern: string }) {
-  const { state } = useGameContext();
-  const pips = pipsFor(state, pattern);
-  return (
-    <div className="flex flex-col gap-2 rounded-lg border-2 border-[#6B3FA0] bg-white px-4 py-3">
-      <div className="flex flex-wrap items-center justify-between gap-2">
-        <PatternName pattern={pattern} />
-        <span className="seen-stamp shrink-0 rounded-md border-4 border-[#6B3FA0] bg-white px-3 py-1 text-[20px] font-bold text-[#4B2A75]">
-          Seen before
-        </span>
-      </div>
-      {pips && <Pips pips={pips} />}
-      <AlsoSeenAs lines={alsoSeenAs(state, pattern)} />
     </div>
   );
 }

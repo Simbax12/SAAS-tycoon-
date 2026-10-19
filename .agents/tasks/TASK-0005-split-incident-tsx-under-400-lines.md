@@ -4,12 +4,13 @@ title: Split Incident.tsx under 400 lines
 zone: ""
 domain: windows
 size: standard
-status: todo
+status: done
 milestone: ""
 depends_on: [TASK-0001, TASK-0009]
-plan: ""
+plan: .agents/plans/PLAN-TASK-0005-split-incident.md
 blocked_reason: ""
-outcome: ""
+outcome: "Split Incident.tsx (565 to 331 lines) into Calls.tsx, Solved.tsx and incidentBits.tsx, with the moved colours as same-value theme tokens; every Incident state looks the same at 1440 and 375."
+done: 2026-10-19
 ---
 
 # TASK-0005 — Split Incident.tsx under 400 lines

@@ -16,6 +16,24 @@
   --color-ok: #2e8b3d;
   --color-warning: #a86f00;
   --color-critical: #c83232;
+  /* Window colours. Maya, Dana, Team purple (pattern) and Victor grey (muted) are sender badge
+     colours in docs/UI_THEME.md > Emails and sender badges. The others are not in the docs yet. */
+  --color-maya: #2e7d32;
+  --color-maya-soft: #eaf5e4;
+  --color-dana: #a8431c;
+  --color-dana-soft: #fbede6;
+  --color-pattern: #6b3fa0;
+  --color-pattern-ink: #4b2a75;
+  --color-muted: #4a4a4a;
+  --color-grey-soft: #eeeeee;
+  --color-off: #dddad0;
+  --color-off-edge: #8a8a8a;
+  --color-hint: #fff3c4;
+  --color-hint-edge: #c9a400;
+  --color-ok-soft: #e4f3e2;
+  --color-action: #ffe08a;
+  --color-action-hover: #ffd35c;
+  --color-paper: #ffffff;
 }
 
 html,
