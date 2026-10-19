@@ -9,6 +9,9 @@ Append-only, newest at the top. Format and rules: `CONTEXT.md` in this folder.
 
 ---
 
+## 2026-10-19 — No deadline; old branches deleted
+The owner set no deadline, so the roadmap will show milestones without dates. The four merged `claude/*` branches were deleted from GitHub; every commit was already in main.
+
 ## 2026-10-19 — Agent OS added, selectively
 Added AGENTS.md, ai-context/, .agents/, .claude/, gate.py, testing/ and CI from the New-App kit. CLAUDE.md stays the hub. Skipped docs/specs, docs/security, docs/architecture, the cheat sheet, onboarding.md and db-migration-guard: the game docs are the specs and there is no backend. Owner's choice.
 
@@ -95,6 +98,3 @@ The save is version 3. Version 2 saves get the two new run fields, both empty. W
 
 ## 2026-10-11 — The run remembers `standbySaved`, so Maya's Standby line shows for …
 The run remembers `standbySaved`, so Maya's Standby line shows for the rest of that incident. Why: The line must show after the bad pick, and the dip alone cannot tell
-
-## 2026-10-11 — The run remembers `lateItems`: items bought while the incident was open
-The run remembers `lateItems`: items bought while the incident was open. Monitoring, the Standby server and the Faster PC only work from the next incident. It replaces the planned Faster PC flag. Why: GAME_DESIGN.md > The Shop in brief says every item bought during an incident only changes later ones. Monitoring had been halving penalties at once. GAME_LOGIC.md updated

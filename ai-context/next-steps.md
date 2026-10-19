@@ -10,7 +10,7 @@ Live priority list. **Overwritten in place** after every verified step (by
 `/step`), never appended. History lives in `../.agents/changelogs/CHANGELOG.md`.
 The full task DAG lives in `../.agents/tasks/` (`python scripts/gate.py status`).
 
-**Roadmap:** none yet. `/roadmap` builds it once the deadline is set in `5w.md`.
+**Roadmap:** none yet. `/roadmap` builds it (no deadline).
 
 ## Now
 
@@ -23,7 +23,7 @@ The full task DAG lives in `../.agents/tasks/` (`python scripts/gate.py status`)
 
 - Play Milestone 6: `npm run dev`, then http://localhost:3000. An old save that stopped after 2.4 carries on: tap Next and B2 arrives from Zoe. Settings > Reset game plays T1 on 1.2 and B1 after 1.4. Play stops after B2.
 - Check the new on-screen text listed at the end of `../PROGRESS.md`.
-- Set the deadline, what is due by then and the cadence in `5w.md`, then run `/roadmap`.
+- Set the cadence in `5w.md` (no deadline, decided 2026-10-19), then run `/roadmap`.
 - TASK-0008 (Monitoring numbers, part of Milestone 8) is blocked: no doc says which live numbers Monitoring shows on each System Map box.
 
 ## Parked
