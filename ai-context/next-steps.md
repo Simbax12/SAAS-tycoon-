@@ -14,11 +14,10 @@ The full task DAG lives in `../.agents/tasks/` (`python scripts/gate.py status`)
 
 ## Now
 
-1. **TASK-0004** — Split reducer.test.ts (1,035 lines since Milestone 7). Waiting on: nothing, ready.
-2. **TASK-0005, TASK-0006** — Split Incident.tsx (565 lines) and Blueprint.tsx (735 lines). Waiting on: nothing, ready. TASK-0006 also removes the Blueprint refs disable.
-3. **TASK-0009** — Split app/globals.css (486 lines, grown in Milestone 7). Waiting on: nothing, ready.
-4. **TASK-0010** — A theme token for the desktop's `#111111` backdrop. Waiting on: nothing, ready. Tiny.
-5. **Milestone 8: Polish.** See the build order in docs/START_HERE.md. The System Map's words shrink on wide maps; at 375 pixels the map scrolls sideways, as agreed in Milestone 2. Check readability again.
+1. **TASK-0005, TASK-0006** — Split Incident.tsx (565 lines) and Blueprint.tsx (735 lines). Waiting on: nothing, ready. TASK-0006 also removes the Blueprint refs disable.
+2. **TASK-0009** — Split app/globals.css (486 lines, grown in Milestone 7). Waiting on: nothing, ready.
+3. **TASK-0010** — A theme token for the desktop's `#111111` backdrop. Waiting on: nothing, ready. Tiny.
+4. **Milestone 8: Polish.** See the build order in docs/START_HERE.md. The System Map's words shrink on wide maps; at 375 pixels the map scrolls sideways, as agreed in Milestone 2. Check readability again.
 
 ## Waiting on the owner
 

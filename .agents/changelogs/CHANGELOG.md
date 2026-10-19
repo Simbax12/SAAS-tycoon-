@@ -9,6 +9,9 @@ Append-only, newest at the top. Format and rules: `CONTEXT.md` in this folder.
 
 ---
 
+## 2026-10-19 — TASK-0004 Split game/reducer.test.ts under 400 lines
+game/reducer.test.ts (1,035 lines) is split by milestone into five test files with shared helpers in game/testHelpers.ts; the same 58 tests pass
+
 ## 2026-10-19 — TASK-0007 Milestone 7: Stages 3 to 5
 Milestone 7 built on main before the Agent OS branch joined it: Stages 3 to 5, R3 to R10, B3 to B5, the System Map through Stage 5 and the win screen. The owner played it on 2026-10-19
 
@@ -95,6 +98,3 @@ Each new stage needs its new computer: pc-office, pc-loft, pc-hall and pc-tower,
 
 ## 2026-10-11 — The Faster PC halves the loading bar to 0.8 seconds
 The Faster PC halves the loading bar to 0.8 seconds. Why: UI_THEME.md says "quicker" without a number
-
-## 2026-10-11 — The tray shows the handbook's book and the Faster PC's lightning mark …
-The tray shows the handbook's book and the Faster PC's lightning mark on the computer layout only. Why: There is no room at 375 pixels, the same reason the clock is left out
