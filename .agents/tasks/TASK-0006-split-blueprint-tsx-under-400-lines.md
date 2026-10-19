@@ -21,6 +21,7 @@ Blueprint can take B3 to B5 without growing an oversized file.
 ## Done when
 
 - `components/windows/Blueprint.tsx` and every new file are under 400 lines
+- No `eslint-disable react-hooks/refs` left in the Blueprint files
 - B1 plays the same by drag and by taps alone, at 1440 and 375 pixels wide
 - CLAUDE.md > Code map lists the new files
 
@@ -30,5 +31,7 @@ Blueprint can take B3 to B5 without growing an oversized file.
 - `docs/BLUEPRINTS.md`
 
 ## Notes
+
+Also: move the drag arrow's position maths (the `joining` block, wrapped in `eslint-disable react-hooks/refs`) out of render into the pointer-move handler, then remove the disable pair. Agreed with the owner in TASK-0001.
 
 Pure refactor. Touched lines must use colour tokens (tokens guard).

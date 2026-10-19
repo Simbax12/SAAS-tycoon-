@@ -444,7 +444,7 @@ function Workbench({ build }: { build: Build }) {
     suppressClick.current = false;
     return true;
   };
-
+  /* eslint-disable react-hooks/refs -- reads positions during render; TASK-0006 moves this into the drag handler */
   // The dashed arrow while a part is dragged, and the part it would join.
   const joining = (() => {
     if (!drag || !drag.moved || drag.from !== "canvas" || !canvasRef.current || !rootRef.current) return null;
@@ -454,7 +454,7 @@ function Workbench({ build }: { build: Build }) {
     const y = drag.y + r.top - c.top;
     return { from: drag.part, x, y, over: partAt(x, y, drag.part) };
   })();
-
+  /* eslint-enable react-hooks/refs */
   // --- Taps and keys ---
 
   const tapPart = (name: string) => {
