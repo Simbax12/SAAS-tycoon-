@@ -3,11 +3,11 @@ id: TASK-0001
 title: Add ESLint and a lint script
 zone: ""
 domain: project
-size: standard
-status: todo
+size: risky
+status: in-progress
 milestone: ""
 depends_on: []
-plan: ""
+plan: ".agents/plans/PLAN-TASK-0001-eslint.md"
 blocked_reason: ""
 outcome: ""
 ---
