@@ -46,6 +46,7 @@ After any change to these files, run `node scripts/check-docs.mjs`. It must prin
 - Progress saves to localStorage.
 - No extra libraries unless you ask first.
 - ESLint, with Next.js's own rules, checks the code: `npm run lint`.
+- Playwright plays the game in Chromium for the test suites in `testing/`: `npm run e2e`.
 - The room clips play in a plain HTML video element. No 3D library is used.
 
 ## Folder layout

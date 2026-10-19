@@ -45,7 +45,7 @@ Read any file over 400 lines by range, never whole.
 | `.agents/` | Agent OS: tasks, plans, domains, bugs, changelogs, archive, QC team, skills |
 | `.claude/` | Claude Code copies of `.agents/qc-team/` and `.agents/skills/`, plus the resume hook (never edit the copies) |
 | `scripts/` | `check-docs.mjs` (docs agree) and `gate.py` (tasks, gates, lookup: `python scripts/gate.py -h`) |
-| `testing/` | Not yet: TASK-0002 adds it with Playwright (TAP signals, macros, viewports, suites) |
+| `testing/` | TAP signal registry, tap macros, viewports, suites 01–05 (Playwright, `playwright.config.ts`) |
 
 ## Zones
 

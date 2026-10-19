@@ -3,11 +3,11 @@ id: TASK-0002
 title: Add Playwright and a smoke suite
 zone: ""
 domain: project
-size: standard
-status: todo
+size: risky
+status: in-progress
 milestone: ""
 depends_on: [TASK-0001]
-plan: ""
+plan: ".agents/plans/PLAN-TASK-0002-playwright-smoke.md"
 blocked_reason: ""
 outcome: ""
 ---

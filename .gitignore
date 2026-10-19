@@ -9,3 +9,7 @@ next-env.d.ts
 .agents/locks/*.lock
 .agents/search-index.db
 __pycache__/
+
+# Playwright
+test-results/
+playwright-report/
