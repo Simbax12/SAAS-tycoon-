@@ -12,6 +12,9 @@ Append-only, newest at the top. Format and rules: `CONTEXT.md` in this folder.
 ## 2026-10-19 — Agent OS added, selectively
 Added AGENTS.md, ai-context/, .agents/, .claude/, gate.py, testing/ and CI from the New-App kit. CLAUDE.md stays the hub. Skipped docs/specs, docs/security, docs/architecture, the cheat sheet, onboarding.md and db-migration-guard: the game docs are the specs and there is no backend. Owner's choice.
 
+## 2026-10-19 — PROGRESS.md split
+Decisions and the change log moved to `.agents/archive/legacy/` (searchable with `gate.py search`). The newest 25 decisions are below. Next moved to `ai-context/next-steps.md`. PROGRESS.md keeps Done and the on-screen text to check. CLAUDE.md rules 7 and 8 updated to match.
+
 ## 2026-10-19 — One branch, no zones
 main_branch and release_branch are both `main`, matching CLAUDE.md rule 10. No zones.json: one Next.js app, worked one session at a time. Add zones if parallel sessions start.
 
@@ -20,3 +23,78 @@ Budget guard stays on. reducer.ts, reducer.test.ts, Incident.tsx and Blueprint.t
 
 ## 2026-10-19 — Tokens guard on; ESLint and Playwright approved
 `data/blipOs.ts` and `app/globals.css` are token definition files. About 600 legacy colour literals are cleaned only when their lines are touched. The owner approved ESLint (TASK-0001) and Playwright (TASK-0002) as new dev dependencies.
+
+## 2026-10-11 — A repeat shows "What happened:" with its alert or email text above …
+A repeat shows "What happened:" with its alert or email text above "Which pattern fixes this?". Every open incident shows its "Sees" sentence as a caption under the diagram. Why: Played R2: nothing said what the problem was. Maya still does not name the cause, so it stays recall. The caption stands in for the "Sees" animations until Milestone 8
+
+## 2026-10-11 — The milestone banner and the OS update screen use the new version's …
+The milestone banner and the OS update screen use the new version's title bar colours. The update takes 3 seconds. Why: UI_THEME.md > The upgrade
+
+## 2026-10-11 — Without the second screen showing (zoomed out), every window shows on …
+Without the second screen showing (zoomed out), every window shows on the main screen. Why: Otherwise a window on screen 2 would be lost
+
+## 2026-10-11 — A window dragged more than half past the edge between the screens …
+A window dragged more than half past the edge between the screens jumps to the other screen, and the drag ends there. Why: Simple to build, and the "Move to other screen" button does the same in one tap
+
+## 2026-10-11 — Zoomed in with two screens, each screen is at most 4 by 3
+Zoomed in with two screens, each screen is at most 4 by 3. Why: The wide rooms made two side by side too short to read
+
+## 2026-10-11 — The phone's screen switch shows a screen icon and the number of the …
+The phone's screen switch shows a screen icon and the number of the screen in view, with "Screen 1" or "Screen 2" read out. Why: "Screen 1" in words did not fit in the taskbar at 375 pixels
+
+## 2026-10-11 — The word tiles also show on a computer
+The word tiles also show on a computer. Why: They help anyone who is not sure how to type a command
+
+## 2026-10-11 — Terminal opens up to 1000 pixels wide
+Terminal opens up to 1000 pixels wide. The lesson and prompt sit side by side when the window is at least 720 pixels wide. Why: Two panels need the room
+
+## 2026-10-11 — Terminal lessons: the commands run for real on the step's six lines
+Terminal lessons: the commands run for real on the step's six lines. Any command in the table runs, but only the task's command ticks Task 1 and makes its lines tappable. Two wrong commands show the hint. The terminal's history is kept while the window is closed, but not after a reload. Why: Like an online coding course, and the check script proves each lesson's command keeps its cause
+
+## 2026-10-11 — A server alert waits until the BlipOS update and the milestone banner …
+A server alert waits until the BlipOS update and the milestone banner have gone. Why: 2.1's alert showed under the banner
+
+## 2026-10-11 — The win screen has a "You did it" trophy icon on the desktop and in …
+The win screen has a "You did it" trophy icon on the desktop and in the Start menu once the game is won. Why: It no longer opens by itself, and it had no icon
+
+## 2026-10-11 — The tutorial has a new step 4, "Now open the Incident window."
+The tutorial has a new step 4, "Now open the Incident window.". When a window covers an app's icon, the spotlight lights the Start button, then the app's row in the Start menu. Why: The player could get stuck behind the spotlight when the Inbox covered the Incident icon
+
+## 2026-10-11 — "Open in Shop" is now "Find in Shop"
+"Open in Shop" is now "Find in Shop". The Shop opens on the tab of the item Needed next. Why: It no longer opens the Shop
+
+## 2026-10-11 — Nothing opens by itself
+Nothing opens by itself. "Investigate", "Find in Shop", Triage, Builds, Tune and the win screen point to the app instead: a line says where to open it, and its desktop icon and Start menu row glow. Why: Asked for, so players learn the desktop like a real computer. Tapping an email balloon still opens the Inbox, because the player chose to tap it
+
+## 2026-10-11 — Old saves that own the Faster PC lose it and get £6,000 back
+Old saves that own the Faster PC lose it and get £6,000 back. A save that finished a stage gets the computer email when it loads. Why: Never wipe or strand a player
+
+## 2026-10-11 — A computer's request email is sent the moment the stage's last …
+A computer's request email is sent the moment the stage's last incident is solved, not after "Next". Why: "Next" is locked until the computer is bought, so the email must come first
+
+## 2026-10-11 — Each new stage needs its new computer: pc-office, pc-loft, pc-hall …
+Each new stage needs its new computer: pc-office, pc-loft, pc-hall and pc-tower, at £300, £1,200, £6,000 and £30,000 by the price rule. "Next" waits until it is bought, and the investor lends if needed. They replace the Faster PC. Why: Asked for after playing Milestone 7. One "PC" idea that matches each room's new computer
+
+## 2026-10-11 — "Stage 3 is coming soon" and the code that stopped play at a missing …
+"Stage 3 is coming soon" and the code that stopped play at a missing incident are gone. Why: Every incident is in the data files now
+
+## 2026-10-11 — The Faster PC halves the loading bar to 0.8 seconds
+The Faster PC halves the loading bar to 0.8 seconds. Why: UI_THEME.md says "quicker" without a number
+
+## 2026-10-11 — The tray shows the handbook's book and the Faster PC's lightning mark …
+The tray shows the handbook's book and the Faster PC's lightning mark on the computer layout only. Why: There is no room at 375 pixels, the same reason the clock is left out
+
+## 2026-10-11 — The tray's users icon and the cash icon's edge now follow the …
+The tray's users icon and the cash icon's edge now follow the taskbar's text colour. Why: They were white, and disappeared on BlipOS 5's light taskbar
+
+## 2026-10-11 — BlipOS 4's wallpaper is the hill at night with a moon and no stars
+BlipOS 4's wallpaper is the hill at night with a moon and no stars. BlipOS 5's is a soft gradient from its desktop colour. Why: The pack's "Night sky" keeps its stars, so the two still look different
+
+## 2026-10-11 — The save is version 3
+The save is version 3. Version 2 saves get the two new run fields, both empty. Why: No save could reach Stage 3 before, so no item effect is lost
+
+## 2026-10-11 — The run remembers `standbySaved`, so Maya's Standby line shows for …
+The run remembers `standbySaved`, so Maya's Standby line shows for the rest of that incident. Why: The line must show after the bad pick, and the dip alone cannot tell
+
+## 2026-10-11 — The run remembers `lateItems`: items bought while the incident was open
+The run remembers `lateItems`: items bought while the incident was open. Monitoring, the Standby server and the Faster PC only work from the next incident. It replaces the planned Faster PC flag. Why: GAME_DESIGN.md > The Shop in brief says every item bought during an incident only changes later ones. Monitoring had been halving penalties at once. GAME_LOGIC.md updated

@@ -1,7 +1,7 @@
 // The System Map and incident diagram.
 // The docs give each incident's "Sees" and "Map change" lines (docs/CHALLENGES.md), but not where the boxes sit.
 // Each stage has its own layout. Stage 1 was agreed in Milestone 2, Stage 2 in Milestone 5, and Stages 3 to 5
-// in Milestone 7, with the world view. All are listed in PROGRESS.md.
+// in Milestone 7, with the world view. All are in the decisions (python scripts/gate.py search "System Map").
 
 import type { StageNumber } from "./stages";
 

@@ -64,7 +64,10 @@ CLAUDE.md        the hub: map, links, rules
                  Blueprint, Terminal, SysDash, Win
 /app             the single page
 /public/room     the room clips and stills, one set per stage
-PROGRESS.md
+PROGRESS.md      what is built, and on-screen text to check
+AGENTS.md        the Agent OS router: tasks, gates, history search
+/ai-context      the operating manual, task pipeline and next steps
+/.agents         tasks, bugs, the changelog and the archive
 ```
 
 ## Build order
@@ -98,8 +101,8 @@ Do not write any code until I say go.
 ## Message for each later milestone
 
 ```
-Read CLAUDE.md, docs/START_HERE.md and PROGRESS.md.
-Build Milestone [number] only.
+Read CLAUDE.md, docs/START_HERE.md, PROGRESS.md and ai-context/next-steps.md.
+Build Milestone [number] only, through /step.
 Re-read the files that milestone depends on before you start.
-When finished, update PROGRESS.md and tell me how to test it.
+When finished, update PROGRESS.md and ai-context/next-steps.md and tell me how to test it.
 ```

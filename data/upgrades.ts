@@ -174,5 +174,5 @@ export const itemEffects = {
 };
 
 // Monitoring: "users dip 5% and cash loss is 5% of base", half the usual bad-choice penalties.
-// Its live numbers on the System Map come in Milestone 8 (see PROGRESS.md).
+// Its live numbers on the System Map come in Milestone 8 (see .agents/tasks/TASK-0008).
 export const MONITORING_SHARE = 0.5;
