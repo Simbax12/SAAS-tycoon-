@@ -9,6 +9,9 @@ Append-only, newest at the top. Format and rules: `CONTEXT.md` in this folder.
 
 ---
 
+## 2026-10-19 — TASK-0002 Add Playwright and a smoke suite
+Playwright now plays the game in Chromium; 01-smoke proves a first visit reaches incident 1.1 at desktop and phone sizes, and the game has 27 named test signals.
+
 ## 2026-10-19 — TASK-0001 Add ESLint and a lint script
 ESLint 9 with Next.js rules now checks the game code, and every task is gated on npm run lint; 21 first-run findings settled per the owner.
 
@@ -95,6 +98,3 @@ The tray's users icon and the cash icon's edge now follow the taskbar's text col
 
 ## 2026-10-11 — BlipOS 4's wallpaper is the hill at night with a moon and no stars
 BlipOS 4's wallpaper is the hill at night with a moon and no stars. BlipOS 5's is a soft gradient from its desktop colour. Why: The pack's "Night sky" keeps its stars, so the two still look different
-
-## 2026-10-11 — The save is version 3
-The save is version 3. Version 2 saves get the two new run fields, both empty. Why: No save could reach Stage 3 before, so no item effect is lost

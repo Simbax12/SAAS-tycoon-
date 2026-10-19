@@ -2,7 +2,7 @@
 type: plan
 task: TASK-0002
 size: risky
-status: critiqued
+status: approved
 supersedes: ""
 last_updated: 2026-10-19
 ---
@@ -46,7 +46,7 @@ last_updated: 2026-10-19
 
 ## Decision and why
 
-Playwright in Chromium, driven only by TAP signals, gives `live-verify` and the suites one shared, stable way into the game.
+Playwright in Chromium, driven only by TAP signals, gives `live-verify` and the suites one shared, stable way into the game. Pinned at 1.63.0 under the two-week age rule; adds no audit findings and no install scripts. The suite reuses a running `npm run dev` because Next.js allows one dev server per folder.
 
 ## Revisions after critique
 

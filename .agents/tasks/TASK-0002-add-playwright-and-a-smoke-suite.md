@@ -4,12 +4,13 @@ title: Add Playwright and a smoke suite
 zone: ""
 domain: project
 size: risky
-status: in-progress
+status: done
 milestone: ""
 depends_on: [TASK-0001]
 plan: ".agents/plans/PLAN-TASK-0002-playwright-smoke.md"
 blocked_reason: ""
-outcome: ""
+outcome: "Playwright now plays the game in Chromium; 01-smoke proves a first visit reaches incident 1.1 at desktop and phone sizes, and the game has 27 named test signals."
+done: 2026-10-19
 ---
 
 # TASK-0002 — Add Playwright and a smoke suite
