@@ -1,0 +1,131 @@
+{
+  "_comment": "Settings for scripts/gate.py. Guards always run in verify. Checks are the stack commands (confirmed with the owner in onboarding step 8) and a task's verify list may narrow them. Checks run top to bottom; stop_on_fail skips the rest after a failure. main_branch is the work branch finished tasks land on (develop); release_branch is what's released and deployed (main); set both to one branch for a one-branch project. deploys says what each branch deploys to (preview, staging, production, none or unknown), filled in onboarding step 8.",
+  "main_branch": "main",
+  "release_branch": "main",
+  "deploys": {
+    "main": "none"
+  },
+  "stale_lock_hours": 24,
+  "timeout_seconds": 900,
+  "guards": [
+    "gaps",
+    "budget",
+    "map",
+    "zone-check",
+    "tokens",
+    "views"
+  ],
+  "checks": [
+    {
+      "name": "docs",
+      "cmd": "node scripts/check-docs.mjs"
+    },
+    {
+      "name": "tsc",
+      "cmd": "npm run typecheck"
+    },
+    {
+      "name": "test",
+      "cmd": "npm test"
+    },
+    {
+      "name": "build",
+      "cmd": "npm run build"
+    }
+  ],
+  "suites": {},
+  "budgets": {
+    "code_max_lines": 400,
+    "doc_max_lines": 500,
+    "code_exts": [
+      ".ts",
+      ".tsx",
+      ".js",
+      ".jsx",
+      ".mjs",
+      ".cjs",
+      ".py",
+      ".sql",
+      ".css",
+      ".scss",
+      ".vue",
+      ".svelte",
+      ".kt",
+      ".swift",
+      ".go",
+      ".rs"
+    ],
+    "doc_exts": [
+      ".md",
+      ".mdx"
+    ],
+    "exempt": [
+      "*.d.ts",
+      "**/generated/**",
+      "*.gen.*",
+      "**/migrations/**",
+      "**/__snapshots__/**",
+      ".agents/archive/**",
+      "docs/reference/raw/**",
+      "**/components/ui/**",
+      "scripts/check-docs.mjs",
+      "docs/CHALLENGES.md",
+      "public/**"
+    ],
+    "fixed": {
+      "AGENTS.md": 150,
+      "ai-context/README.md": 60,
+      "ai-context/next-steps.md": 40,
+      "ai-context/5w.md": 80
+    },
+    "zone_claude_md": 30,
+    "domain_file": 100,
+    "changelog_entries": 30
+  },
+  "archive": {
+    "keep_done_tasks": 20,
+    "keep_changelog_entries": 30,
+    "keep_fixed_bugs": 50,
+    "keep_history_lines": 40,
+    "keep_redteam_days": 90
+  },
+  "worktree_dir": "../{repo}-worktrees",
+  "worktree_setup": "",
+  "tokens": {
+    "_comment": "defs: files allowed to hold raw colour values (the token definitions). presets: brand preset files (format + contrast checked). theme_files: CSS files `gate.py theme` edits (empty = auto-detect). exempt: extra paths the tokens guard skips.",
+    "defs": [
+      "**/index.css",
+      "**/globals.css",
+      "**/theme/**",
+      "**/themes/**",
+      "**/theme-contract.css",
+      "**/brand-presets.json",
+      "**/brand-tokens.*",
+      "data/blipOs.ts",
+      "app/globals.css"
+    ],
+    "presets": [
+      "**/brand-presets.json"
+    ],
+    "theme_files": [],
+    "exempt": []
+  },
+  "views": {
+    "_comment": "data_imports: module specifiers a *.view.tsx may not import (it gets data as props). view_max_lines: the view size cap.",
+    "data_imports": [
+      "@supabase/*",
+      "@supabase/**",
+      "**/supabase",
+      "**/supabase/**",
+      "**/api",
+      "**/api/**",
+      "**/services/**",
+      "*.container",
+      "*.container.*",
+      "@tanstack/react-query",
+      "swr",
+      "axios"
+    ],
+    "view_max_lines": 150
+  }
+}

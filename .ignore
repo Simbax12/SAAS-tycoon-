@@ -1,0 +1,7 @@
+# Read by ripgrep (which Claude Code's search uses) and editor search, but not by git.
+# These folders stay committed, but agents never pay to scan them by accident.
+# History questions go through `python scripts/gate.py search "<words>"` instead.
+.agents/archive/
+docs/reference/raw/
+# Generated for dashboards; the same facts are in ai-context/roadmap.md and the task files.
+ai-context/roadmap.json

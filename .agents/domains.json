@@ -1,0 +1,96 @@
+{
+  "_comment": "Lookup Router: where each feature lives. Globs (folder patterns) match tracked files, so new files inside a domain's folders are picked up automatically. Brackets and parentheses are literal ([id].tsx, (auth)). A domain starts 'planned' and becomes 'active' at its first finished task; map --check fails only for active domains whose globs match nothing. unmapped_ok lists shared code that belongs to no single feature.",
+  "unmapped_ok": [],
+  "domains": {
+    "engine": {
+      "purpose": "The game rules engine: state, actions, saves, emails, Pattern Book, Build checks",
+      "files": [
+        "game/**"
+      ],
+      "specs": [
+        "docs/GAME_LOGIC.md",
+        "docs/GAME_DESIGN.md"
+      ],
+      "status": "active"
+    },
+    "content": {
+      "purpose": "Typed data files copied from the docs: incidents, repeats, Builds, extra steps, Shop, cast, stages",
+      "files": [
+        "data/**"
+      ],
+      "specs": [
+        "docs/CHALLENGES.md",
+        "docs/REPEATS.md",
+        "docs/BLUEPRINTS.md",
+        "docs/EXTRA_STEPS.md",
+        "docs/UPGRADES.md",
+        "docs/GAME_DESIGN.md"
+      ],
+      "status": "active"
+    },
+    "desktop": {
+      "purpose": "The page, the BlipOS desktop, taskbar, icons, alerts, tutorial spotlight and game state hook",
+      "files": [
+        "app/**",
+        "components/Game.tsx",
+        "components/useGame.ts",
+        "components/useScreen.ts",
+        "components/desktop/**"
+      ],
+      "specs": [
+        "docs/UI_THEME.md"
+      ],
+      "status": "active"
+    },
+    "windows": {
+      "purpose": "Every window: Incident, Inbox, Shop, Stats, Pattern Book, System Map, Blueprint, Terminal, SysDash and the rest",
+      "files": [
+        "components/windows/**"
+      ],
+      "specs": [
+        "docs/UI_THEME.md",
+        "docs/BLUEPRINTS.md",
+        "docs/EXTRA_STEPS.md"
+      ],
+      "status": "active"
+    },
+    "room": {
+      "purpose": "The room around the computer: clips, stills, zoom and desk items",
+      "files": [
+        "components/room/**",
+        "public/room/**"
+      ],
+      "specs": [
+        "docs/ROOM.md"
+      ],
+      "status": "active"
+    },
+    "project": {
+      "purpose": "Game docs, the docs check, tooling, CI, config and workspace tasks",
+      "files": [
+        "docs/**",
+        "scripts/**",
+        "CLAUDE.md",
+        "AGENTS.md",
+        "PROGRESS.md",
+        "ai-context/**",
+        ".agents/**",
+        ".claude/**",
+        ".github/**",
+        "testing/**",
+        "package.json",
+        "package-lock.json",
+        "tsconfig*.json",
+        "next.config.ts",
+        "postcss.config.mjs",
+        ".gitignore",
+        ".gitattributes",
+        ".ignore"
+      ],
+      "specs": [
+        "docs/START_HERE.md"
+      ],
+      "status": "active"
+    }
+  }
+}

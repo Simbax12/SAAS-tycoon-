@@ -1,0 +1,42 @@
+# Runs the same gates as the local pre-commit hook and `gate.py verify`, on every PR and push to main.
+# If `build` needs env vars, add them as GitHub secrets (outward-facing: ask the owner first).
+name: gate
+
+on:
+  pull_request:
+  push:
+    branches: [main, develop]
+
+permissions:
+  contents: read
+
+jobs:
+  gate:
+    runs-on: ubuntu-latest
+    env:
+      CI: "true"
+      GATE_BASE: ${{ github.event_name == 'pull_request' && format('origin/{0}', github.base_ref) || 'HEAD~1' }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - uses: actions/setup-node@v4
+        if: hashFiles('package-lock.json') != ''
+        with:
+          node-version: 22
+          cache: npm
+
+      - name: Install dependencies
+        if: hashFiles('package-lock.json') != ''
+        run: npm ci
+
+      - name: Agent mirrors match their sources
+        run: python scripts/gate.py check-agents
+
+      - name: Guards (gaps, budget, map, zone imports) + stack checks
+        run: python scripts/gate.py verify

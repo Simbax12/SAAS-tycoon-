@@ -1,0 +1,33 @@
+{
+  "_comment": "`registries` is merged into components.json by the UI stack setup task: add missing keys, never overwrite the project's own. URLs are from https://ui.shadcn.com/r/registries.json, checked 2026-10-14. catalogue.md (beside this file) says when to use each. The house registry is NOT a namespace: components.json namespaces must be URL templates, so house items are installed by GitHub address (see `house`).",
+  "house": {
+    "source": "Simbax12/house-ui",
+    "ref": "v1",
+    "install": "npx shadcn add Simbax12/house-ui/<item>#v1",
+    "list": "npx shadcn list Simbax12/house-ui#v1",
+    "view": "npx shadcn view Simbax12/house-ui/<item>#v1",
+    "items": [
+      "theme",
+      "preset-<id>",
+      "workbench",
+      "white-label"
+    ],
+    "access": "Private repo: the shadcn CLI uses the GitHub CLI login (`gh auth login`, once per machine), or GH_TOKEN / GITHUB_TOKEN (fine-grained, Contents: read-only) in CI. Git's own login isn't used."
+  },
+  "registries": {
+    "@reui": "https://reui.io/r/{style}/{name}.json",
+    "@diceui": "https://diceui.com/r/{style}/{name}.json",
+    "@kibo-ui": "https://www.kibo-ui.com/r/{name}.json",
+    "@supabase": "https://supabase.com/ui/r/{name}.json",
+    "@magicui": "https://magicui.design/r/{name}",
+    "@motion-primitives": "https://motion-primitives.com/c/{name}.json",
+    "@cult-ui": "https://cult-ui.com/r/{name}.json",
+    "@kokonutui": "https://kokonutui.com/r/{name}.json",
+    "@eldoraui": "https://eldoraui.site/r/{name}.json",
+    "@smoothui": "https://smoothui.dev/r/{name}.json",
+    "@react-bits": "https://reactbits.dev/r/{name}.json",
+    "@lucide-animated": "https://lucide-animated.com/r/{name}.json",
+    "@animateicons": "https://animateicons.in/r/{name}.json",
+    "@itshover": "https://www.itshover.com/r/{name}.json"
+  }
+}

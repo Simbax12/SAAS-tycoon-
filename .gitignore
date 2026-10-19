@@ -4,3 +4,8 @@ out
 next-env.d.ts
 *.tsbuildinfo
 .test-build
+
+# Agent OS (gate.py)
+.agents/locks/*.lock
+.agents/search-index.db
+__pycache__/

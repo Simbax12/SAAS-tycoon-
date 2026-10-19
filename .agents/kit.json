@@ -1,0 +1,9 @@
+{
+  "_comment": "Written by the project-context-architect skill's scaffold.py on scaffold and --sync. Never edit by hand.",
+  "skill": "project-context-architect",
+  "skill_commit": "c33a0352bdf59d09cd3789beb35a17f21158164f",
+  "synced_paths_commit": "629514da5b77c833aa50e8a5d90dbf33f91eb821",
+  "synced_paths_date": "2026-10-15T16:53:21Z",
+  "dirty": false,
+  "synced": "2026-10-19"
+}

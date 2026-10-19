@@ -1,0 +1,12 @@
+# One line ending for every machine (Windows included), so generated files, the skill's
+# --sync and diffs never show changes that are only line endings.
+* text=auto eol=lf
+*.bat text eol=crlf
+*.cmd text eol=crlf
+
+# Append-only tables: when two branches both add rows, keep both sides (git's built-in union merge).
+testing/TAP_SIGNALS.md merge=union
+
+# Generated files are never hand-merged. After a merge, regenerate them:
+#   testing/registry/tap-signals.ts  -> python scripts/gate.py signals
+#   .agents/ZONES.md, zone CLAUDE.md, AGENTS.md zone table -> python scripts/gate.py zones
