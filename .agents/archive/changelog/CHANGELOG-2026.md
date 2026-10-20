@@ -2,6 +2,9 @@
 
 Rolled out of the live files by `python scripts/gate.py archive`. Search it with `python scripts/gate.py search "<words>"`.
 
+## 2026-10-11 — Each new stage needs its new computer: pc-office, pc-loft, pc-hall …
+Each new stage needs its new computer: pc-office, pc-loft, pc-hall and pc-tower, at £300, £1,200, £6,000 and £30,000 by the price rule. "Next" waits until it is bought, and the investor lends if needed. They replace the Faster PC. Why: Asked for after playing Milestone 7. One "PC" idea that matches each room's new computer
+
 ## 2026-10-11 — "Stage 3 is coming soon" and the code that stopped play at a missing …
 "Stage 3 is coming soon" and the code that stopped play at a missing incident are gone. Why: Every incident is in the data files now
 

@@ -9,6 +9,9 @@ Append-only, newest at the top. Format and rules: `CONTEXT.md` in this folder.
 
 ---
 
+## 2026-10-20 — Owner decisions after TASK-0005
+The window colours that are only in code get written into UI_THEME.md (TASK-0011). Text on pure white in the Incident window gets fixed to follow the readability rule (TASK-0012). Before/After screenshots in `testing/registry/shots/` are gitignored: kept on disk for review, not committed.
+
 ## 2026-10-19 — TASK-0005 Split Incident.tsx under 400 lines
 Split Incident.tsx (565 to 331 lines) into Calls.tsx, Solved.tsx and incidentBits.tsx, with the moved colours as same-value theme tokens; every Incident state looks the same at 1440 and 375.
 
@@ -96,5 +99,3 @@ Old saves that own the Faster PC lose it and get £6,000 back. A save that finis
 ## 2026-10-11 — A computer's request email is sent the moment the stage's last …
 A computer's request email is sent the moment the stage's last incident is solved, not after "Next". Why: "Next" is locked until the computer is bought, so the email must come first
 
-## 2026-10-11 — Each new stage needs its new computer: pc-office, pc-loft, pc-hall …
-Each new stage needs its new computer: pc-office, pc-loft, pc-hall and pc-tower, at £300, £1,200, £6,000 and £30,000 by the price rule. "Next" waits until it is bought, and the investor lends if needed. They replace the Faster PC. Why: Asked for after playing Milestone 7. One "PC" idea that matches each room's new computer

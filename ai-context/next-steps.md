@@ -15,15 +15,13 @@ The full task DAG lives in `../.agents/tasks/` (`python scripts/gate.py status`)
 ## Now
 
 1. **TASK-0006** — Split Blueprint.tsx (735 lines). Moved lines will need colour tokens: reuse the window tokens TASK-0005 added to `app/globals.css` (action, off, muted, paper...) and add any missing ones there. It can also import Calls, MayaSays, Solved and Stars from their own files instead of through Incident.tsx. Also removes the Blueprint refs disable.
-2. **TASK-0010** — A theme token for the desktop's `#111111` backdrop. Waiting on: nothing, ready. Tiny.
-3. **Milestone 8: Polish.** See the build order in docs/START_HERE.md. The System Map's words shrink on wide maps; at 375 pixels the map scrolls sideways, as agreed in Milestone 2. Check readability again.
+2. **TASK-0011** — Write the window colours into UI_THEME.md. Tiny, docs only. Then **TASK-0012** — no pure white behind text in the Incident window (a visible change, reviewed with shots).
+3. **TASK-0010** — A theme token for the desktop's `#111111` backdrop. Waiting on: nothing, ready. Tiny.
+4. **Milestone 8: Polish.** See the build order in docs/START_HERE.md. The System Map's words shrink on wide maps; at 375 pixels the map scrolls sideways, as agreed in Milestone 2. Check readability again.
 
 ## Waiting on the owner
 
 - Play the game at https://zero-to-a-billion.vercel.app/, or locally with `npm run dev` and http://localhost:3000. An old save carries on. A save that finished a stage gets Maya's new computer email.
-- Decide whether screenshot folders (`testing/registry/shots/`) are committed or gitignored. TASK-0009's and TASK-0005's shots are untracked for now.
-- Window colours that are not in docs/UI_THEME.md yet (now named tokens in `app/globals.css`, such as maya-soft, hint, action, off): write them into the docs, or say they stay code-only.
-- Text on pure white (`bg-paper`, e.g. Dana's call panel and the solved boxes) breaks UI_THEME.md > Readability rules ("Never pure white behind text"). Decide whether to fix it in a task.
 - Check the new on-screen text listed at the end of `../PROGRESS.md`.
 - Set the deadline, what is due by then and the cadence in `5w.md`, then run `/roadmap`.
 - TASK-0008 (Monitoring's live numbers, Milestone 8) is blocked: no doc says which live numbers Monitoring shows on each System Map box.

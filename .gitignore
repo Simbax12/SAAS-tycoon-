@@ -13,3 +13,6 @@ __pycache__/
 # Playwright
 test-results/
 playwright-report/
+
+# Before/After screenshots from live-verify (kept locally, not committed)
+testing/registry/shots/
